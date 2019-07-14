@@ -15,3 +15,13 @@
  ::active-panel
  (fn [db _]
    (:active-panel db)))
+
+(re-frame/reg-sub
+ ::beers
+ (fn [db _]
+   (vals (:beer-map db))))
+
+(re-frame/reg-sub
+ ::beer-modal
+ (fn [db _]
+   (:beer-modal db)))
