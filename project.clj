@@ -5,7 +5,8 @@
                  [re-frame "0.10.6"]
                  [secretary "1.2.3"]
                  [breaking-point "0.1.2"]
-                 [com.degel/re-frame-firebase "0.8.0"]]
+                 [com.degel/re-frame-firebase "0.8.0"]
+                 [day8.re-frame/test "0.1.5"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-less "1.7.5"]]

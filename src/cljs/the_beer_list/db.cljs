@@ -1,7 +1,7 @@
 (ns the-beer-list.db)
 
 (def default-db
-  {:name "re-frame"
+  {:active-panel nil
    :beer-map {1 {:id 1
                  :name "Watermelon Gose"
                  :brewery "Three Notched"

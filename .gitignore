@@ -4,3 +4,4 @@
 /resources/public/js/compiled
 out
 .rebel_readline_history
+node_modules/
