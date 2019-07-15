@@ -80,3 +80,34 @@
                          (new-id (:beer-map db)))]
               (assoc-in db [:beer-map id] (assoc beer :id id)))))
 
+(re-frame/reg-event-db
+ ::show-delete-confirm-modal
+ (fn-traced [db [_ id]]
+            (assoc db :delete-confirm-modal {:id id
+                                             :show true})))
+(re-frame/reg-event-db
+ ::hide-delete-confirm-modal
+ (fn-traced [db _]
+            (assoc db :delete-confirm-modal {:id nil
+                                             :show false})))
+
+(defn dispatch-hide-delete-confirm-modal
+  [context]
+  (assoc-in context [:effects :dispatch] [::hide-delete-confirm-modal]))
+
+(def hide-delete-confirm-modal-after-delete
+  (re-frame/->interceptor
+   :id :hide-delete-confirm-modal-after-delete
+   :after dispatch-hide-delete-confirm-modal))
+
+(re-frame/reg-event-db
+ ::delete-beer
+ [hide-delete-confirm-modal-after-delete]
+ (fn-traced [db [_ id]]
+            (let [beer-map (:beer-map db)]
+              (assoc db :beer-map (dissoc beer-map id)))))
+
+(re-frame/reg-event-db
+ ::set-beer-list-filter
+ (fn-traced [db [_ filter]]
+            (assoc db :beer-list-filter filter)))

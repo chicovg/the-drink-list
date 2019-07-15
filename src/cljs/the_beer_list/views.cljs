@@ -5,7 +5,7 @@
    [the-beer-list.events :as events]
    [the-beer-list.subs :as subs]))
 
-;; add beer modal
+;; form fields
 
 (defn reset-value [value]
   (fn [el]
@@ -52,6 +52,8 @@
                      {:value 3 :label "3 - Okay"}
                      {:value 2 :label "2 - Poor"}
                      {:value 1 :label "1 - Horrible"}])
+
+;; beer modal
 
 (defn beer-form [name
                  brewery
@@ -108,11 +110,66 @@
         {:on-click close-beer-modal}
         "Cancel"]]]]))
 
+;; delete confirm modal
+
+(defn close-delete-confirm-modal
+  []
+  (re-frame/dispatch-sync [::events/hide-delete-confirm-modal]))
+
+(defn delete-beer
+  [id]
+  (re-frame/dispatch-sync [::events/delete-beer id]))
+
+(defn delete-confirm-modal
+  []
+  (let [delete-confirm-modal (re-frame/subscribe [::subs/delete-confirm-modal])
+        {:keys [id show]} @delete-confirm-modal]
+    [:div.modal {:class (if show "is-active" "")}
+     [:div.modal-background]
+     [:div.modal-card
+      [:header.modal-card-head
+       [:p.modal-card-title "Please confirm"]
+       [:button.delete {:aria.label "close"
+                        :on-click close-delete-confirm-modal}]]
+      [:section.modal-card-body
+       [:p "Are you sure that you want to delete?"]]
+      [:footer.modal-card-foot
+       [:button.button.is-success
+        {:on-click #(delete-beer id)}
+        "Delete"]
+       [:button.button {:on-click close-delete-confirm-modal}
+        "Cancel"]]]]))
+
 ;; home
+
+(defn set-list-filter
+  [value]
+  (re-frame/dispatch-sync [::events/set-beer-list-filter value]))
+
+(defn toolbar
+  []
+  [:div.toolbar
+   [:div.field.search
+    [:p.control.has-icons-right
+     [:input.input {:on-change #(set-list-filter (-> %
+                                                    .-target
+                                                    .-value))
+                    :placeholder "Search beers..."}]
+     [:span.icon.is-small.is-right
+      [:i.fas.fa-search]]]]
+   [:button.button {:on-click
+                    #(re-frame/dispatch-sync [::events/show-add-beer-modal])}
+    [:span.icon.is-small
+     [:i.fas.fa-plus]]
+    [:span "Add Beer"]]])
 
 (defn show-edit-beer-modal
   [beer]
   (re-frame/dispatch-sync [::events/show-edit-beer-modal beer]))
+
+(defn show-delete-confirm-modal
+  [id]
+  (re-frame/dispatch-sync [::events/show-delete-confirm-modal id]))
 
 (defn beers-table []
   (let [beers (re-frame/subscribe [::subs/beers])]
@@ -145,6 +202,7 @@
                        [:i.fas.fa-edit]]
                       [:span "Edit"]]
                      [:button.button.row-button
+                      {:on-click #(show-delete-confirm-modal id)}
                       [:span.icon.is-small
                        [:i.fas.fa-trash]]
                       [:span "Delete"]]]])]]))
@@ -152,9 +210,7 @@
 (defn home-panel []
   (fn []
     [:div
-     [:button.button
-      {:on-click #(re-frame/dispatch-sync [::events/show-add-beer-modal])}
-      "Add Beer"]
+     [toolbar]
      [beers-table]]))
 
 ;; about
@@ -174,9 +230,6 @@
 
 (defn get-element [id]
   (.getElementById js/document id))
-
-(defn js-console [item]
-  (.log js/console item))
 
 (defn navbar []
   [:nav.navbar {:role "navigation" :aria-label "main navigation"}
@@ -226,8 +279,9 @@
 
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [::subs/active-panel])]
-    [:div.section
+    [:div.section.main
      [beer-modal]
+     [delete-confirm-modal]
      [header]
      [show-panel @active-panel]
      [footer]]))

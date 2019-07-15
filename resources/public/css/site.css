@@ -7,6 +7,21 @@ header {
 img.logo {
   min-height: 35px;
 }
-.button.row-button {
-  margin: 2px;
+div.main {
+  max-width: 1300px;
+  margin: auto;
+}
+div.toolbar {
+  display: flex;
+}
+div.toolbar div,
+button {
+  margin: 0.1em 0.3em;
+}
+div.search {
+  flex: 1 1 10em;
+  max-width: 350px;
+}
+button.row-button {
+  margin: 0.2em;
 }
