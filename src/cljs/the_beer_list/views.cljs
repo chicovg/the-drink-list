@@ -14,48 +14,52 @@
     (not (blank? value))
     true))
 
-(defn text-input [{:keys [id label placeholder value required]}]
-  (let [is-valid (atom true)]
-    (fn [{:keys [id label placeholder value required]}]
+(defn text-input [{:keys [id label placeholder]}]
+  (let [field-value (rf/subscribe [::subs/beer-modal-field-value id])
+        field-error (rf/subscribe [::subs/beer-modal-field-error id])]
+    (fn [{:keys [id label placeholder]}]
       [:div.field
        [:label.label label]
        [:div.control
         [:input.input {:type "text"
-                       :class (if (not @is-valid) "is-danger")
+                       :class (if @field-error "is-danger")
                        :placeholder placeholder
                        :on-change #(let [val (-> % .-target .-value)]
-                                     (do
-                                       (reset! value val)
-                                       (reset! is-valid (required-ok required-ok val))))
-                       :value @value}]]])))
+                                     (rf/dispatch [::events/set-beer-modal-value id val]))
+                       :value @field-value}]
+        (if @field-error
+          [:p.help.is-danger @field-error])]])))
 
-(defn textarea-input [{:keys [id label placeholder value required]}]
-  (let [is-valid (atom true)]
-    (fn [{:keys [id label placeholder value required]}]
+(defn textarea-input [{:keys [id label placeholder]}]
+  (let [field-value (rf/subscribe [::subs/beer-modal-field-value id])
+        field-error (rf/subscribe [::subs/beer-modal-field-error id])]
+    (fn [{:keys [id label placeholder]}]
       [:div.field
        [:label.label label]
        [:div.control
-        [:textarea.textarea {:class (if (not @is-valid) "is-danger")
+        [:textarea.textarea {:class (if @field-error "is-danger")
                              :rows 4
                              :cols 50
                              :max-length 200
                              :placeholder placeholder
                              :on-change #(let [val (-> % .-target .-value)]
-                                           (do
-                                             (reset! value val)
-                                             (reset! is-valid (required-ok required-ok val))))
-                             :value @value}]]])))
+                                           (rf/dispatch [::events/set-beer-modal-value id val]))
+                             :value @field-value}]
+        (if @field-error
+          [:p.help.is-danger @field-error])]])))
 
-(defn select-input [{:keys [id label options default-option value]}]
-  (fn [{:keys [id label options default-option value]}]
-    [:div.field
-     [:label.label label]
-     [:div.control
-      [:div.select
-       [:select {:on-change #(reset! value (-> % .-target .-value))
-                 :value @value}
-        (for [{:keys [label value]} options]
-          ^{:key value} [:option {:value value} label])]]]]))
+(defn select-input [{:keys [id label options default-option]}]
+  (let [field-value (rf/subscribe [::subs/beer-modal-field-value id])]
+    (fn [{:keys [id label options default-option]}]
+      [:div.field
+       [:label.label label]
+       [:div.control
+        [:div.select
+         [:select {:on-change #(let [val (-> % .-target .-value)]
+                                 (rf/dispatch [::events/set-beer-modal-value id val]))
+                   :value @field-value}
+          (for [{:keys [label value]} options]
+            ^{:key value} [:option {:value value} label])]]]])))
 
 (def rating-options [{:value 5 :label "5 - Amazing"}
                      {:value 4 :label "4 - Great!"}
@@ -67,7 +71,7 @@
 
 (defn close-beer-modal
   []
-  (rf/dispatch [::events/hide-beer-modal]))
+  (rf/dispatch [::events/clear-and-hide-beer-modal]))
 
 ;; beer
 (defn validate-beer
@@ -75,19 +79,15 @@
 
 (defn save-beer
   [beer]
-  (rf/dispatch [::events/write-beer-to-firestore beer]))
+  (rf/dispatch [::events/try-save-beer beer]))
 
 (defn beer-modal
   []
   (let [beer-modal (rf/subscribe [::subs/beer-modal])
-        {:keys [beer operation show]} @beer-modal
-        {:keys [id name brewery type rating comment]} beer
-        aname (atom (or name ""))
-        abrewery (atom (or brewery ""))
-        atype (atom (or type ""))
-        arating (atom (or rating ""))
-        acomment (atom (or comment ""))]
-    [:div.modal {:class (if show "is-active")}
+        beer-modal-showing? (rf/subscribe [::subs/beer-modal-showing?])
+        save-failed? (rf/subscribe [::subs/save-failed?])
+        {:keys [beer operation show]} @beer-modal]
+    [:div.modal {:class (if @beer-modal-showing? "is-active")}
      [:div.modal-background]
      [:div.modal-card
       [:header.modal-card-head
@@ -97,50 +97,38 @@
        [:button.delete {:aria-label "close"
                         :on-click close-beer-modal}]]
       [:section.modal-card-body
+       (if @save-failed?
+         [:article.message.is-danger
+          [:div.message-body
+           "Unable to save at this time, please try again later."]])
        [:div {:role "form"}
         [text-input {:id :name
                      :label "Beer Name"
-                     :placeholder "A Delicious Brew"
-                     :value aname
-                     :required true}]
+                     :placeholder "A Delicious Brew"}]
         [text-input {:id :brewery
                      :label "Brewery"
-                     :placeholder "Your Favorite Brewery"
-                     :value abrewery
-                     :required true}]
+                     :placeholder "Your Favorite Brewery"}]
         [text-input {:id :type
                      :label "Beer Type"
-                     :placeholder "Ale? Lager? Gose?"
-                     :value atype
-                     :required true}] ;; TODO dropdown?
+                     :placeholder "Ale? Lager? Gose?"}]
         [select-input {:id :rating
                        :label "Rating"
                        :options rating-options
-                       :default-option 3
-                       :value arating}]
+                       :default-option 3}]
         [textarea-input {:id :comment
                          :label "Comment"
-                         :placeholder "Provide more details here..."
-                         :value acomment
-                         :required false}]]]
+                         :placeholder "Provide more details here..."}]]]
       [:footer.modal-card-foot
-       [:button.button.is-success
-        {:on-click #(save-beer {:id id
-                                :name @aname
-                                :brewery @abrewery
-                                :type @atype
-                                :rating @arating
-                                :comment @acomment})}
+       [:button.button.is-success {:on-click #(save-beer beer)}
         "Save"]
-       [:button.button
-        {:on-click close-beer-modal}
+       [:button.button {:on-click close-beer-modal}
         "Cancel"]]]]))
 
 ;; delete confirm modal
 
 (defn close-delete-confirm-modal
   []
-  (rf/dispatch [::events/hide-delete-confirm-modal]))
+  (rf/dispatch [::events/update-delete-confirm-state :hide]))
 
 (defn delete-beer
   [id]
@@ -148,9 +136,10 @@
 
 (defn delete-confirm-modal
   []
-  (let [delete-confirm-modal (rf/subscribe [::subs/delete-confirm-modal])
-        {:keys [id show]} @delete-confirm-modal]
-    [:div.modal {:class (if show "is-active" "")}
+  (let [delete-confirm-modal-showing? (rf/subscribe [::subs/delete-confirm-modal-showing?])
+        delete-confirm-id (rf/subscribe [::subs/delete-confirm-id])
+        delete-failed? (rf/subscribe [::subs/delete-failed?])]
+    [:div.modal {:class (if @delete-confirm-modal-showing? "is-active" "")}
      [:div.modal-background]
      [:div.modal-card
       [:header.modal-card-head
@@ -158,13 +147,31 @@
        [:button.delete {:aria.label "close"
                         :on-click close-delete-confirm-modal}]]
       [:section.modal-card-body
+       (if @delete-failed?
+         [:article.message.is-danger
+          [:div.message-body
+           "Unable to delete at this time, please try again later."]])
        [:p "Are you sure that you want to delete?"]]
       [:footer.modal-card-foot
        [:button.button.is-success
-        {:on-click #(delete-beer id)}
+        {:on-click #(delete-beer @delete-confirm-id)}
         "Delete"]
        [:button.button {:on-click close-delete-confirm-modal}
         "Cancel"]]]]))
+
+;; loading modal
+
+(defn loading-modal
+  []
+  (let [loading-modal-showing? (rf/subscribe [::subs/loading-modal-showing?])]
+    [:div.modal {:class (if @loading-modal-showing? "is-active" "")}
+     [:div.modal-background]
+     [:div.modal-card
+      [:header.modal-card-head
+       [:p.modal-card-title "Loading..."]]
+      [:section.modal-card-body
+       [:progress.progress.is-medium.is-dark {:max 100}]]
+      [:footer.modal-card-foot]]]))
 
 ;; home
 
@@ -337,6 +344,14 @@
       [:i.fab.fa-google]]
      [:span "Login"]]]])
 
+(defn log-in-error-panel
+  []
+  (let [log-in-failed? (rf/subscribe [::subs/log-in-failed?])]
+    (if @log-in-failed?
+      [:article.message.is-danger
+       [:div.message-body
+        "Unable to log into the app right now. Please try again later."]])))
+
 (defn main-panel
   []
   (let [is-logged-in (rf/subscribe [::subs/is-logged-in])
@@ -344,7 +359,9 @@
     [:div.section.main
      [beer-modal]
      [delete-confirm-modal]
+     [loading-modal]
      [header @is-logged-in]
+     [log-in-error-panel]
      (if @is-logged-in
        [show-panel @active-panel]
        [login-page])

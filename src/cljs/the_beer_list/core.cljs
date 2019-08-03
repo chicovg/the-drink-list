@@ -45,6 +45,6 @@
            :firestore-settings {:timestampsInSnapshots true}
            :get-user-sub [::subs/user]
            :set-user-event [::events/set-user]
-           :default-error-handler [::events/firebase-error])
+           :default-error-handler [::events/firestore-failure])
   (dev-setup)
   (mount-root))
