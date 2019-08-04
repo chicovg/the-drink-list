@@ -10,7 +10,9 @@
 
 (defn next-state
   [state-machine current-state transition]
-  (get-in state-machine [current-state transition]))
+  (let [next-state (get-in state-machine [current-state transition])]
+    (or next-state
+        current-state)))
 
 ;; general events
 
@@ -90,7 +92,7 @@
 (rf/reg-event-fx
  ::sign-out
  (fn-traced [{db :db} _]
-            {:db (update-log-in-state :log-out)
+            {:db (update-log-in-state db :log-out)
              :dispatch [::sign-out-with-firebase]}))
 
 (rf/reg-event-fx
@@ -104,7 +106,7 @@
               {:db (-> db
                        (assoc :user user)
                        (update-log-in-state :user-received))
-               :dispatch [:fetch-from-firestore (:uid user)]}
+               :dispatch [::fetch-from-firestore (:uid user)]}
               {:db (update-log-in-state db :no-user-received)
                :dispatch [::clear-beer-map]})))
 
@@ -112,8 +114,6 @@
  ::firestore-failure
  (fn-traced [db [_ failure]]
             (assoc db :firestore-failure failure)))
-
-;; need a smart reset here
 
 (defn on-fetch-failure
   [error]
@@ -233,20 +233,18 @@
              :dispatch [::update-beer-modal-state :show]}))
 
 (rf/reg-event-fx
- ::set-beer-modal-value
- (fn-traced [{db :db} [_ field value]]
-            {:db (assoc-in db [:beer-modal :beer field] value)
-             :dispatch [::update-beer-modal-state :field-changed]}))
-
-(rf/reg-event-fx
  ::clear-and-hide-beer-modal
  (fn-traced [{db :db} _]
             {:db (assoc db :beer-modal db/beer-modal-default)
              :dispatch [::update-beer-modal-state :hide]}))
 
-(defn dispatch-hide-modal
-  [context]
-  (assoc-in context [:effects :dispatch] [::clear-and-hide-beer-modal]))
+;; beer modal beer
+
+(rf/reg-event-fx
+ ::set-beer-modal-value
+ (fn-traced [{db :db} [_ field value]]
+            {:db (assoc-in db [:beer-modal :beer field] value)
+             :dispatch [::update-beer-modal-state :field-changed]}))
 
 ;; delete confirm modal events
 
@@ -280,7 +278,7 @@
 
 (defn update-log-in-state
   [db event]
-  (update db :login-in-state (partial next-state)))
+  (update db :log-in-state (partial next-state db/log-in-states) event))
 
 (rf/reg-event-db
  ::update-log-in-state

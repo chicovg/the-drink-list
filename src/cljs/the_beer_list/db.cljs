@@ -26,8 +26,7 @@
                                   :save-no-type :type-required
                                   :try-save :saving}
                         :saving {:firestore-failure :save-failed
-                                 :firestore-success :ready
-                                 :hide :ready}
+                                 :firestore-success :ready}
                         :save-failed {:try-save :saving
                                       :hide :ready}
                         :name-required {:field-changed :showing
@@ -55,4 +54,4 @@
                                  :no-user-received :log-in-failed}
                     :logged-in {:log-out :logging-out}
                     :log-in-failed {:log-in :logging-in}
-                    :logging-out {:user-received :ready}})
+                    :logging-out {:no-user-received :ready}})

@@ -2,13 +2,17 @@
   (:require
    [re-frame.core :as rf]))
 
+;; user
+
 (rf/reg-sub
  ::user
  (fn [db _](:user db)))
 
 (rf/reg-sub
- ::is-logged-in
+ ::is-logged-in?
  (fn [db _] (some? (:user db))))
+
+;; nav
 
 (rf/reg-sub
  ::active-panel
@@ -35,12 +39,8 @@
          (filter filter-fn)
          (sort-by :name)))))
 
-;; beer modal
+;; beer modal state
 
-(rf/reg-sub
- ::beer-modal
- (fn [db _]
-   (:beer-modal db)))
 
 (rf/reg-sub
  ::beer-modal-state
@@ -58,16 +58,6 @@
  (fn [state _] (= state :save-failed)))
 
 (rf/reg-sub
- ::beer-modal-beer
- (fn [db _]
-   (get-in db [:beer-modal :beer])))
-
-(rf/reg-sub
- ::beer-modal-field-value
- (fn [db _] (rf/subscribe [::beer-modal-beer]))
- (fn [beer [_ field]] (field beer)))
-
-(rf/reg-sub
  ::beer-modal-field-error
  (fn [db _] (rf/subscribe [::beer-modal-state]))
  (fn [state [_ field]] (case field
@@ -81,6 +71,28 @@
                                  :type-required "Type required"
                                  nil)
                          nil)))
+
+;; beer modal beer
+
+(rf/reg-sub
+ ::beer-modal
+ (fn [db _] (:beer-modal db)))
+
+(rf/reg-sub
+ ::beer-modal-beer
+ (fn [db _] (rf/subscribe [::beer-modal]))
+ (fn [beer-modal _] (:beer beer-modal)))
+
+(rf/reg-sub
+ ::beer-modal-is-adding?
+ (fn [db _] (rf/subscribe [::beer-modal]))
+ (fn [beer-modal _] (= :add (:operation beer-modal))))
+
+(rf/reg-sub
+ ::beer-modal-field-value
+ (fn [db _] (rf/subscribe [::beer-modal-beer]))
+ (fn [beer [_ field]] (field beer)))
+
 
 ;; delete confirm modal
 

@@ -83,15 +83,15 @@
 
 (defn beer-modal
   []
-  (let [beer-modal (rf/subscribe [::subs/beer-modal])
+  (let [beer (rf/subscribe [::subs/beer-modal-beer])
+        beer-modal-is-adding? [::subs/beer-modal-is-adding?]
         beer-modal-showing? (rf/subscribe [::subs/beer-modal-showing?])
-        save-failed? (rf/subscribe [::subs/save-failed?])
-        {:keys [beer operation show]} @beer-modal]
+        save-failed? (rf/subscribe [::subs/save-failed?])]
     [:div.modal {:class (if @beer-modal-showing? "is-active")}
      [:div.modal-background]
      [:div.modal-card
       [:header.modal-card-head
-       [:p.modal-card-title (if (= :add operation)
+       [:p.modal-card-title (if @beer-modal-is-adding?
                               "Add a new beer!"
                               "Update this beer")]
        [:button.delete {:aria-label "close"
@@ -354,15 +354,15 @@
 
 (defn main-panel
   []
-  (let [is-logged-in (rf/subscribe [::subs/is-logged-in])
+  (let [is-logged-in? (rf/subscribe [::subs/is-logged-in?])
         active-panel (rf/subscribe [::subs/active-panel])]
     [:div.section.main
      [beer-modal]
      [delete-confirm-modal]
      [loading-modal]
-     [header @is-logged-in]
+     [header @is-logged-in?]
      [log-in-error-panel]
-     (if @is-logged-in
+     (if @is-logged-in?
        [show-panel @active-panel]
        [login-page])
      [footer]]))
