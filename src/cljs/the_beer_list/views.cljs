@@ -9,10 +9,11 @@
 
 ;; form fields
 
-(defn required-ok [required value]
-  (if required
-    (not (blank? value))
-    true))
+(defn on-field-change
+  [id]
+  (fn [el]
+    (let [val (-> el .-target .-value)]
+      (rf/dispatch [::events/set-beer-modal-value id val]))))
 
 (defn text-input [{:keys [id label placeholder]}]
   (let [field-value (rf/subscribe [::subs/beer-modal-field-value id])
@@ -24,13 +25,13 @@
         [:input.input {:type "text"
                        :class (if @field-error "is-danger")
                        :placeholder placeholder
-                       :on-change #(let [val (-> % .-target .-value)]
-                                     (rf/dispatch [::events/set-beer-modal-value id val]))
+                       :on-change (on-field-change id)
                        :value @field-value}]
         (if @field-error
           [:p.help.is-danger @field-error])]])))
 
-(defn textarea-input [{:keys [id label placeholder]}]
+(defn textarea-input
+  [{:keys [id label placeholder]}]
   (let [field-value (rf/subscribe [::subs/beer-modal-field-value id])
         field-error (rf/subscribe [::subs/beer-modal-field-error id])]
     (fn [{:keys [id label placeholder]}]
@@ -42,22 +43,21 @@
                              :cols 50
                              :max-length 200
                              :placeholder placeholder
-                             :on-change #(let [val (-> % .-target .-value)]
-                                           (rf/dispatch [::events/set-beer-modal-value id val]))
+                             :on-change (on-field-change id)
                              :value @field-value}]
         (if @field-error
           [:p.help.is-danger @field-error])]])))
 
-(defn select-input [{:keys [id label options default-option]}]
+(defn select-input
+  [{:keys [id label options default-option]}]
   (let [field-value (rf/subscribe [::subs/beer-modal-field-value id])]
     (fn [{:keys [id label options default-option]}]
       [:div.field
        [:label.label label]
        [:div.control
         [:div.select
-         [:select {:on-change #(let [val (-> % .-target .-value)]
-                                 (rf/dispatch [::events/set-beer-modal-value id val]))
-                   :value @field-value}
+         [:select {:on-change (on-field-change id)
+                   :value (or @field-value default-option)}
           (for [{:keys [label value]} options]
             ^{:key value} [:option {:value value} label])]]]])))
 
@@ -73,56 +73,72 @@
   []
   (rf/dispatch [::events/clear-and-hide-beer-modal]))
 
-;; beer
-(defn validate-beer
-  [])
-
 (defn save-beer
   [beer]
-  (rf/dispatch [::events/try-save-beer beer]))
+  (fn []
+    (rf/dispatch [::events/try-save-beer beer])))
+
+(defn beer-form
+  []
+  [:div {:role "form"}
+   [text-input {:id :name
+                :label "Beer Name"
+                :placeholder "A Delicious Brew"}]
+   [text-input {:id :brewery
+                :label "Brewery"
+                :placeholder "Your Favorite Brewery"}]
+   [text-input {:id :type
+                :label "Beer Type"
+                :placeholder "Ale? Lager? Gose?"}]
+   [select-input {:id :rating
+                  :label "Rating"
+                  :options rating-options
+                  :default-option 3}]
+   [textarea-input {:id :comment
+                    :label "Comment"
+                    :placeholder "Provide more details here..."}]])
+
+(defn beer-modal-title
+  [is-adding?]
+  [:p.modal-card-title (if is-adding?
+                         "Add a new beer!"
+                         "Update this beer")])
+
+(defn save-failed-message
+  [save-failed?]
+  (if save-failed?
+    [:article.message.is-danger
+     [:div.message-body
+      "Unable to save at this time, please try again later."]]))
+
+(defn beer-modal-view
+  [{:keys [beer is-adding? showing? save-failed?]}]
+  [:div.modal {:class (if showing? "is-active")}
+   [:div.modal-background]
+   [:div.modal-card
+    [:header.modal-card-head
+     [beer-modal-title is-adding?]
+     [:button.delete {:aria-label "close"
+                      :on-click close-beer-modal}]]
+    [:section.modal-card-body
+     [save-failed-message save-failed?]
+     [beer-form]
+    [:footer.modal-card-foot
+     [:button.button.is-success {:on-click (save-beer beer)}
+      "Save"]
+     [:button.button {:on-click close-beer-modal}
+      "Cancel"]]]]])
 
 (defn beer-modal
   []
   (let [beer (rf/subscribe [::subs/beer-modal-beer])
-        beer-modal-is-adding? [::subs/beer-modal-is-adding?]
+        beer-modal-is-adding? (rf/subscribe [::subs/beer-modal-is-adding?])
         beer-modal-showing? (rf/subscribe [::subs/beer-modal-showing?])
         save-failed? (rf/subscribe [::subs/save-failed?])]
-    [:div.modal {:class (if @beer-modal-showing? "is-active")}
-     [:div.modal-background]
-     [:div.modal-card
-      [:header.modal-card-head
-       [:p.modal-card-title (if @beer-modal-is-adding?
-                              "Add a new beer!"
-                              "Update this beer")]
-       [:button.delete {:aria-label "close"
-                        :on-click close-beer-modal}]]
-      [:section.modal-card-body
-       (if @save-failed?
-         [:article.message.is-danger
-          [:div.message-body
-           "Unable to save at this time, please try again later."]])
-       [:div {:role "form"}
-        [text-input {:id :name
-                     :label "Beer Name"
-                     :placeholder "A Delicious Brew"}]
-        [text-input {:id :brewery
-                     :label "Brewery"
-                     :placeholder "Your Favorite Brewery"}]
-        [text-input {:id :type
-                     :label "Beer Type"
-                     :placeholder "Ale? Lager? Gose?"}]
-        [select-input {:id :rating
-                       :label "Rating"
-                       :options rating-options
-                       :default-option 3}]
-        [textarea-input {:id :comment
-                         :label "Comment"
-                         :placeholder "Provide more details here..."}]]]
-      [:footer.modal-card-foot
-       [:button.button.is-success {:on-click #(save-beer beer)}
-        "Save"]
-       [:button.button {:on-click close-beer-modal}
-        "Cancel"]]]]))
+    [beer-modal {:beer @beer
+                 :is-adding? @beer-modal-is-adding?
+                 :showing? @beer-modal-showing?
+                 :save-failed? @save-failed?}]))
 
 ;; delete confirm modal
 
@@ -207,7 +223,7 @@
 (defn beers-table
   []
   (let [beers (rf/subscribe [::subs/beers])]
-    [:table.table
+    [:table.table.is-striped
      [:thead
       [:tr
        [:th "Beer"]

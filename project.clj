@@ -6,10 +6,12 @@
                  [secretary "1.2.3"]
                  [breaking-point "0.1.2"]
                  [com.degel/re-frame-firebase "0.8.0"]
-                 [day8.re-frame/test "0.1.5"]]
+                 [day8.re-frame/test "0.1.5"]
+                 [lein-doo "0.1.8"]
+                 [devcards "0.2.4"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
-            [lein-less "1.7.5"]]
+            [lein-sass "0.5.0"]]
 
   :min-lein-version "2.5.3"
 
@@ -20,10 +22,8 @@
 
   :figwheel {:css-dirs ["resources/public/css"]}
 
-  :less {:source-paths ["less"]
-         :target-path  "resources/public/css"}
-
-  :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
+  :sass {:src "sass"
+         :output-directory "resources/public/css"}
 
   :profiles
   {:dev
@@ -33,8 +33,11 @@
                    [figwheel-sidecar "0.5.18"]
                    [cider/piggieback "0.4.1"]]
 
+    :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
+
     :plugins      [[lein-figwheel "0.5.18"]
                    [lein-doo "0.1.8"]]}
+
    :prod {:dependencies [[day8.re-frame/tracing-stubs "0.5.1"]]}}
 
   :cljsbuild
@@ -63,9 +66,16 @@
 
     {:id           "test"
      :source-paths ["src/cljs" "test/cljs"]
-     :compiler     {:main          the-beer-list.runner
-                    :output-to     "resources/public/js/compiled/test.js"
-                    :output-dir    "resources/public/js/compiled/test/out"
-                    :optimizations
-
-                    :none}}]})
+     :compiler     {:main          runners.doo
+                    :output-dir    "resources/public/cljs/compiled/tests/out"
+                    :output-to     "resources/public/cljs/tests/all-tests.js"
+                    :optimizations :none}}
+    {:id           "devcards-test"
+     :source-paths ["src" "test"]
+     :figwheel {:devcards true}
+     :compiler {:main                 runners.tests
+                :optimizations        :none
+                :asset-path           "cljs/tests/out"
+                :output-dir           "resources/public/cljs/tests/out"
+                :output-to            "resources/public/cljs/tests/all-tests.js"
+                :source-map-timestamp true}}]})

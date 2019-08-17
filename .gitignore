@@ -6,3 +6,4 @@ out
 .rebel_readline_history
 node_modules/
 resources/public/css
+.lein-repl-history
