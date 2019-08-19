@@ -79,8 +79,7 @@
 (rf/reg-event-fx
  ::sign-in
  (fn-traced [{db :db} _]
-            {:db (-> db
-                     (update-log-in-state :log-in))
+            {:db (update-log-in-state db :log-in)
              :dispatch [::sign-in-with-firebase]}))
 
 (rf/reg-event-fx
@@ -105,7 +104,9 @@
                        (assoc :user user)
                        (update-log-in-state :user-received))
                :dispatch [::fetch-from-firestore (:uid user)]}
-              {:db (update-log-in-state db :no-user-received)
+              {:db (-> db
+                       (assoc :user nil)
+                       (update-log-in-state db :no-user-received))
                :dispatch [::clear-beer-map]})))
 
 (rf/reg-event-db

@@ -30,6 +30,20 @@
        (is {:id "foo"} @user)
        (is 1 @on-snapshot)))))
 
+(deftest test-set-user-log-out
+  (testing "The user is cleared when logging out"
+    (rf-test/run-test-sync
+     (let [is-logged-in? (rf/subscribe [::subs/is-logged-in?])
+           user (rf/subscribe [::subs/user])
+           on-snapshot (atom 0)]
+       (rf/dispatch [::events/initialize-db])
+       (rf/reg-fx :firestore/on-snapshot #(swap! on-snapshot inc))
+       (rf/dispatch [::events/set-user {:id "foo"}])
+       (rf/dispatch [::events/set-user nil])
+       (is (not @is-logged-in?))
+       (is (nil? @user))
+       (is 1 @on-snapshot)))))
+
 ;; nav
 
 (deftest test-init-active-panel

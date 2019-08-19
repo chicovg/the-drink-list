@@ -49,7 +49,8 @@
                                      :hide :ready}
                            :load-failed {:show :showing}})
 
-(def log-in-states {:ready {:log-in :logging-in}
+(def log-in-states {:ready {:log-in :logging-in
+                            :user-received :logged-in}
                     :logging-in {:user-received :logged-in
                                  :no-user-received :log-in-failed}
                     :logged-in {:log-out :logging-out}

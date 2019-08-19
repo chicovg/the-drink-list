@@ -220,42 +220,47 @@
   [id]
   (rf/dispatch [::events/show-delete-confirm-modal id]))
 
+(defn beers-table-view
+  [beers]
+  [:div.table-container
+   [:table.table.is-striped
+    [:thead
+     [:tr
+      [:th "Beer"]
+      [:th "Brewery"]
+      [:th "Type"]
+      [:th "Rating"]
+      [:th "Comment"]
+      [:th "Actions"]]]
+    [:tbody
+     (for [{:keys [id name brewery type rating comment] :as beer} beers]
+       ^{:key id} [:tr
+                   [:td name]
+                   [:td brewery]
+                   [:td type]
+                   [:td rating]
+                   [:td comment]
+                   [:td
+                    [:button.button.row-button
+                     {:on-click #(show-edit-beer-modal {:id id
+                                                        :name name
+                                                        :brewery brewery
+                                                        :type type
+                                                        :rating rating
+                                                        :comment comment})}
+                     [:span.icon.is-small
+                      [:i.fas.fa-edit]]
+                     [:span "Edit"]]
+                    [:button.button.row-button
+                     {:on-click #(show-delete-confirm-modal id)}
+                     [:span.icon.is-small
+                      [:i.fas.fa-trash]]
+                     [:span "Delete"]]]])]]])
+
 (defn beers-table
   []
   (let [beers (rf/subscribe [::subs/beers])]
-    [:table.table.is-striped
-     [:thead
-      [:tr
-       [:th "Beer"]
-       [:th "Brewery"]
-       [:th "Type"]
-       [:th "Rating"]
-       [:th "Comment"]
-       [:th "Actions"]]]
-     [:tbody
-      (for [{:keys [id name brewery type rating comment] :as beer} @beers]
-        ^{:key id} [:tr
-                    [:td name]
-                    [:td brewery]
-                    [:td type]
-                    [:td rating]
-                    [:td comment]
-                    [:td
-                     [:button.button.row-button
-                      {:on-click #(show-edit-beer-modal {:id id
-                                                         :name name
-                                                         :brewery brewery
-                                                         :type type
-                                                         :rating rating
-                                                         :comment comment})}
-                      [:span.icon.is-small
-                       [:i.fas.fa-edit]]
-                      [:span "Edit"]]
-                     [:button.button.row-button
-                      {:on-click #(show-delete-confirm-modal id)}
-                      [:span.icon.is-small
-                       [:i.fas.fa-trash]]
-                      [:span "Delete"]]]])]]))
+    [beers-table-view @beers]))
 
 (defn home-panel
   []
