@@ -531,13 +531,11 @@
 (deftest test-sign-in
   (testing "sign in updates state and triggers the google sing in effect"
     (rf-test/run-test-sync
-     (let [loading-modal-state (rf/subscribe [::subs/loading-modal-state])
-           log-in-state (rf/subscribe [::subs/log-in-state])
+     (let [log-in-state (rf/subscribe [::subs/log-in-state])
            sign-in-calls (atom 0)]
        (rf/dispatch [::events/initialize-db])
        (rf/reg-fx :firebase/google-sign-in #(swap! sign-in-calls inc))
        (rf/dispatch [::events/sign-in])
-       (is (= :showing @loading-modal-state))
        (is (= :logging-in @log-in-state))
        (is 1 @sign-in-calls)))))
 

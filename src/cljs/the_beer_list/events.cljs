@@ -62,7 +62,6 @@
 
 (rf/reg-event-db
  ::set-beer-map
- [hide-loading-modal]
  (fn-traced [db [_ data]]
             (let [beer-map (:beer-map db)
                   updates (convert-data data)]
@@ -81,13 +80,12 @@
  ::sign-in
  (fn-traced [{db :db} _]
             {:db (-> db
-                     (update-loading-modal-state :show)
                      (update-log-in-state :log-in))
              :dispatch [::sign-in-with-firebase]}))
 
 (rf/reg-event-fx
  ::sign-in-with-firebase
- (fn [_ _] {:firebase/google-sign-in {:sign-in-method :popup}}))
+ (fn [_ _] {:firebase/google-sign-in {:sign-in-method :redirect}}))
 
 (rf/reg-event-fx
  ::sign-out
@@ -97,7 +95,7 @@
 
 (rf/reg-event-fx
  ::sign-out-with-firebase
- (fn [_ _] {:firebase/sign-out nil}))
+ (fn [_ _] {:firebase/sign-out {}}))
 
 (rf/reg-event-fx
  ::set-user

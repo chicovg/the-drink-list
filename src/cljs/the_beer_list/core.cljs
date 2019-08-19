@@ -10,7 +10,6 @@
    [the-beer-list.views :as views]
    [the-beer-list.config :as config]))
 
-;; TODO make the api key an env variable
 (defonce fb-app-info {:apiKey "AIzaSyDKNRNCtfbhp1YRyggoHi0e-ud24HSRnoU"
                       :authDomain "the-beer-list-245600.firebaseapp.com"
                       :databaseURL "https://the-beer-list-245600.firebaseio.com"

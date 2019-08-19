@@ -62,6 +62,11 @@ Please note that [doo](https://github.com/bensu/doo) can be configured to run cl
 
 ## Production Build
 
+To compile sass to css:
+
+```
+lein sass once
+```
 
 To compile clojurescript to javascript:
 

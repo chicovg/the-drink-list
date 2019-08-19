@@ -135,10 +135,10 @@
         beer-modal-is-adding? (rf/subscribe [::subs/beer-modal-is-adding?])
         beer-modal-showing? (rf/subscribe [::subs/beer-modal-showing?])
         save-failed? (rf/subscribe [::subs/save-failed?])]
-    [beer-modal {:beer @beer
-                 :is-adding? @beer-modal-is-adding?
-                 :showing? @beer-modal-showing?
-                 :save-failed? @save-failed?}]))
+    [beer-modal-view {:beer @beer
+                      :is-adding? @beer-modal-is-adding?
+                      :showing? @beer-modal-showing?
+                      :save-failed? @save-failed?}]))
 
 ;; delete confirm modal
 
