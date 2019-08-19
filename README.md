@@ -1,6 +1,6 @@
 # the-beer-list
 
-A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
+A [re-frame](https://github.com/Day8/re-frame) application which allows me to track my favorite brews.
 
 ## Development Mode
 
@@ -22,13 +22,13 @@ Navigate to a clojurescript file and start a figwheel REPL with `cider-jack-in-c
 Compile css file once.
 
 ```
-lein less once
+lein sass once
 ```
 
 Automatically recompile css file on change.
 
 ```
-lein less auto
+lein sass auto
 ```
 
 ### Run application:
