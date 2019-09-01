@@ -1,6 +1,6 @@
 # the-beer-list
 
-A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
+A [re-frame](https://github.com/Day8/re-frame) application designed to track and rate beers!
 
 ## Development Mode
 
@@ -16,6 +16,12 @@ Put this in your Emacs config file:
 ```
 
 Navigate to a clojurescript file and start a figwheel REPL with `cider-jack-in-clojurescript` or (`C-c M-J`)
+
+### Install node dependencies
+
+```
+npm install
+```
 
 ### Compile css:
 
