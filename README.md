@@ -1,6 +1,6 @@
 # the-beer-list
 
-A [re-frame](https://github.com/Day8/re-frame) application designed to track and rate beers!
+A [re-frame](https://github.com/Day8/re-frame) application which allows me to track my favorite brews.
 
 ## Development Mode
 
@@ -28,13 +28,13 @@ npm install
 Compile css file once.
 
 ```
-lein less once
+lein sass once
 ```
 
 Automatically recompile css file on change.
 
 ```
-lein less auto
+lein sass auto
 ```
 
 ### Run application:
