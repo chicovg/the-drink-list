@@ -5,7 +5,8 @@
    [re-frame.core :as rf]
    [breaking-point.core :as bp]
    [the-beer-list.events :as events]
-   [the-beer-list.subs :as subs]))
+   [the-beer-list.subs :as subs]
+   [the-beer-list.routes :refer [add-beer-path edit-beer-path home-path]]))
 
 ;; form fields
 
@@ -13,11 +14,11 @@
   [id]
   (fn [el]
     (let [val (-> el .-target .-value)]
-      (rf/dispatch [::events/set-beer-modal-value id val]))))
+      (rf/dispatch [::events/set-beer-form-value id val]))))
 
 (defn text-input [{:keys [id label placeholder]}]
-  (let [field-value (rf/subscribe [::subs/beer-modal-field-value id])
-        field-error (rf/subscribe [::subs/beer-modal-field-error id])]
+  (let [field-value (rf/subscribe [::subs/beer-form-field-value id])
+        field-error (rf/subscribe [::subs/beer-form-field-error id])]
     (fn [{:keys [id label placeholder]}]
       [:div.field
        [:label.label label]
@@ -32,16 +33,16 @@
 
 (defn textarea-input
   [{:keys [id label placeholder]}]
-  (let [field-value (rf/subscribe [::subs/beer-modal-field-value id])
-        field-error (rf/subscribe [::subs/beer-modal-field-error id])]
+  (let [field-value (rf/subscribe [::subs/beer-form-field-value id])
+        field-error (rf/subscribe [::subs/beer-form-field-error id])]
     (fn [{:keys [id label placeholder]}]
       [:div.field
        [:label.label label]
        [:div.control
         [:textarea.textarea {:class (if @field-error "is-danger")
                              :rows 4
-                             :cols 50
-                             :max-length 200
+                             :cols 200
+                             :max-length 800
                              :placeholder placeholder
                              :on-change (on-field-change id)
                              :value @field-value}]
@@ -50,7 +51,7 @@
 
 (defn select-input
   [{:keys [id label options default-option]}]
-  (let [field-value (rf/subscribe [::subs/beer-modal-field-value id])]
+  (let [field-value (rf/subscribe [::subs/beer-form-field-value id])]
     (fn [{:keys [id label options default-option]}]
       [:div.field
        [:label.label label]
@@ -78,31 +79,61 @@
   (fn []
     (rf/dispatch [::events/try-save-beer beer])))
 
-(defn beer-form
+(defn close-save-success-message
   []
-  [:div {:role "form"}
-   [text-input {:id :name
-                :label "Beer Name"
-                :placeholder "A Delicious Brew"}]
-   [text-input {:id :brewery
-                :label "Brewery"
-                :placeholder "Your Favorite Brewery"}]
-   [text-input {:id :type
-                :label "Beer Type"
-                :placeholder "Ale? Lager? Gose?"}]
-   [select-input {:id :rating
-                  :label "Rating"
-                  :options rating-options
-                  :default-option 3}]
-   [textarea-input {:id :comment
-                    :label "Comment"
-                    :placeholder "Provide more details here..."}]])
+  (rf/dispatch [::events/update-beer-form-state :hide]))
 
-(defn beer-modal-title
+(defn show-delete-confirm-modal
+  [{id :id}]
+  (fn []
+    (rf/dispatch [::events/show-delete-confirm-modal id])))
+
+(defn beer-form
+  [beer show-delete-button?]
+  [:div {:role "form"}
+   [:div.tile.is-ancestor
+    [:div.tile.is-parent
+     [:div.tile.is-child
+      [text-input {:id :name
+                   :label "Beer Name"
+                   :placeholder "A Delicious Brew"}]]
+     [:div.tile.is-child
+      [text-input {:id :brewery
+                   :label "Brewery"
+                   :placeholder "Your Favorite Brewery"}]]]]
+   [:div.tile.is-ancestor
+    [:div.tile.is-parent
+     [:div.tile.is-child
+      [text-input {:id :type
+                   :label "Beer Type"
+                   :placeholder "Ale? Lager? Gose?"}]]
+     [:div.tile.is-child
+      [select-input {:id :rating
+                     :label "Rating"
+                     :options rating-options
+                     :default-option 3}]]]]
+   [:div.tile.is-ancestor
+    [:div.tile.is-parent.is-12
+     [textarea-input {:id :comment
+                      :label "Comment"
+                      :placeholder "Provide more details here..."}]]]
+   [:div.tile.is-ancestor
+    [:div.tile.is-parent
+     [:button.button.is-primary {:on-click (save-beer beer)} "Save"]
+     (if show-delete-button?
+       [:button.button.is-danger {:on-click (show-delete-confirm-modal beer)} "Delete"])
+     [:a.button {:href "#/"} "Cancel"]]]])
+
+(defn beer-panel-title
   [is-adding?]
-  [:p.modal-card-title (if is-adding?
-                         "Add a new beer!"
-                         "Update this beer")])
+  [:h1.title (if is-adding?
+               "Add a new beer!"
+               "Update this beer")])
+
+(defn save-in-progress
+  [is-saving?]
+  (if is-saving?
+    [:progress.progress.is-small.is-info {:max 100}]))
 
 (defn save-failed-message
   [save-failed?]
@@ -111,34 +142,51 @@
      [:div.message-body
       "Unable to save at this time, please try again later."]]))
 
-(defn beer-modal-view
-  [{:keys [beer is-adding? showing? save-failed?]}]
-  [:div.modal {:class (if showing? "is-active")}
-   [:div.modal-background]
-   [:div.modal-card
-    [:header.modal-card-head
-     [beer-modal-title is-adding?]
-     [:button.delete {:aria-label "close"
-                      :on-click close-beer-modal}]]
-    [:section.modal-card-body
-     [save-failed-message save-failed?]
-     [beer-form]
-    [:footer.modal-card-foot
-     [:button.button.is-success {:on-click (save-beer beer)}
-      "Save"]
-     [:button.button {:on-click close-beer-modal}
-      "Cancel"]]]]])
+(defn save-success-message
+  [save-succeeded?]
+  (if save-succeeded?
+    [:article.message.is-success
+     [:div.message-header
+      [:p "Saved Successfully"]
+      [:button.delete {:aria-label "delete"
+                       :on-click close-save-success-message}]]
+     [:div.message-body
+      [:a.button {:href home-path
+                  :on-click close-save-success-message}
+       "Go Home"]]]))
 
-(defn beer-modal
+(defn beer-panel-view
+  [{:keys [beer is-adding? is-saving? save-failed? save-succeeded?]}]
+  [:div.container
+   [save-in-progress is-saving?]
+   [save-failed-message save-failed?]
+   [save-success-message save-succeeded?]
+   [beer-panel-title is-adding?]
+   [beer-form beer (not is-adding?)]])
+
+(defn add-beer-panel
   []
-  (let [beer (rf/subscribe [::subs/beer-modal-beer])
-        beer-modal-is-adding? (rf/subscribe [::subs/beer-modal-is-adding?])
-        beer-modal-showing? (rf/subscribe [::subs/beer-modal-showing?])
-        save-failed? (rf/subscribe [::subs/save-failed?])]
-    [beer-modal-view {:beer @beer
-                      :is-adding? @beer-modal-is-adding?
-                      :showing? @beer-modal-showing?
-                      :save-failed? @save-failed?}]))
+  (let [beer (rf/subscribe [::subs/beer-form-beer])
+        is-saving? (rf/subscribe [::subs/is-saving?])
+        save-failed? (rf/subscribe [::subs/save-failed?])
+        save-succeeded? (rf/subscribe [::subs/save-succeeded?])]
+    [beer-panel-view {:beer @beer
+                      :is-adding? true
+                      :is-saving? @is-saving?
+                      :save-failed? @save-failed?
+                      :save-succeeded? @save-succeeded?}]))
+
+(defn edit-beer-panel
+  []
+  (let [beer (rf/subscribe [::subs/beer-form-beer])
+        is-saving? (rf/subscribe [::subs/is-saving?])
+        save-failed? (rf/subscribe [::subs/save-failed?])
+        save-succeeded? (rf/subscribe [::subs/save-succeeded?])]
+    [beer-panel-view {:beer @beer
+                      :is-adding? false
+                      :is-saving? @is-saving?
+                      :save-failed? @save-failed?
+                      :save-succeeded? @save-succeeded?}]))
 
 ;; delete confirm modal
 
@@ -169,11 +217,9 @@
            "Unable to delete at this time, please try again later."]])
        [:p "Are you sure that you want to delete?"]]
       [:footer.modal-card-foot
-       [:button.button.is-success
-        {:on-click #(delete-beer @delete-confirm-id)}
-        "Delete"]
-       [:button.button {:on-click close-delete-confirm-modal}
-        "Cancel"]]]]))
+       [:a.button.is-danger {:href home-path
+                             :on-click #(delete-beer @delete-confirm-id)} "Delete"]
+       [:button.button {:on-click close-delete-confirm-modal} "Cancel"]]]]))
 
 ;; loading modal
 
@@ -206,8 +252,7 @@
                     :placeholder "Search beers..."}]
      [:span.icon.is-small.is-right
       [:i.fas.fa-search]]]]
-   [:button.button {:on-click
-                    #(rf/dispatch [::events/show-add-beer-modal])}
+   [:a.button {:href "#/beer/new"}
     [:span.icon.is-small
      [:i.fas.fa-plus]]
     [:span "Add Beer"]]])
@@ -216,58 +261,41 @@
   [beer]
   (rf/dispatch [::events/show-edit-beer-modal beer]))
 
-(defn show-delete-confirm-modal
-  [id]
-  (rf/dispatch [::events/show-delete-confirm-modal id]))
+(defn show-edit-beer-panel
+  [beer]
+  (rf/dispatch [::events/show-edit-beer-panel beer]))
 
-(defn beers-table-view
+
+(defn beer-list-rating
+  [rating]
+  [:div.is-pulled-left.rating {:class (str "rating-" rating)}
+   [:p.is-small rating]])
+
+(defn beer-list-item
+  [{:keys [id name brewery rating] :as beer}]
+  [:a.list-item {:tab-index "0"
+                 :href (edit-beer-path id)}
+    [beer-list-rating rating]
+    [:strong.is-size-5 name]
+    [:span.is-italic.is-size-6 (str " " brewery)]])
+
+(defn beers-list-view
   [beers]
-  [:div.table-container
-   [:table.table.is-striped
-    [:thead
-     [:tr
-      [:th "Beer"]
-      [:th "Brewery"]
-      [:th "Type"]
-      [:th "Rating"]
-      [:th "Comment"]
-      [:th "Actions"]]]
-    [:tbody
-     (for [{:keys [id name brewery type rating comment] :as beer} beers]
-       ^{:key id} [:tr
-                   [:td name]
-                   [:td brewery]
-                   [:td type]
-                   [:td rating]
-                   [:td comment]
-                   [:td
-                    [:button.button.row-button
-                     {:on-click #(show-edit-beer-modal {:id id
-                                                        :name name
-                                                        :brewery brewery
-                                                        :type type
-                                                        :rating rating
-                                                        :comment comment})}
-                     [:span.icon.is-small
-                      [:i.fas.fa-edit]]
-                     [:span "Edit"]]
-                    [:button.button.row-button
-                     {:on-click #(show-delete-confirm-modal id)}
-                     [:span.icon.is-small
-                      [:i.fas.fa-trash]]
-                     [:span "Delete"]]]])]]])
+  [:div.list.is-hoverable
+   (for [{:keys [id] :as beer} beers]
+     ^{:key id} [beer-list-item beer])])
 
-(defn beers-table
+(defn beers-list
   []
   (let [beers (rf/subscribe [::subs/beers])]
-    [beers-table-view @beers]))
+    [beers-list-view @beers]))
 
 (defn home-panel
   []
   (fn []
     [:div
      [toolbar]
-     [beers-table]]))
+     [beers-list]]))
 
 ;; about
 
@@ -278,6 +306,13 @@
    [:div
     [:a {:href "#/"}
      "go to Home Page"]]])
+
+;; not found
+
+(defn not-found-panel
+  []
+  [:div.container
+   [:p "Nothing to see here"]])
 
 ;; header
 
@@ -346,6 +381,8 @@
   [panel-name]
   (case panel-name
     :home-panel [home-panel]
+    :add-beer-panel [add-beer-panel]
+    :edit-beer-panel [edit-beer-panel]
     :about-panel [about-panel]
     [:div]))
 
@@ -378,7 +415,6 @@
   (let [is-logged-in? (rf/subscribe [::subs/is-logged-in?])
         active-panel (rf/subscribe [::subs/active-panel])]
     [:div.section.main
-     [beer-modal]
      [delete-confirm-modal]
      [loading-modal]
      [header @is-logged-in?]

@@ -3,6 +3,7 @@
    [clojure.string :as s]
    [re-frame.core :as rf]
    [com.degel.re-frame-firebase :as firebase]
+   [secretary.core :as secretary]
    [the-beer-list.db :as db]
    [day8.re-frame.tracing :refer-macros [fn-traced defn-traced]]))
 
@@ -20,10 +21,23 @@
  ::initialize-db
  (fn-traced [db _] db/default-db))
 
-(rf/reg-event-db
+;; TODO will I need this??
+(def redirect-to-login-interceptor
+  (rf/->interceptor
+   :id :redirect-to-login
+   :before (fn-traced [context]
+                      (let [{:keys [db dispatch]} (:effects context)
+                            [event param] dispatch
+                            is-not-logged-in? (nil? (:user db))
+                            is-main-panel? (= :main-panel param)]
+                        (if (and is-not-logged-in? is-main-panel?)
+                          (assoc-in context [:effects :dispatch] [event :login-panel]))))))
+
+(rf/reg-event-fx
  ::set-active-panel
- (fn-traced [db [_ active-panel]]
-            (assoc db :active-panel active-panel)))
+ (fn-traced [{db :db} [_ active-panel params]]
+            {:db (assoc db :active-panel active-panel)
+             :dispatch [::set-beer-form params]}))
 
 ;; interceptors
 
@@ -134,12 +148,12 @@
 
 (defn on-write-failure
   []
-  (rf/dispatch [::update-beer-modal-state :firestore-failure]))
+  (rf/dispatch [::update-beer-form-state :firestore-failure]))
 
 (defn on-write-success
   []
   (do
-    (rf/dispatch [::update-beer-modal-state :firestore-success])
+    (rf/dispatch [::update-beer-form-state :firestore-success])
     (rf/dispatch [::firestore-failure nil])))
 
 (rf/reg-event-fx
@@ -192,58 +206,40 @@
               {:db (assoc db :beer-map (dissoc beer-map id))
                :dispatch [::update-delete-confirm-state :firestore-success]})))
 
-;; beer modal events
+;; beer form events
 
-(defn update-beer-modal-state
+(defn update-beer-form-state
   [db event]
-  (update db :beer-modal-state (partial next-state db/beer-modal-states) event))
+  (update db :beer-form-state (partial next-state db/beer-form-states) event))
 
 (rf/reg-event-db
- ::update-beer-modal-state
+ ::update-beer-form-state
  (fn-traced [db [_ transition]]
-            (update-beer-modal-state db transition)))
+            (update-beer-form-state db transition)))
+
+(rf/reg-event-db
+ ::set-beer-form
+ (fn-traced [db [_ {id :id}]]
+            (let [beer (get-in db [:beer-map id])]
+              (if id
+                (assoc-in db [:beer-form :beer] beer)
+                (assoc-in db [:beer-form :beer] db/beer-form-default)))))
 
 (rf/reg-event-fx
  ::try-save-beer
  (fn-traced [{db :db} [_ {:keys [name brewery type] :as beer}]]
             (cond
-              (s/blank? name) {:db (update-beer-modal-state db :save-no-name)}
-              (s/blank? brewery) {:db (update-beer-modal-state db :save-no-brewery)}
-              (s/blank? type) {:db (update-beer-modal-state db :save-no-type)}
-              :else {:db (update-beer-modal-state db :try-save)
+              (s/blank? name) {:db (update-beer-form-state db :save-no-name)}
+              (s/blank? brewery) {:db (update-beer-form-state db :save-no-brewery)}
+              (s/blank? type) {:db (update-beer-form-state db :save-no-type)}
+              :else {:db (update-beer-form-state db :try-save)
                      :dispatch [::write-beer-to-firestore beer]})))
 
 (rf/reg-event-fx
- ::show-add-beer-modal
- (fn-traced [{db :db} _]
-            {:db (assoc db :beer-modal {:beer {:name nil
-                                               :brewery nil
-                                               :type nil
-                                               :rating 3
-                                               :comment nil}
-                                        :operation :add})
-             :dispatch [::update-beer-modal-state :show]}))
-
-(rf/reg-event-fx
- ::show-edit-beer-modal
- (fn-traced [{db :db} [_ beer]]
-            {:db (assoc db :beer-modal {:beer beer
-                                        :operation :edit})
-             :dispatch [::update-beer-modal-state :show]}))
-
-(rf/reg-event-fx
- ::clear-and-hide-beer-modal
- (fn-traced [{db :db} _]
-            {:db (assoc db :beer-modal db/beer-modal-default)
-             :dispatch [::update-beer-modal-state :hide]}))
-
-;; beer modal beer
-
-(rf/reg-event-fx
- ::set-beer-modal-value
+ ::set-beer-form-value
  (fn-traced [{db :db} [_ field value]]
-            {:db (assoc-in db [:beer-modal :beer field] value)
-             :dispatch [::update-beer-modal-state :field-changed]}))
+            {:db (assoc-in db [:beer-form :beer field] value)
+             :dispatch [::update-beer-form-state :field-changed]}))
 
 ;; delete confirm modal events
 

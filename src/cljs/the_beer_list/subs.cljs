@@ -1,6 +1,7 @@
 (ns the-beer-list.subs
   (:require
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [the-beer-list.db :as db]))
 
 ;; user
 
@@ -39,27 +40,51 @@
          (filter filter-fn)
          (sort-by :name)))))
 
-;; beer modal state
+(rf/reg-sub
+ ::beer
+ (fn [db [_ id]]
+   (get-in db [:beer-map id])))
 
+
+;; beer form state
 
 (rf/reg-sub
- ::beer-modal-state
+ ::beer-form-state
  (fn [db _]
-   (:beer-modal-state db)))
+   (:beer-form-state db)))
 
 (rf/reg-sub
- ::beer-modal-showing?
- (fn [db _] (rf/subscribe [::beer-modal-state]))
- (fn [state _] (not= state :ready)))
+ ::is-saving?
+ (fn [db _] (rf/subscribe [::beer-form-state]))
+ (fn [state _] (= state :saving)))
 
 (rf/reg-sub
  ::save-failed?
- (fn [db _] (rf/subscribe [::beer-modal-state]))
+ (fn [db _] (rf/subscribe [::beer-form-state]))
  (fn [state _] (= state :save-failed)))
 
 (rf/reg-sub
- ::beer-modal-field-error
- (fn [db _] (rf/subscribe [::beer-modal-state]))
+ ::save-succeeded?
+ (fn [db _] (rf/subscribe [::beer-form-state]))
+ (fn [state _] (= state :save-succeeded)))
+
+(rf/reg-sub
+ ::beer-form-field-value
+ (fn [db _] (rf/subscribe [::beer-form-beer]))
+ (fn [beer [_ field]] (field beer)))
+
+(rf/reg-sub
+ ::beer-form
+ (fn [db _] (:beer-form db)))
+
+(rf/reg-sub
+ ::beer-form-beer
+ (fn [db _] (rf/subscribe [::beer-form]))
+ (fn [beer-form _] (:beer beer-form)))
+
+(rf/reg-sub
+ ::beer-form-field-error
+ (fn [db _] (rf/subscribe [::beer-form-state]))
  (fn [state [_ field]] (case field
                          :name (case state
                                  :name-required "Name required"
@@ -71,28 +96,6 @@
                                  :type-required "Type required"
                                  nil)
                          nil)))
-
-;; beer modal beer
-
-(rf/reg-sub
- ::beer-modal
- (fn [db _] (:beer-modal db)))
-
-(rf/reg-sub
- ::beer-modal-beer
- (fn [db _] (rf/subscribe [::beer-modal]))
- (fn [beer-modal _] (:beer beer-modal)))
-
-(rf/reg-sub
- ::beer-modal-is-adding?
- (fn [db _] (rf/subscribe [::beer-modal]))
- (fn [beer-modal _] (= :add (:operation beer-modal))))
-
-(rf/reg-sub
- ::beer-modal-field-value
- (fn [db _] (rf/subscribe [::beer-modal-beer]))
- (fn [beer [_ field]] (field beer)))
-
 
 ;; delete confirm modal
 

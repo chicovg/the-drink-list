@@ -3,7 +3,7 @@
                  [org.clojure/clojurescript "1.10.520"]
                  [reagent "0.8.1"]
                  [re-frame "0.10.6"]
-                 [secretary "1.2.3"]
+                 [clj-commons/secretary "1.2.4"]
                  [breaking-point "0.1.2"]
                  [com.degel/re-frame-firebase "0.8.0"]
                  [day8.re-frame/test "0.1.5"]

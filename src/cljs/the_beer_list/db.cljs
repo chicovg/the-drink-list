@@ -1,14 +1,14 @@
 (ns the-beer-list.db)
 
-(def beer-modal-default {:beer {:rating 3}
-                         :operation nil})
+(def beer-form-default {:beer {:rating 3}})
 
 ;; TODO make a slice for each section?
 (def default-db {:active-panel nil
                  :app-state :ready
                  :beer-map {}
-                 :beer-modal beer-modal-default
                  :beer-modal-state :ready
+                 :beer-form beer-form-default
+                 :beer-form-state :ready
                  :beer-list-filter nil
                  :delete-confirm-id nil
                  :delete-confirm-state :ready
@@ -17,24 +17,22 @@
                  :log-in-state :ready
                  :user nil})
 
-(def beer-modal-states {:ready {:show :showing}
-                        ;; split out states for add and edit???
-                        :showing {:field-changed :showing
-                                  :hide :ready
-                                  :save-no-name :name-required
-                                  :save-no-brewery :brewery-required
-                                  :save-no-type :type-required
-                                  :try-save :saving}
-                        :saving {:firestore-failure :save-failed
-                                 :firestore-success :ready}
-                        :save-failed {:try-save :saving
-                                      :hide :ready}
-                        :name-required {:field-changed :showing
-                                        :hide :ready}
-                        :brewery-required {:field-changed :showing
-                                           :hide :ready}
-                        :type-required {:field-changed :showing
-                                        :hide :ready}})
+(def beer-form-states {:ready {:field-changed :ready
+                               :save-no-name :name-required
+                               :save-no-brewery :brewery-required
+                               :save-no-type :type-required
+                               :try-save :saving}
+                       :saving {:firestore-failure :save-failed
+                                :firestore-success :save-succeeded}
+                       :save-failed {:try-save :saving
+                                     :hide :ready}
+                       :name-required {:field-changed :showing
+                                       :hide :ready}
+                       :brewery-required {:field-changed :showing
+                                          :hide :ready}
+                       :type-required {:field-changed :showing
+                                       :hide :ready}
+                       :save-succeeded {:hide :ready}})
 
 (def delete-confirm-states {:ready {:show :showing}
                             :showing {:hide :ready
