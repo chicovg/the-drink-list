@@ -397,11 +397,12 @@
 
 (defn about-panel
   []
-  [:div
-   [:h1 "This is the About Page."]
+  [:div.container
+   [:p "The beer list application helps you track and rate your favorite beers."]
+   [:p "To get started, try a new beer, go to the home page, and then write a review!"]
    [:div
     [:a {:href "#/"}
-     "go to Home Page"]]])
+     "Go to the home page"]]])
 
 ;; not found
 
