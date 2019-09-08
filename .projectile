@@ -1,1 +1,6 @@
--/resources/public
+-/resources
+-/out
+-/node_modules
+-/target
+-figwheel_server.log
+-.lein-repl-history

@@ -304,7 +304,6 @@
   (fn [el]
     (let [value (-> el .-target .-value)
           updated (swap! sort-state-atom assoc key value)]
-      (print updated)
       (swap! sort-state-atom assoc key value))))
 
 (defn sort-modal

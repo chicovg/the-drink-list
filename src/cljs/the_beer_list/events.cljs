@@ -226,7 +226,6 @@
  ::set-beer-form
  (fn-traced [db [_ {id :id}]]
             (let [beer (get-in db [:beer-map id])]
-              (print (:beer-map db))
               (if id
                 (assoc-in db [:beer-form :beer] beer)
                 (assoc-in db [:beer-form :beer] db/beer-form-default)))))
