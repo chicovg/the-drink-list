@@ -2,6 +2,9 @@
 
 (def beer-form-default {:beer {:rating 3}})
 
+(def beer-list-sort-default {:field :name
+                             :order :asc})
+
 ;; TODO make a slice for each section?
 (def default-db {:active-panel nil
                  :app-state :ready
@@ -10,11 +13,13 @@
                  :beer-form beer-form-default
                  :beer-form-state :ready
                  :beer-list-filter nil
+                 :beer-list-sort beer-list-sort-default
                  :delete-confirm-id nil
                  :delete-confirm-state :ready
                  :firestore-failure nil
                  :loading-modal-state :ready
                  :log-in-state :ready
+                 :sort-modal-state :ready
                  :user nil})
 
 (def beer-form-states {:ready {:field-changed :ready
@@ -54,3 +59,6 @@
                     :logged-in {:log-out :logging-out}
                     :log-in-failed {:log-in :logging-in}
                     :logging-out {:no-user-received :ready}})
+
+(def sort-modal-states {:ready {:show :showing}
+                        :showing {:hide :ready}})

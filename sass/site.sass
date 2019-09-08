@@ -1,6 +1,8 @@
 @charset "utf-8";
 @import "../node_modules/bulma/bulma.sass"
 
+$section-padding: 1.5rem
+
 .button
   margin: 0 .4em 0 0
 
@@ -16,6 +18,15 @@
 
 .list-item:hover, .list-item:focus
   background-color: $white-ter
+
+.main
+  display: flex
+  align-items: center
+  justify-content: center
+
+.main > div
+  flex-grow: 1
+  max-width: 1000px
 
 .rating
   color: $white
@@ -39,3 +50,20 @@
 
 .rating-5
   background-color: $green
+
+.sort-modal-body
+  display: flex
+
+.sort-modal-body > div
+  flex-grow: 1
+
+.toolbar
+  display: flex
+
+.toolbar > div.search
+  flex-grow: 4
+  max-width: 600px
+
+.toolbar > *:not(:last-child)
+  margin-right: 6px
+

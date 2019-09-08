@@ -34,17 +34,23 @@
  ::beers
  (fn [db _]
    (let [list-filter (:beer-list-filter db)
-         filter-fn (beer-list-filter-fn list-filter)]
+         filter-fn (beer-list-filter-fn list-filter)
+         {:keys [field order]} (:beer-list-sort db)
+         sort-fn (if (= order :asc) < >)]
      (->> (:beer-map db)
          vals
          (filter filter-fn)
-         (sort-by :name)))))
+         (sort-by field sort-fn)))))
 
 (rf/reg-sub
  ::beer
  (fn [db [_ id]]
    (get-in db [:beer-map id])))
 
+(rf/reg-sub
+ ::beer-list-sort
+ (fn [db _]
+   (:beer-list-sort db)))
 
 ;; beer form state
 
@@ -142,3 +148,16 @@
  ::log-in-failed?
  (fn [db _] (rf/subscribe [::log-in-state]))
  (fn [state _] (= state :log-in-failed)))
+
+;; sort modal state
+
+(rf/reg-sub
+ ::sort-modal-state
+ (fn [db _]
+   (:sort-modal-state db)))
+
+(rf/reg-sub
+ ::sort-modal-showing?
+ (fn [db _] (rf/subscribe [::sort-modal-state]))
+ (fn [state _] (= state :showing)))
+

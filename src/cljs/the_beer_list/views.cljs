@@ -223,17 +223,89 @@
 
 ;; loading modal
 
-(defn loading-modal
-  []
-  (let [loading-modal-showing? (rf/subscribe [::subs/loading-modal-showing?])]
-    [:div.modal {:class (if @loading-modal-showing? "is-active" "")}
+(defn loading-modal-view
+  [showing?]
+    [:div.modal {:class (if showing? "is-active" "")}
      [:div.modal-background]
      [:div.modal-card
       [:header.modal-card-head
        [:p.modal-card-title "Loading..."]]
       [:section.modal-card-body
        [:progress.progress.is-medium.is-dark {:max 100}]]
-      [:footer.modal-card-foot]]]))
+      [:footer.modal-card-foot]]])
+
+(defn loading-modal
+  []
+  (let [loading-modal-showing? (rf/subscribe [::subs/loading-modal-showing?])]
+    [loading-modal-view @loading-modal-showing?]))
+
+;; sort modal
+
+(defn update-sort
+  [key]
+  (fn [el]
+    (let [value (-> el .-target .-value)
+          value-as-keyword (keyword value)]
+      (rf/dispatch [::events/set-beer-list-sort key value-as-keyword]))))
+
+(defn select-sort-field
+  [value]
+  [:div.field
+   [:label.label "Field"]
+   [:div.control
+    [:div.select
+     [:select {:on-change (update-sort :field)
+               :value value}
+      [:option {:value :name} "Name"]
+      [:option {:value :brewery} "Brewery"]
+      [:option {:value :rating} "Rating"]]]]])
+
+(defn select-sort-order
+  [value]
+  [:div.field
+   [:label.label "Order"]
+   [:div.control
+    [:div.select
+     [:select {:on-change (update-sort :order)
+               :value value}
+      [:option {:value :asc} "Ascending"]
+      [:option {:value :desc} "Descending"]]]]])
+
+(defn close-sort-modal
+  []
+  (rf/dispatch [::events/update-sort-modal-state :hide]))
+
+(defn sort-done-button
+  []
+  [:button.button {:on-click close-sort-modal} "Done"])
+
+(defn sort-modal-view
+  [showing? {:keys [field order]}]
+  [:div.modal {:class (if showing? "is-active")}
+   [:div.modal-background]
+   [:div.modal-card
+    [:header.modal-card-head
+     [:p.modal-card-title "Set beer sort"]]
+    [:section.modal-card-body.sort-modal-body
+     [select-sort-field field]
+     [select-sort-order order]]
+    [:footer.modal-card-foot
+     [sort-done-button]]]])
+
+(defn on-sort-key-change
+  [key sort-state-atom]
+  (fn [el]
+    (let [value (-> el .-target .-value)
+          updated (swap! sort-state-atom assoc key value)]
+      (print updated)
+      (swap! sort-state-atom assoc key value))))
+
+
+(defn sort-modal
+  []
+  (let [sort-modal-showing? (rf/subscribe [::subs/sort-modal-showing?])
+        beer-list-sort (rf/subscribe [::subs/beer-list-sort])]
+    [sort-modal-view @sort-modal-showing? @beer-list-sort]))
 
 ;; home
 
@@ -241,21 +313,41 @@
   [value]
   (rf/dispatch [::events/set-beer-list-filter value]))
 
+(defn beer-filter-input
+  []
+  [:div.field.search
+   [:p.control.has-icons-right
+    [:input.input {:on-change #(set-list-filter (-> %
+                                                    .-target
+                                                    .-value))
+                   :placeholder "Filter beers..."}]
+    [:span.icon.is-small.is-right
+     [:i.fas.fa-search]]]])
+
+(defn add-beer-button
+  []
+  [:a.button {:aria-label "Add new beer"
+              :href "#/beer/new"}
+   [:span.icon.is-small
+    [:i.fas.fa-plus]]])
+
+(defn open-sort-modal
+  []
+  (rf/dispatch [::events/update-sort-modal-state :show]))
+
+(defn sort-button
+  []
+  [:button.button {:aria-label "Sort beers"
+                   :on-click open-sort-modal}
+   [:span.icon.is-small
+    [:i.fas.fa-sort]]])
+
 (defn toolbar
   []
   [:div.toolbar
-   [:div.field.search
-    [:p.control.has-icons-right
-     [:input.input {:on-change #(set-list-filter (-> %
-                                                    .-target
-                                                    .-value))
-                    :placeholder "Search beers..."}]
-     [:span.icon.is-small.is-right
-      [:i.fas.fa-search]]]]
-   [:a.button {:href "#/beer/new"}
-    [:span.icon.is-small
-     [:i.fas.fa-plus]]
-    [:span "Add Beer"]]])
+    [beer-filter-input]
+    [sort-button]
+    [add-beer-button]])
 
 (defn show-edit-beer-modal
   [beer]
@@ -414,12 +506,14 @@
   []
   (let [is-logged-in? (rf/subscribe [::subs/is-logged-in?])
         active-panel (rf/subscribe [::subs/active-panel])]
-    [:div.section.main
-     [delete-confirm-modal]
-     [loading-modal]
-     [header @is-logged-in?]
-     [log-in-error-panel]
-     (if @is-logged-in?
-       [show-panel @active-panel]
-       [login-page])
-     [footer]]))
+    [:div.main
+     [:div
+      [delete-confirm-modal]
+      [loading-modal]
+      [sort-modal]
+      [header @is-logged-in?]
+      [log-in-error-panel]
+      (if @is-logged-in?
+        [show-panel @active-panel]
+        [login-page])
+      [footer]]]))

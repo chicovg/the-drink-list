@@ -86,6 +86,11 @@
  (fn-traced [db [_ filter]]
             (assoc db :beer-list-filter filter)))
 
+(rf/reg-event-db
+ ::set-beer-list-sort
+ (fn-traced [db [_ key value]]
+            (assoc-in db [:beer-list-sort key] value)))
+
 ;; firebase/ firestore events
 
 (declare update-log-in-state)
@@ -280,3 +285,13 @@
  (fn-traced [db [_ transition]]
             (update-log-in-state db transition)))
 
+;; sort modal events
+
+(defn update-sort-modal-state
+  [db event]
+  (update db :sort-modal-state (partial next-state db/sort-modal-states) event))
+
+(rf/reg-event-db
+ ::update-sort-modal-state
+ (fn-traced [db [_ transition]]
+            (update-sort-modal-state db transition)))
