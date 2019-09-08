@@ -70,10 +70,6 @@
 
 ;; beer modal
 
-(defn close-beer-modal
-  []
-  (rf/dispatch [::events/clear-and-hide-beer-modal]))
-
 (defn save-beer
   [beer]
   (fn []
@@ -196,30 +192,41 @@
 
 (defn delete-beer
   [id]
-  (rf/dispatch [::events/delete-beer id]))
+  (fn []
+    (rf/dispatch [::events/delete-beer id])))
+
+(defn delete-failed-message
+  [delete-failed?]
+  (if delete-failed?
+    [:article.message.is-danger
+     [:div.message-body
+      "Unable to delete at this time, please try again later."]]))
+
+(defn delete-confirm-modal-view
+  [{:keys [modal-showing? id delete-failed?]}]
+  [:div.modal {:class (if modal-showing? "is-active")}
+   [:div.modal-background]
+   [:div.modal-card
+    [:header.modal-card-head
+     [:p.modal-card-title "Please confirm"]
+     [:button.delete {:aria.label "close"
+                      :on-click close-delete-confirm-modal}]]
+    [:section.modal-card-body
+     [delete-failed-message delete-failed?]
+     [:p "Are you sure that you want to delete?"]]
+    [:footer.modal-card-foot
+     [:a.button.is-danger {:href home-path
+                           :on-click (delete-beer id)} "Delete"]
+     [:button.button {:on-click close-delete-confirm-modal} "Cancel"]]]])
 
 (defn delete-confirm-modal
   []
   (let [delete-confirm-modal-showing? (rf/subscribe [::subs/delete-confirm-modal-showing?])
         delete-confirm-id (rf/subscribe [::subs/delete-confirm-id])
         delete-failed? (rf/subscribe [::subs/delete-failed?])]
-    [:div.modal {:class (if @delete-confirm-modal-showing? "is-active" "")}
-     [:div.modal-background]
-     [:div.modal-card
-      [:header.modal-card-head
-       [:p.modal-card-title "Please confirm"]
-       [:button.delete {:aria.label "close"
-                        :on-click close-delete-confirm-modal}]]
-      [:section.modal-card-body
-       (if @delete-failed?
-         [:article.message.is-danger
-          [:div.message-body
-           "Unable to delete at this time, please try again later."]])
-       [:p "Are you sure that you want to delete?"]]
-      [:footer.modal-card-foot
-       [:a.button.is-danger {:href home-path
-                             :on-click #(delete-beer @delete-confirm-id)} "Delete"]
-       [:button.button {:on-click close-delete-confirm-modal} "Cancel"]]]]))
+    [delete-confirm-modal-view {:modal-showing @delete-confirm-modal-showing?
+                                :id @delete-confirm-id
+                                :delete-failed? @delete-failed?}]))
 
 ;; loading modal
 
@@ -300,14 +307,13 @@
       (print updated)
       (swap! sort-state-atom assoc key value))))
 
-
 (defn sort-modal
   []
   (let [sort-modal-showing? (rf/subscribe [::subs/sort-modal-showing?])
         beer-list-sort (rf/subscribe [::subs/beer-list-sort])]
     [sort-modal-view @sort-modal-showing? @beer-list-sort]))
 
-;; home
+;; home panel
 
 (defn set-list-filter
   [value]
@@ -356,7 +362,6 @@
 (defn show-edit-beer-panel
   [beer]
   (rf/dispatch [::events/show-edit-beer-panel beer]))
-
 
 (defn beer-list-rating
   [rating]

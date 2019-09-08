@@ -31,11 +31,11 @@
                                 :firestore-success :save-succeeded}
                        :save-failed {:try-save :saving
                                      :hide :ready}
-                       :name-required {:field-changed :showing
+                       :name-required {:field-changed :ready
                                        :hide :ready}
-                       :brewery-required {:field-changed :showing
+                       :brewery-required {:field-changed :ready
                                           :hide :ready}
-                       :type-required {:field-changed :showing
+                       :type-required {:field-changed :ready
                                        :hide :ready}
                        :save-succeeded {:hide :ready}})
 

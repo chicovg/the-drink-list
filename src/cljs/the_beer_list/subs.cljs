@@ -75,20 +75,6 @@
  (fn [state _] (= state :save-succeeded)))
 
 (rf/reg-sub
- ::beer-form-field-value
- (fn [db _] (rf/subscribe [::beer-form-beer]))
- (fn [beer [_ field]] (field beer)))
-
-(rf/reg-sub
- ::beer-form
- (fn [db _] (:beer-form db)))
-
-(rf/reg-sub
- ::beer-form-beer
- (fn [db _] (rf/subscribe [::beer-form]))
- (fn [beer-form _] (:beer beer-form)))
-
-(rf/reg-sub
  ::beer-form-field-error
  (fn [db _] (rf/subscribe [::beer-form-state]))
  (fn [state [_ field]] (case field
@@ -102,6 +88,22 @@
                                  :type-required "Type required"
                                  nil)
                          nil)))
+
+;; beer form
+
+(rf/reg-sub
+ ::beer-form
+ (fn [db _] (:beer-form db)))
+
+(rf/reg-sub
+ ::beer-form-beer
+ (fn [db _] (rf/subscribe [::beer-form]))
+ (fn [beer-form _] (:beer beer-form)))
+
+(rf/reg-sub
+ ::beer-form-field-value
+ (fn [db _] (rf/subscribe [::beer-form-beer]))
+ (fn [beer [_ field]] (field beer)))
 
 ;; delete confirm modal
 

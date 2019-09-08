@@ -50,6 +50,16 @@ Wait a bit, then browse to [http://localhost:3449](http://localhost:3449).
 
 ### Run tests:
 
+#### Run with devcards
+
+```
+lein figwheel devcards
+```
+
+View the test results at http://localhost:2449/tests.html
+
+#### Run with doo
+
 Install karma and headless chrome
 
 ```
