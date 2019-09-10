@@ -26,7 +26,8 @@
   :figwheel {:css-dirs ["resources/public/css"]}
 
   :sass {:src "sass"
-         :output-directory "resources/public/css"}
+         :output-directory "resources/public/css"
+         :command :sass}
 
   :profiles
   {:dev
