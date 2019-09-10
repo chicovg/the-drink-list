@@ -164,25 +164,21 @@
   []
   (let [beer (rf/subscribe [::subs/beer-form-beer])
         is-saving? (rf/subscribe [::subs/is-saving?])
-        save-failed? (rf/subscribe [::subs/save-failed?])
-        save-succeeded? (rf/subscribe [::subs/save-succeeded?])]
+        save-failed? (rf/subscribe [::subs/save-failed?])]
     [beer-panel-view {:beer @beer
                       :is-adding? true
                       :is-saving? @is-saving?
-                      :save-failed? @save-failed?
-                      :save-succeeded? @save-succeeded?}]))
+                      :save-failed? @save-failed?}]))
 
 (defn edit-beer-panel
   []
   (let [beer (rf/subscribe [::subs/beer-form-beer])
         is-saving? (rf/subscribe [::subs/is-saving?])
-        save-failed? (rf/subscribe [::subs/save-failed?])
-        save-succeeded? (rf/subscribe [::subs/save-succeeded?])]
+        save-failed? (rf/subscribe [::subs/save-failed?])]
     [beer-panel-view {:beer @beer
                       :is-adding? false
                       :is-saving? @is-saving?
-                      :save-failed? @save-failed?
-                      :save-succeeded? @save-succeeded?}]))
+                      :save-failed? @save-failed?}]))
 
 ;; delete confirm modal
 
@@ -224,7 +220,7 @@
   (let [delete-confirm-modal-showing? (rf/subscribe [::subs/delete-confirm-modal-showing?])
         delete-confirm-id (rf/subscribe [::subs/delete-confirm-id])
         delete-failed? (rf/subscribe [::subs/delete-failed?])]
-    [delete-confirm-modal-view {:modal-showing @delete-confirm-modal-showing?
+    [delete-confirm-modal-view {:modal-showing? @delete-confirm-modal-showing?
                                 :id @delete-confirm-id
                                 :delete-failed? @delete-failed?}]))
 

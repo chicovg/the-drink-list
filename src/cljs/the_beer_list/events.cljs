@@ -4,8 +4,9 @@
    [re-frame.core :as rf]
    [com.degel.re-frame-firebase :as firebase]
    [secretary.core :as secretary]
+   [day8.re-frame.tracing :refer-macros [fn-traced defn-traced]]
    [the-beer-list.db :as db]
-   [day8.re-frame.tracing :refer-macros [fn-traced defn-traced]]))
+   [the-beer-list.routes :as routes]))
 
 ;; state functions
 
@@ -38,6 +39,15 @@
  (fn-traced [{db :db} [_ active-panel params]]
             {:db (assoc db :active-panel active-panel)
              :dispatch [::set-beer-form params]}))
+
+(rf/reg-fx
+ ::navigate-to
+ (fn-traced [path]
+            (aset js/document.location "hash" path)))
+
+(rf/reg-event-fx
+ ::navigate-to-path
+ (fn-traced [_ [_ path]] {::navigate-to path}))
 
 ;; interceptors
 
@@ -159,7 +169,8 @@
   []
   (do
     (rf/dispatch [::update-beer-form-state :firestore-success])
-    (rf/dispatch [::firestore-failure nil])))
+    (rf/dispatch [::firestore-failure nil])
+    (rf/dispatch [::navigate-to-path routes/home-path])))
 
 (rf/reg-event-fx
  ::write-beer-to-firestore
