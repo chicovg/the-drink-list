@@ -1,0 +1,19 @@
+dist: xenial
+
+language: clojure
+
+before_script:
+- npm install -g karma-cli
+- npm install karma karma-cljs-test karma-chrome-launcher --save-dev
+
+script:
+- lein clean
+- lein doo chrome-headless test once
+
+deploy:
+  provider: firebase
+  on:
+    branch: master
+  token:
+    secure: EZlxTSUjck/MGZ6A4CNqCpz0VHjLQRjPkVJ4TorgAR7sZf1tKB2A4pSbu+4GAc75LuaKyUuTx+Zts7DTJZPc+L8xKPhR8DSO98k8yeWcKPhs0dQnllJI4UXwrTTups8NWr8DM+jmJD80//2oLUnEXqd0qigBRJeZOao/XynDVtg7a5hzyG4wqCwDjVUcnYdfP/e60kKT694HVOCqwOEIOAPb7PZCCZMnrcQWuw6glsjXdW/Jph67SRJREUOHicPkByHVd3TL/WkrXWl0SkuKZbq/Snmbe9lJnvDSvamEFsRsBvQvM5THL5AZ5FUE3nAxecEJoS6yuYcgSzRjZvqEalXfvC2F0QADTaHnxbySszMx94b9LXMdmq2BXCJIekFY7E/zL2Pg/wMOhiu1pACPPviDtJpKKU5dnWtpSJ6AqY/k98joqDQBSBMwM8e4cZgjF2JaMAf5xkdFoNxHm5jZaG+ttqmB3VCIlXy3KF3yp8+pdw51tePdXG84rV6FcLGSsobRFtUqHhY80Ut8ZMNMREV9HDAWb2pFsjdo1Wwp2HuMCG0wQKf+B0/F9c9Lj6XdvvW6uUrlQDXnDbK8d7Gk/HjZL4g5FyaOUP5w+nMax6EbDrCrYfCvnw53pGtnFaqK810BLkjyWuAVUodHFErW4G7jkt27WLKpl0xgA60zc5o=
+

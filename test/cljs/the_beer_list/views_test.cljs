@@ -6,7 +6,7 @@
             [reagent.core :refer [atom]]
             [the-beer-list.events :as events]
             [the-beer-list.views :as views]
-            [the-beer-list.routes :as routes]
+            [the-beer-list.paths :as paths]
             [the-beer-list.subs :as subs]))
 
 ;; form fields
@@ -250,7 +250,7 @@
              [:button.delete {:aria-label "delete"
                               :on-click views/close-save-success-message}]]
             [:div.message-body
-             [:a.button {:href routes/home-path
+             [:a.button {:href paths/home-path
                          :on-click views/close-save-success-message}
               "Go Home"]]]))))
 
@@ -397,7 +397,7 @@
      [:delete-failed-message delete-failed?]
      [:p "Are you sure that you want to delete?"]]
     [:footer.modal-card-foot
-     [:a.button.is-danger {:href routes/home-path
+     [:a.button.is-danger {:href paths/home-path
                            :on-click on-click} "Delete"]
      [:button.button {:on-click views/close-delete-confirm-modal} "Cancel"]]]])
 

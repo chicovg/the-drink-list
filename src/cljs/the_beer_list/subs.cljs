@@ -70,11 +70,6 @@
  (fn [state _] (= state :save-failed)))
 
 (rf/reg-sub
- ::save-succeeded?
- (fn [db _] (rf/subscribe [::beer-form-state]))
- (fn [state _] (= state :save-succeeded)))
-
-(rf/reg-sub
  ::beer-form-field-error
  (fn [db _] (rf/subscribe [::beer-form-state]))
  (fn [state [_ field]] (case field
