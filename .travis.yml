@@ -3,12 +3,17 @@ dist: xenial
 language: clojure
 
 before_script:
-- npm install -g karma-cli
-- npm install karma karma-cljs-test karma-chrome-launcher --save-dev
+  - npm install -g karma-cli
+  - npm install karma karma-cljs-test karma-chrome-launcher --save-dev
 
 script:
-- lein clean
-- lein doo chrome-headless test once
+  - lein clean
+  - lein doo chrome-headless test once
+
+before_deploy:
+  - lein clean
+  - lein sass once
+  - lein cljsbuild once min
 
 deploy:
   provider: firebase
