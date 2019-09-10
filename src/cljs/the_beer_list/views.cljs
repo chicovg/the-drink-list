@@ -6,7 +6,7 @@
    [breaking-point.core :as bp]
    [the-beer-list.events :as events]
    [the-beer-list.subs :as subs]
-   [the-beer-list.routes :refer [add-beer-path edit-beer-path home-path]]))
+   [the-beer-list.paths :refer [add-beer-path edit-beer-path home-path]]))
 
 ;; form fields
 

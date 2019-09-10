@@ -38,8 +38,3 @@
 
   (hook-browser-navigation!))
 
-(def add-beer-path "#/beer/new")
-(defn edit-beer-path
-  [id]
-  (str "#/beer/edit/" id))
-(def home-path "#/")

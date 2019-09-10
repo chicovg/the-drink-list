@@ -6,7 +6,7 @@
    [secretary.core :as secretary]
    [day8.re-frame.tracing :refer-macros [fn-traced defn-traced]]
    [the-beer-list.db :as db]
-   [the-beer-list.routes :as routes]))
+   [the-beer-list.paths :as paths]))
 
 ;; state functions
 
@@ -170,7 +170,7 @@
   (do
     (rf/dispatch [::update-beer-form-state :firestore-success])
     (rf/dispatch [::firestore-failure nil])
-    (rf/dispatch [::navigate-to-path routes/home-path])))
+    (rf/dispatch [::navigate-to-path paths/home-path])))
 
 (rf/reg-event-fx
  ::write-beer-to-firestore
