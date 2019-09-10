@@ -1,5 +1,7 @@
 # the-beer-list
 
+[![Build Status](https://travis-ci.org/chicovg/the-beer-list.svg?branch=master)](https://travis-ci.org/chicovg/the-beer-list)
+
 A [re-frame](https://github.com/Day8/re-frame) application which allows me to track my favorite brews.
 
 ## Development Mode
