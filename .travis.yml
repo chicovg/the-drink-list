@@ -3,6 +3,7 @@ dist: xenial
 language: clojure
 
 before_script:
+  - sudo apt install sassc
   - npm install -g karma-cli
   - npm install karma karma-cljs-test karma-chrome-launcher --save-dev
 
