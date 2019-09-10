@@ -12,8 +12,8 @@ script:
 
 before_deploy:
   - lein clean
-  - lein sass once
   - lein cljsbuild once min
+  - lein sass once
 
 deploy:
   provider: firebase

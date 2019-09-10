@@ -1,10 +1,11 @@
 /*.log
 /target
 /*-init.clj
-/resources/public/js/compiled
 out
 .rebel_readline_history
 node_modules/
-resources/public/css
+/resources/public/css
+/resources/public/cljs
+/resources/public/js
 .lein-repl-history
 .firebase/
