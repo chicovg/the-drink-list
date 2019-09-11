@@ -12,7 +12,7 @@ script:
 
 before_deploy:
   - echo "Installing sassc..."
-  - apt-get install automake libtool
+  - sudo apt-get install automake libtool
   - git clone https://github.com/sass/libsass.git ~/libsass
   - echo "export SASS_LIBSASS_PATH=~/libsass" >> ~/.bashrc
   - source ~/.bashrc
