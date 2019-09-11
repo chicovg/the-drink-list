@@ -30,13 +30,13 @@ npm install
 Compile css file once.
 
 ```
-lein sass once
+lein jsass once
 ```
 
 Automatically recompile css file on change.
 
 ```
-lein sass auto
+lein jsass auto
 ```
 
 ### Run application:

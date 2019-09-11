@@ -4,7 +4,7 @@ language: clojure
 
 before_script:
   - npm install -g karma-cli
-  - npm install karma karma-cljs-test karma-chrome-launcher --save-dev
+  - npm install
 
 script:
   - lein clean
