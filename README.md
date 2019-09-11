@@ -90,7 +90,7 @@ lein cljsbuild once min
 To compile sass to css:
 
 ```
-lein sass once
+lein jsass once
 ```
 
 Deploy to firebase:

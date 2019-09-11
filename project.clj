@@ -11,7 +11,10 @@
                  [devcards "0.2.4"]]
 
   :plugins [[lein-cljsbuild "1.1.7"]
-            [lein-sass "0.5.0"]]
+            ;; [lein-sass "0.5.0"]
+            [lein-jsass "0.2.0"]
+            ;; [deraen/lein-sass4clj "0.4.1"]
+            ]
 
   :min-lein-version "2.5.3"
 
@@ -25,9 +28,8 @@
 
   :figwheel {:css-dirs ["resources/public/css"]}
 
-  :sass {:src "sass"
-         :output-directory "resources/public/css"
-         :command :sass}
+  :jsass {:source "sass"
+          :target "resources/public/css/site"}
 
   :profiles
   {:dev
