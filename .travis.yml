@@ -11,19 +11,9 @@ script:
   - lein doo chrome-headless test once
 
 before_deploy:
-  - echo "Installing sassc..."
-  - sudo apt-get install automake libtool
-  - git clone https://github.com/sass/libsass.git ~/libsass
-  - echo "export SASS_LIBSASS_PATH=~/libsass" >> ~/.bashrc
-  - source ~/.bashrc
-  - git clone https://github.com/sass/sassc.git ~/sassc
-  - cd ~/sassc
-  - make
-  - echo "export PATH=$PATH:~/sassc/bin/" >> ~/.bashrc
-  - sassc -v
-  - echo "Clean, CLJS build, SASS build..."
   - lein clean
   - lein cljsbuild once min
+  - sass -v
   - lein sass once
 
 deploy:
