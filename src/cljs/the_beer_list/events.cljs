@@ -2,9 +2,7 @@
   (:require
    [clojure.string :as s]
    [re-frame.core :as rf]
-   [com.degel.re-frame-firebase :as firebase]
-   [secretary.core :as secretary]
-   [day8.re-frame.tracing :refer-macros [fn-traced defn-traced]]
+   [day8.re-frame.tracing :refer-macros [fn-traced]]
    [the-beer-list.db :as db]
    [the-beer-list.paths :as paths]))
 
@@ -31,7 +29,7 @@
                             [event param] dispatch
                             is-not-logged-in? (nil? (:user db))
                             is-main-panel? (= :main-panel param)]
-                        (if (and is-not-logged-in? is-main-panel?)
+                        (when (and is-not-logged-in? is-main-panel?)
                           (assoc-in context [:effects :dispatch] [event :login-panel]))))))
 
 (rf/reg-event-fx
@@ -135,7 +133,7 @@
                :dispatch [::fetch-from-firestore (:uid user)]}
               {:db (-> db
                        (assoc :user nil)
-                       (update-log-in-state db :no-user-received))
+                       (update-log-in-state :no-user-received))
                :dispatch [::clear-beer-map]})))
 
 (rf/reg-event-db
@@ -149,9 +147,8 @@
 
 (defn on-fetch-success
   [data]
-  (do
-    (rf/dispatch [::set-beer-map data])
-    (rf/dispatch [::firestore-failure nil])))
+  (rf/dispatch [::set-beer-map data])
+  (rf/dispatch [::firestore-failure nil]))
 
 (rf/reg-event-fx
  ::fetch-from-firestore
@@ -167,10 +164,9 @@
 
 (defn on-write-success
   []
-  (do
-    (rf/dispatch [::update-beer-form-state :firestore-success])
-    (rf/dispatch [::firestore-failure nil])
-    (rf/dispatch [::navigate-to-path paths/home-path])))
+  (rf/dispatch [::update-beer-form-state :firestore-success])
+  (rf/dispatch [::firestore-failure nil])
+  (rf/dispatch [::navigate-to-path paths/home-path]))
 
 (rf/reg-event-fx
  ::write-beer-to-firestore
@@ -190,15 +186,13 @@
 
 (defn on-delete-failure
   [error]
-  (do
-    (rf/dispatch [::firestore-failure error])
-    (rf/dispatch [::update-delete-confirm-state :firestore-failure])))
+  (rf/dispatch [::firestore-failure error])
+  (rf/dispatch [::update-delete-confirm-state :firestore-failure]))
 
 (defn on-delete-success
   [id]
-  (do
-    (rf/dispatch [::delete-beer-locally id])
-    (rf/dispatch [::firestore-failure nil])))
+  (rf/dispatch [::delete-beer-locally id])
+  (rf/dispatch [::firestore-failure nil]))
 
 (rf/reg-event-fx
  ::delete-beer-from-firestore

@@ -1,7 +1,6 @@
 (ns the-beer-list.subs
   (:require
-   [re-frame.core :as rf]
-   [the-beer-list.db :as db]))
+   [re-frame.core :as rf]))
 
 ;; user
 
@@ -61,17 +60,17 @@
 
 (rf/reg-sub
  ::is-saving?
- (fn [db _] (rf/subscribe [::beer-form-state]))
+ (fn [_ _] (rf/subscribe [::beer-form-state]))
  (fn [state _] (= state :saving)))
 
 (rf/reg-sub
  ::save-failed?
- (fn [db _] (rf/subscribe [::beer-form-state]))
+ (fn [_ _] (rf/subscribe [::beer-form-state]))
  (fn [state _] (= state :save-failed)))
 
 (rf/reg-sub
  ::beer-form-field-error
- (fn [db _] (rf/subscribe [::beer-form-state]))
+ (fn [_ _] (rf/subscribe [::beer-form-state]))
  (fn [state [_ field]] (case field
                          :name (case state
                                  :name-required "Name required"
@@ -92,12 +91,12 @@
 
 (rf/reg-sub
  ::beer-form-beer
- (fn [db _] (rf/subscribe [::beer-form]))
+ (fn [_ _] (rf/subscribe [::beer-form]))
  (fn [beer-form _] (:beer beer-form)))
 
 (rf/reg-sub
  ::beer-form-field-value
- (fn [db _] (rf/subscribe [::beer-form-beer]))
+ (fn [_ _] (rf/subscribe [::beer-form-beer]))
  (fn [beer [_ field]] (field beer)))
 
 ;; delete confirm modal
@@ -109,12 +108,12 @@
 
 (rf/reg-sub
  ::delete-confirm-modal-showing?
- (fn [db _] (rf/subscribe [::delete-confirm-state]))
+ (fn [_ _] (rf/subscribe [::delete-confirm-state]))
  (fn [state _] (not= state :ready)))
 
 (rf/reg-sub
  ::delete-failed?
- (fn [db _] (rf/subscribe [::delete-confirm-state]))
+ (fn [_ _] (rf/subscribe [::delete-confirm-state]))
  (fn [state _] (= state :delete-failed)))
 
 (rf/reg-sub
@@ -131,7 +130,7 @@
 
 (rf/reg-sub
  ::loading-modal-showing?
- (fn [db _] (rf/subscribe [::loading-modal-state]))
+ (fn [_ _] (rf/subscribe [::loading-modal-state]))
  (fn [state _] (= state :showing)))
 
 ;; log in state
@@ -143,7 +142,7 @@
 
 (rf/reg-sub
  ::log-in-failed?
- (fn [db _] (rf/subscribe [::log-in-state]))
+ (fn [_ _] (rf/subscribe [::log-in-state]))
  (fn [state _] (= state :log-in-failed)))
 
 ;; sort modal state
@@ -155,6 +154,6 @@
 
 (rf/reg-sub
  ::sort-modal-showing?
- (fn [db _] (rf/subscribe [::sort-modal-state]))
+ (fn [_ _] (rf/subscribe [::sort-modal-state]))
  (fn [state _] (= state :showing)))
 

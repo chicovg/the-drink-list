@@ -1,12 +1,9 @@
 (ns the-beer-list.views
   (:require
-   [clojure.string :refer [blank?]]
-   [reagent.core :refer [atom]]
    [re-frame.core :as rf]
-   [breaking-point.core :as bp]
    [the-beer-list.events :as events]
    [the-beer-list.subs :as subs]
-   [the-beer-list.paths :refer [add-beer-path edit-beer-path home-path]]))
+   [the-beer-list.paths :refer [edit-beer-path home-path]]))
 
 ;; form fields
 
@@ -16,7 +13,7 @@
     (let [val (-> el .-target .-value)]
       (rf/dispatch [::events/set-beer-form-value id val]))))
 
-(defn text-input [{:keys [id label placeholder]}]
+(defn text-input [{:keys [id]}]
   (let [field-value (rf/subscribe [::subs/beer-form-field-value id])
         field-error (rf/subscribe [::subs/beer-form-field-error id])]
     (fn [{:keys [id label placeholder]}]
@@ -32,7 +29,7 @@
           [:p.help.is-danger @field-error])]])))
 
 (defn textarea-input
-  [{:keys [id label placeholder]}]
+  [{:keys [id]}]
   (let [field-value (rf/subscribe [::subs/beer-form-field-value id])
         field-error (rf/subscribe [::subs/beer-form-field-error id])]
     (fn [{:keys [id label placeholder]}]
@@ -50,7 +47,7 @@
           [:p.help.is-danger @field-error])]])))
 
 (defn select-input
-  [{:keys [id label options default-option]}]
+  [{:keys [id]}]
   (let [field-value (rf/subscribe [::subs/beer-form-field-value id])]
     (fn [{:keys [id label options default-option]}]
       [:div.field
@@ -116,7 +113,7 @@
    [:div.tile.is-ancestor
     [:div.tile.is-parent
      [:button.button.is-primary {:on-click (save-beer beer)} "Save"]
-     (if show-delete-button?
+     (when show-delete-button?
        [:button.button.is-danger {:on-click (show-delete-confirm-modal beer)} "Delete"])
      [:a.button {:href "#/"} "Cancel"]]]])
 
@@ -128,19 +125,19 @@
 
 (defn save-in-progress
   [is-saving?]
-  (if is-saving?
+  (when is-saving?
     [:progress.progress.is-small.is-info {:max 100}]))
 
 (defn save-failed-message
   [save-failed?]
-  (if save-failed?
+  (when save-failed?
     [:article.message.is-danger
      [:div.message-body
       "Unable to save at this time, please try again later."]]))
 
 (defn save-success-message
   [save-succeeded?]
-  (if save-succeeded?
+  (when save-succeeded?
     [:article.message.is-success
      [:div.message-header
       [:p "Saved Successfully"]
@@ -193,14 +190,14 @@
 
 (defn delete-failed-message
   [delete-failed?]
-  (if delete-failed?
+  (when delete-failed?
     [:article.message.is-danger
      [:div.message-body
       "Unable to delete at this time, please try again later."]]))
 
 (defn delete-confirm-modal-view
   [{:keys [modal-showing? id delete-failed?]}]
-  [:div.modal {:class (if modal-showing? "is-active")}
+  [:div.modal {:class (when modal-showing? "is-active")}
    [:div.modal-background]
    [:div.modal-card
     [:header.modal-card-head
@@ -284,7 +281,7 @@
 
 (defn sort-modal-view
   [showing? {:keys [field order]}]
-  [:div.modal {:class (if showing? "is-active")}
+  [:div.modal {:class (when showing? "is-active")}
    [:div.modal-background]
    [:div.modal-card
     [:header.modal-card-head
@@ -298,8 +295,7 @@
 (defn on-sort-key-change
   [key sort-state-atom]
   (fn [el]
-    (let [value (-> el .-target .-value)
-          updated (swap! sort-state-atom assoc key value)]
+    (let [value (-> el .-target .-value)]
       (swap! sort-state-atom assoc key value))))
 
 (defn sort-modal
@@ -364,7 +360,7 @@
    [:p.is-small rating]])
 
 (defn beer-list-item
-  [{:keys [id name brewery rating] :as beer}]
+  [{:keys [id name brewery rating]}]
   [:a.list-item {:tab-index "0"
                  :href (edit-beer-path id)}
     [beer-list-rating rating]
@@ -498,7 +494,7 @@
 (defn log-in-error-panel
   []
   (let [log-in-failed? (rf/subscribe [::subs/log-in-failed?])]
-    (if @log-in-failed?
+    (when @log-in-failed?
       [:article.message.is-danger
        [:div.message-body
         "Unable to log into the app right now. Please try again later."]])))
