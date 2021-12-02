@@ -1,5 +1,6 @@
 (ns the-beer-list.subs
   (:require
+   [clojure.string :as s]
    [re-frame.core :as rf]))
 
 ;; user
@@ -26,8 +27,8 @@
   (if (nil? filter)
     (constantly true)
     (fn [beer]
-      (or (clojure.string/includes? (or (:name beer) "") filter)
-          (clojure.string/includes? (or (:brewery beer) "") filter)))))
+      (or (s/includes? (or (:name beer) "") filter)
+          (s/includes? (or (:brewery beer) "") filter)))))
 
 (rf/reg-sub
  ::beers
@@ -70,18 +71,12 @@
 
 (rf/reg-sub
  ::beer-form-field-error
- (fn [_ _] (rf/subscribe [::beer-form-state]))
- (fn [state [_ field]] (case field
-                         :name (case state
-                                 :name-required "Name required"
-                                 nil)
-                         :brewery (case state
-                                    :brewery-required "Brewery required"
-                                    nil)
-                         :type (case state
-                                 :type-required "Type required"
-                                 nil)
-                         nil)))
+ :<- [::beer-form-state]
+ (fn [state [_ field]]
+   (when (and
+          (#{:name :brewery :type} field)
+          (s/blank? (get state field)))
+     "required!")))
 
 ;; beer form
 

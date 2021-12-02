@@ -23,20 +23,11 @@
                  :user nil})
 
 (def beer-form-states {:ready {:field-changed :ready
-                               :save-no-name :name-required
-                               :save-no-brewery :brewery-required
-                               :save-no-type :type-required
                                :try-save :saving}
                        :saving {:firestore-failure :save-failed
                                 :firestore-success :ready}
                        :save-failed {:try-save :saving
-                                     :hide :ready}
-                       :name-required {:field-changed :ready
-                                       :hide :ready}
-                       :brewery-required {:field-changed :ready
-                                          :hide :ready}
-                       :type-required {:field-changed :ready
-                                       :hide :ready}})
+                                     :hide :ready}})
 
 (def delete-confirm-states {:ready {:show :showing}
                             :showing {:hide :ready

@@ -3,7 +3,8 @@
    [re-frame.core :as rf]
    [the-beer-list.events :as events]
    [the-beer-list.subs :as subs]
-   [the-beer-list.paths :refer [edit-beer-path home-path]]))
+   [the-beer-list.paths :refer [edit-beer-path home-path]]
+   [the-beer-list.components.form :as form]))
 
 ;; form fields
 
@@ -59,6 +60,14 @@
           (for [{:keys [label value]} options]
             ^{:key value} [:option {:value value} label])]]]])))
 
+(def type-options (map (fn [val]
+                         {:label val :value val})
+                       ["Beer"
+                        "Cider"
+                        "Mead"
+                        "Other"
+                        "Wine"]))
+
 (def rating-options [{:value 5 :label "5 - Amazing"}
                      {:value 4 :label "4 - Great!"}
                      {:value 3 :label "3 - Okay"}
@@ -81,35 +90,52 @@
   (fn []
     (rf/dispatch [::events/show-delete-confirm-modal id])))
 
+(defn- beer-form-input
+  [{:keys [id component] :as props}]
+  (let [value @(rf/subscribe [::subs/beer-form-field-value id])
+        error @(rf/subscribe [::subs/beer-form-field-error id])]
+    [component (-> props
+                   (assoc :error     error
+                          :name      id
+                          :on-change #(rf/dispatch [::events/set-beer-form-value id %])
+                          :value     value)
+                   (dissoc :component))]))
+
 (defn beer-form
   [beer show-delete-button?]
-  [:div {:role "form"}
-   [:div.tile.is-ancestor
-    [:div.tile.is-parent
-     [:div.tile.is-child
-      [text-input {:id :name
-                   :label "Beer Name"
-                   :placeholder "A Delicious Brew"}]]
-     [:div.tile.is-child
-      [text-input {:id :brewery
-                   :label "Brewery"
-                   :placeholder "Your Favorite Brewery"}]]]]
-   [:div.tile.is-ancestor
-    [:div.tile.is-parent
-     [:div.tile.is-child
-      [text-input {:id :type
-                   :label "Beer Type"
-                   :placeholder "Ale? Lager? Gose?"}]]
-     [:div.tile.is-child
-      [select-input {:id :rating
-                     :label "Rating"
-                     :options rating-options
-                     :default-option 3}]]]]
-   [:div.tile.is-ancestor
-    [:div.tile.is-parent.is-12
-     [textarea-input {:id :comment
-                      :label "Comment"
-                      :placeholder "Provide more details here..."}]]]
+  [:form
+   [:div.columns.is-desktop
+    [:div.column
+     [beer-form-input {:id          :name
+                       :component   form/text-input
+                       :label       "Beer Name"
+                       :placeholder "A Delicious Brew"
+                       :required    true}]]
+    [:div.column
+     [beer-form-input {:id          :brewery
+                       :component   form/text-input
+                       :label       "Brewery"
+                       :placeholder "Your Favorite Brewery"
+                       :required    true}]]]
+   [:div.columns.is-desktop
+    [:div.column
+     [beer-form-input {:id        :type
+                       :component form/select-input
+                       :label     "Drink Type"
+                       :options   type-options
+                       :required  true}]]
+    [:div.column
+     [beer-form-input {:id          :style
+                       :component   form/text-input
+                       :label       "Style"
+                       :placeholder "Ale? Lager? Cabernet?"
+                       :required    true}]]]
+   [:div.columns.is-desktop
+    [:div.column
+      [beer-form-input {:id        :rating
+                        :component form/select-input
+                        :label     "Rating"
+                        :options    rating-options}]]]
    [:div.tile.is-ancestor
     [:div.tile.is-parent
      [:button.button.is-primary {:on-click (save-beer beer)} "Save"]
@@ -225,14 +251,14 @@
 
 (defn loading-modal-view
   [showing?]
-    [:div.modal {:class (if showing? "is-active" "")}
-     [:div.modal-background]
-     [:div.modal-card
-      [:header.modal-card-head
-       [:p.modal-card-title "Loading..."]]
-      [:section.modal-card-body
-       [:progress.progress.is-medium.is-dark {:max 100}]]
-      [:footer.modal-card-foot]]])
+  [:div.modal {:class (if showing? "is-active" "")}
+   [:div.modal-background]
+   [:div.modal-card
+    [:header.modal-card-head
+     [:p.modal-card-title "Loading..."]]
+    [:section.modal-card-body
+     [:progress.progress.is-medium.is-dark {:max 100}]]
+    [:footer.modal-card-foot]]])
 
 (defn loading-modal
   []
@@ -342,9 +368,9 @@
 (defn toolbar
   []
   [:div.toolbar
-    [beer-filter-input]
-    [sort-button]
-    [add-beer-button]])
+   [beer-filter-input]
+   [sort-button]
+   [add-beer-button]])
 
 (defn show-edit-beer-modal
   [beer]
@@ -363,9 +389,9 @@
   [{:keys [id name brewery rating]}]
   [:a.list-item {:tab-index "0"
                  :href (edit-beer-path id)}
-    [beer-list-rating rating]
-    [:strong.is-size-5 name]
-    [:span.is-italic.is-size-6 (str " " brewery)]])
+   [beer-list-rating rating]
+   [:strong.is-size-5 name]
+   [:span.is-italic.is-size-6 (str " " brewery)]])
 
 (defn beers-list-view
   [beers]
@@ -462,7 +488,7 @@
     [:p
      "Vector Illustration by "
      [:a {:rel "nofollow" :href "https://www.vecteezy.com"}
-     "www.Vecteezy.com."]]]])
+      "www.Vecteezy.com."]]]])
 
 ;; main
 
@@ -502,15 +528,16 @@
 (defn main-panel
   []
   (let [is-logged-in? (rf/subscribe [::subs/is-logged-in?])
-        active-panel (rf/subscribe [::subs/active-panel])]
+        active-panel  (rf/subscribe [::subs/active-panel])]
     [:div.main
      [:div
       [delete-confirm-modal]
       [loading-modal]
       [sort-modal]
-      [header @is-logged-in?]
-      [log-in-error-panel]
-      (if @is-logged-in?
-        [show-panel @active-panel]
-        [login-page])
-      [footer]]]))
+      [header @is-logged-in?
+       [log-in-error-panel]]
+      [:div.section
+       (if @is-logged-in?
+         [show-panel @active-panel]
+         [login-page])
+       [footer]]]]))

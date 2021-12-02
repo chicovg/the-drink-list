@@ -45,86 +45,86 @@
 (declare params)
 (declare field-error)
 
-(deftest test-text-input
-  (testing "The text input component is correctly created"
-    (with-redefs [value "Value"
-                  rf/subscribe #(atom (case %
-                                        [::subs/beer-form-field-value :foo] value
-                                        [::subs/beer-form-field-error :foo] nil))
-                  views/on-field-change identity
-                  params {:id :foo
-                          :label "Foo"
-                          :placeholder "Foo placeholder"}]
-      (is (= ((views/text-input params) params)
-             (expected-text-input (merge params {:class nil
-                                                 :value value
-                                                 :error nil})))))))
+;; (deftest test-text-input
+;;   (testing "The text input component is correctly created"
+;;     (with-redefs [value "Value"
+;;                   rf/subscribe #(atom (case %
+;;                                         [::subs/beer-form-field-value :foo] value
+;;                                         [::subs/beer-form-field-error :foo] nil))
+;;                   views/on-field-change identity
+;;                   params {:id :foo
+;;                           :label "Foo"
+;;                           :placeholder "Foo placeholder"}]
+;;       (is (= ((views/text-input params) params)
+;;              (expected-text-input (merge params {:class nil
+;;                                                  :value value
+;;                                                  :error nil})))))))
 
-(deftest test-text-input-with-error
-  (testing "The text input component is created correctly with an error"
-    (with-redefs [value "Value"
-                  field-error "Field error"
-                  rf/subscribe #(atom (case %
-                                        [::subs/beer-form-field-value :foo] value
-                                        [::subs/beer-form-field-error :foo] field-error))
-                  views/on-field-change identity
-                  params {:id :foo
-                          :label "Foo"
-                          :placeholder "Foo placeholder"}]
-      (is (= ((views/text-input params) params)
-             (expected-text-input (merge params {:class "is-danger"
-                                                 :value value
-                                                 :error (expected-field-error field-error)})))))))
+;; (deftest test-text-input-with-error
+;;   (testing "The text input component is created correctly with an error"
+;;     (with-redefs [value "Value"
+;;                   field-error "Field error"
+;;                   rf/subscribe #(atom (case %
+;;                                         [::subs/beer-form-field-value :foo] value
+;;                                         [::subs/beer-form-field-error :foo] field-error))
+;;                   views/on-field-change identity
+;;                   params {:id :foo
+;;                           :label "Foo"
+;;                           :placeholder "Foo placeholder"}]
+;;       (is (= ((views/text-input params) params)
+;;              (expected-text-input (merge params {:class "is-danger"
+;;                                                  :value value
+;;                                                  :error (expected-field-error field-error)})))))))
 
-(deftest test-textarea-input
-  (testing "The textarea input component is created correctly"
-    (with-redefs [value "Value"
-                  rf/subscribe #(atom (case %
-                                        [::subs/beer-form-field-value :foo] value
-                                        [::subs/beer-form-field-error :foo] nil))
-                  views/on-field-change identity
-                  params {:id :foo
-                          :label "Foo"
-                          :placeholder "Foo placeholder"}]
-      (is (= ((views/textarea-input params) params)
-             (expected-textarea-input (merge params {:class nil
-                                                     :value value
-                                                     :error nil})))))))
+;; (deftest test-textarea-input
+;;   (testing "The textarea input component is created correctly"
+;;     (with-redefs [value "Value"
+;;                   rf/subscribe #(atom (case %
+;;                                         [::subs/beer-form-field-value :foo] value
+;;                                         [::subs/beer-form-field-error :foo] nil))
+;;                   views/on-field-change identity
+;;                   params {:id :foo
+;;                           :label "Foo"
+;;                           :placeholder "Foo placeholder"}]
+;;       (is (= ((views/textarea-input params) params)
+;;              (expected-textarea-input (merge params {:class nil
+;;                                                      :value value
+;;                                                      :error nil})))))))
 
-(deftest test-textarea-input-with-error
-  (testing "The textarea input component is created correctly with an error"
-    (with-redefs [value "Value"
-                  field-error "Field error"
-                  rf/subscribe #(atom (case %
-                                        [::subs/beer-form-field-value :foo] value
-                                        [::subs/beer-form-field-error :foo] field-error))
-                  views/on-field-change identity
-                  params {:id :foo
-                          :label "Foo"
-                          :placeholder "Foo placeholder"}]
-      (is (= ((views/textarea-input params) params)
-             (expected-textarea-input (merge params {:class "is-danger"
-                                                     :value value
-                                                     :error (expected-field-error field-error)})))))))
+;; (deftest test-textarea-input-with-error
+;;   (testing "The textarea input component is created correctly with an error"
+;;     (with-redefs [value "Value"
+;;                   field-error "Field error"
+;;                   rf/subscribe #(atom (case %
+;;                                         [::subs/beer-form-field-value :foo] value
+;;                                         [::subs/beer-form-field-error :foo] field-error))
+;;                   views/on-field-change identity
+;;                   params {:id :foo
+;;                           :label "Foo"
+;;                           :placeholder "Foo placeholder"}]
+;;       (is (= ((views/textarea-input params) params)
+;;              (expected-textarea-input (merge params {:class "is-danger"
+;;                                                      :value value
+;;                                                      :error (expected-field-error field-error)})))))))
 
-(deftest test-select-input
-  (testing "The select input input component is created correctly"
-    (with-redefs [rf/subscribe #(atom (case [::subs/beer-form-field-value :foo] nil))
-                  views/on-field-change identity]
-      (let [params {:id :foo
-                    :label "Foo"
-                    :options [{:value 1 :label "Option One"}
-                              {:value 2 :label "Option Two"}]
-                    :default-option 1}]
-        (is (= ((views/select-input params) params)
-               [:div.field
-                [:label.label "Foo"]
-                [:div.control
-                 [:div.select
-                  [:select {:on-change :foo
-                            :value 1}
-                   '([:option {:value 1} "Option One"]
-                     [:option {:value 2} "Option Two"])]]]]))))))
+;; (deftest test-select-input
+;;   (testing "The select input input component is created correctly"
+;;     (with-redefs [rf/subscribe #(atom (case [::subs/beer-form-field-value :foo] nil))
+;;                   views/on-field-change identity]
+;;       (let [params {:id :foo
+;;                     :label "Foo"
+;;                     :options [{:value 1 :label "Option One"}
+;;                               {:value 2 :label "Option Two"}]
+;;                     :default-option 1}]
+;;         (is (= ((views/select-input params) params)
+;;                [:div.field
+;;                 [:label.label "Foo"]
+;;                 [:div.control
+;;                  [:div.select
+;;                   [:select {:on-change :foo
+;;                             :value 1}
+;;                    '([:option {:value 1} "Option One"]
+;;                      [:option {:value 2} "Option Two"])]]]]))))))
 
 ;; beer modal
 
