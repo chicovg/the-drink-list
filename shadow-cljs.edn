@@ -1,0 +1,17 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dev-http {8080 "public"}
+
+ :dependencies
+ [[reagent "1.0.0"]]
+
+ :builds
+ {:app {:target  :browser
+        :modules {:main {:init-fn the-beer-list.core/init}}}
+  :stories {:target :npm-module
+            :ns-regexp ".*stories$"
+            :output-dir "public/js/stories"}}}

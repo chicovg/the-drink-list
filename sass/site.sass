@@ -1,68 +1,30 @@
-@charset "utf-8";
-@import "../node_modules/bulma/bulma.sass"
+@charset 'utf-8';
+@import "../node_modules/spectre.css/src/spectre"
+@import "../node_modules/spectre.css/src/spectre-exp"
+@import "../node_modules/spectre.css/src/spectre-icons"
 
-$section-padding: 1.5rem
+.beer-card
+  width: 460px
 
-.button
-  margin: 0 .4em 0 0
+.margin-right-sm
+  margin-right: 4px
 
-.container
-  margin: .5em
+.padding-left-sm
+  padding-right: 4px
 
-.field
-  max-width: 98%
-
-.list
-  margin: .5em 0
-
-.list-item:hover, .list-item:focus
-  background-color: $white-ter
-
-.main
-  display: flex
-  align-items: center
-  justify-content: center
-
-.main > div
-  flex-grow: 1
-  max-width: 1000px
+.padding-right-sm
+  padding-right: 4px
 
 .rating
-  color: $white
-  border-radius: 2em
-  font-weight: bold
-  margin: 0 12px 0 0
-  padding: .3em .7em
-
-.rating-1
-  background-color: $red
-  padding: .3em .8em
-
-.rating-2
-  background-color: $yellow
-
-.rating-3
-  background-color: $cyan
-
-.rating-4
-  background-color: $turquoise
-
-.rating-5
-  background-color: $green
-
-.sort-modal-body
   display: flex
+  justify-content: space-between
 
-.sort-modal-body > div
-  flex-grow: 1
+  .progress
+    vertical-align: middle
+    width: 100px
 
-.toolbar
-  display: flex
+    :hover
+      cursor: pointer
 
-.toolbar > div.search
-  flex-grow: 4
-  max-width: 600px
-
-.toolbar > *:not(:last-child)
-  margin-right: 6px
-
+    .color-1
+      color: red

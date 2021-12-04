@@ -1,20 +1,37 @@
 {
   "name": "the-beer-list",
-  "version": "1.0.0",
-  "description": "A [re-frame](https://github.com/Day8/re-frame) application designed to track and rate beers!",
+  "version": "2.0.0",
+  "description": "A [reagent](https://reagent-project.github.io/) application designed to track and rate beers!",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "bulma": "^0.7.5"
+    "node-sass": "^6.0.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "shadow-cljs": "^2.16.6",
+    "spectre.css": "^0.5.9"
   },
   "devDependencies": {
-    "karma-cljs-test": "^0.1.0",
+    "@babel/core": "^7.16.0",
+    "@storybook/addon-actions": "^6.4.7",
+    "@storybook/addon-essentials": "^6.4.7",
+    "@storybook/addon-links": "^6.4.7",
+    "@storybook/builder-webpack5": "^6.4.7",
+    "@storybook/manager-webpack5": "^6.4.7",
+    "@storybook/react": "^6.4.7",
+    "babel-loader": "^8.2.3",
+    "karma": "^4.2.0",
     "karma-chrome-launcher": "^3.0.0",
-    "karma": "^4.2.0"
+    "karma-cljs-test": "^0.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "css": "node-sass sass/site.sass -o public/css",
+    "watch-css": "npm run css && node-sass sass/site.sass -wo public/css",
+    "dev": "shadow-cljs watch app",
+    "dev-stories": "shadow-cljs watch stories",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
