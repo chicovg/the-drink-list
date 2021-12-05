@@ -1,10 +1,13 @@
 @charset 'utf-8';
-@import "../node_modules/spectre.css/src/spectre"
-@import "../node_modules/spectre.css/src/spectre-exp"
-@import "../node_modules/spectre.css/src/spectre-icons"
+
+@import "../node_modules/bulma/bulma"
 
 .beer-card
-  width: 460px
+  min-width: 280px
+  max-width: 500px
+
+  .card-header-title
+    display: inline-block
 
 .margin-right-sm
   margin-right: 4px
@@ -16,15 +19,9 @@
   padding-right: 4px
 
 .rating
-  display: flex
-  justify-content: space-between
-
   .progress
     vertical-align: middle
-    width: 100px
-
-    :hover
-      cursor: pointer
-
-    .color-1
-      color: red
+    display: inline-block
+    margin-top: -3px
+    margin-left: 4px
+    width: 80px

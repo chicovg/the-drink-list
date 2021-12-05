@@ -6,7 +6,9 @@
     "test": "test"
   },
   "dependencies": {
-    "node-sass": "^6.0.1",
+    "bulma": "^0.9.3",
+    "bulma-extensions": "^6.2.7",
+    "material-icons": "^1.10.4",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "shadow-cljs": "^2.16.6",
@@ -20,14 +22,21 @@
     "@storybook/builder-webpack5": "^6.4.7",
     "@storybook/manager-webpack5": "^6.4.7",
     "@storybook/react": "^6.4.7",
+    "autoprefixer": "^10.4.0",
     "babel-loader": "^8.2.3",
+    "clean-css-cli": "^5.4.2",
     "karma": "^4.2.0",
     "karma-chrome-launcher": "^3.0.0",
-    "karma-cljs-test": "^0.1.0"
+    "karma-cljs-test": "^0.1.0",
+    "node-sass": "^6.0.1",
+    "postcss-cli": "^9.0.2"
   },
   "scripts": {
-    "css": "node-sass sass/site.sass -o public/css",
-    "watch-css": "npm run css && node-sass sass/site.sass -wo public/css",
+    "css:compile": "node-sass --output-style=expanded --source-map=true sass/site.sass public/css/site.css",
+    "css:prefix": "postcss public/css/site.css --use=autoprefixer --map=false --output=public/css/site.css",
+    "css:minify": "cleancss --level=1 --source-map --source-map-inline-sources --output public/css/site.min.css public/css/site.css",
+    "css:watch": "npm run css:compile -- --watch",
+    "css:build": "npm run css:compile && css:prefix && css:minify",
     "dev": "shadow-cljs watch app",
     "dev-stories": "shadow-cljs watch stories",
     "storybook": "start-storybook -p 6006",
