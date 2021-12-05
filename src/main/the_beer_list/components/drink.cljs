@@ -1,6 +1,8 @@
 (ns the-beer-list.components.drink
   (:require
-   [reagent.core :as r]))
+   [reagent.core :as r]
+   [the-beer-list.components.common :as common]
+   [the-beer-list.components.form :as form]))
 
 (defn- header
   [{:keys [name maker style type]}]
@@ -35,11 +37,6 @@
                                     :max          5
                                     :value        rounded-value}]]]))
 
-(defn- calc-overall
-  [{:keys [appearance smell taste]}]
-  (/ (+ appearance smell taste taste taste)
-     5))
-
 (defn- content
   [{:keys [appearance notes smell taste]
     :as props}]
@@ -47,7 +44,7 @@
    [:div.content
     [rating {:id      :overall
              :label   "Overall"
-             :value   (calc-overall props)
+             :value   (common/calc-overall props)
              :overall? true}]
     [rating {:id      :appearance
              :label   "Appearance"
@@ -70,25 +67,10 @@
    [:button.button.card-footer-item.is-info.is-inverted "Edit"]
    [:button.button.card-footer-item.is-danger.is-inverted "Delete"]])
 
-(defn- display-card
+(defn card
+  "A component which renders drink fields in a card view"
   [props]
   [:div.beer-card.card
    [header props]
    [content props]
    [footer props]])
-
-(defn- editing-card
-  [props]
-  [:div.beer-card.card
-   [:div.card-body
-    [:form
-     [:div.form-group
-      [:label.form-label {:for :name} "Name"]
-      [:input.form-input {:id :name}]]]]])
-
-(defn card
-  "A component which renders drink fields or renders a form for editing a drink"
-  [{:keys [editing?] :as props}]
-  (if editing?
-    [editing-card props]
-    [display-card props]))

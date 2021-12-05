@@ -1,2 +1,71 @@
-(ns main.the-beer-list.components.form)
+(ns the-beer-list.components.form
+  (:require
+   [reagent.core :as r]))
 
+(defn- event->value
+  [e]
+  (-> e .-target .-value))
+
+(defn validate
+  [required label value]
+  (when (and required (empty? value))
+    (str label " is required")))
+
+(defn input
+  [type element _]
+  (r/with-let [dirty? (r/atom false)
+               error  (r/atom nil)]
+    (fn [{:keys [id label on-change required] :as props}]
+      [:div.field
+       [:label.label {:for id} label]
+       [:div.control
+        [element (assoc props
+                        :type type
+                        :on-change #(let [val (event->value %)]
+                                      (reset! dirty? true)
+                                      (reset! error (validate required label val))
+                                      (on-change val)))]]
+       (when (and @dirty? @error)
+         [:p.help.is-danger @error])])))
+
+(def text-input
+  (partial input "text" :input.input))
+
+(def textarea-input
+  (partial input nil :textarea.textarea))
+
+(defn slider-input
+  [{:keys [id label on-change value] :as props}]
+  [:div.field
+   [:label.label {:for id} label]
+   [:input.slider.is-primary.has-output.is-full-width (assoc props
+                                                             :id            id
+                                                             :on-change     #(on-change (some-> %
+                                                                                                event->value
+                                                                                                js/Number))
+                                                             :type          "range"
+                                                             :value         (str value))]
+   [:output {:for id} value]])
+
+(defn select-input
+  [_]
+  (r/with-let [dirty? (r/atom false)
+               error  (r/atom nil)]
+    (fn [{:keys [id label on-change options required value] :as props}]
+      [:div.field
+       [:label.label {:for id} label]
+       [:div.control
+        [:div.select
+         [:select (cond-> props
+                    :true
+                    (assoc :on-change #(let [val (event->value %)]
+                                         (reset! dirty? true)
+                                         (reset! error (validate required label val))
+                                         (on-change val)))
+                    (nil? value)
+                    (dissoc :value))
+          (for [{:keys [label value]} options]
+            ^{:key value}
+            [:option {:value value} label])]]]
+       (when (and @dirty? @error)
+         [:p.help.is-danger @error])])))

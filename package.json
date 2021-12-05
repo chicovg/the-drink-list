@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "bulma": "^0.9.3",
-    "bulma-extensions": "^6.2.7",
+    "bulma-slider": "^2.0.4",
     "material-icons": "^1.10.4",
     "react": "17.0.1",
     "react-dom": "17.0.1",
