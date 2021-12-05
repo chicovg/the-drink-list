@@ -40,7 +40,7 @@
                               :on-change #(swap! form-values assoc :type %)
                               :options   drink-types
                               :required  true
-                              :style     {:width 286}
+                              :style     {:min-width 286}
                               :value     (:type @form-values)}]
           ;; TODO autocomplete from existing values
           [form/text-input {:id          :style
@@ -79,14 +79,19 @@
             [:div.field
              [:label.label {:for :overall} "Overall"]
              [:p (.toFixed (common/calc-overall @form-values) 1)]]]]
-          ;; TODO sliders
-          ;; appearance
-          ;; smell
-          ;; taste
-          ;; TODO tag multi-select for notes
-          [form/textarea-input {:id          :comment
-                                :label       "Comment"
-                                :placeholder "Enter come comments about the drink"
-                                :on-change   #(swap! form-values assoc :comment %)
-                                :value       (:comment @form-values)}]]]]
+          [:div.columns
+           [:div.column.is-half
+            [form/select-tags-input {:id          :notes
+                                     :label       "Tasting Notes"
+                                     :on-change   #(swap! form-values assoc :notes %)
+                                     :options     [] ;TODO prepopulate from previous values
+                                     :placeholder "Enter some tasting notes"
+                                     :style       {:min-width 286} ; TODO style tags like card view
+                                     :value       (:notes @form-values)}]]
+           [:div.column.is-half
+            [form/textarea-input {:id          :comment
+                                  :label       "Comment"
+                                  :placeholder "Enter come comments about the drink"
+                                  :on-change   #(swap! form-values assoc :comment %)
+                                  :value       (:comment @form-values)}]]]]]]
        [:button.modal-close.is-large {:aria-label "close"}]])))

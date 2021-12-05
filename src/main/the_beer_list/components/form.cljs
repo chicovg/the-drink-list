@@ -1,6 +1,8 @@
 (ns the-beer-list.components.form
   (:require
-   [reagent.core :as r]))
+   [clojure.string :as s]
+   [reagent.core :as r]
+   ["@yaireo/tagify/dist/react.tagify" :default Tags]))
 
 (defn- event->value
   [e]
@@ -57,7 +59,7 @@
        [:div.control
         [:div.select
          [:select (cond-> props
-                    :true
+                    true
                     (assoc :on-change #(let [val (event->value %)]
                                          (reset! dirty? true)
                                          (reset! error (validate required label val))
@@ -69,3 +71,33 @@
             [:option {:value value} label])]]]
        (when (and @dirty? @error)
          [:p.help.is-danger @error])])))
+
+(defn- blank->nil
+  [s]
+  (when (not-empty s)
+    s))
+
+(defn- event->tag-values
+  [e]
+  (some->> e
+           .-detail
+           .-value
+           blank->nil
+           js/JSON.parse
+           js->clj
+           (mapv (fn [o]
+                   (get o "value")))))
+
+(defn select-tags-input
+  [{:keys [id label options placeholder value]}]
+  [:div.field
+   [:label.label {:for id} label]
+   [:div.control
+    [:> Tags (cond-> {:id          id
+                      :on-change   #(prn (event->tag-values %))
+                      :placeholder placeholder
+                      :settings    {:add-tags-on-blur true
+                                    :dropdown         {:enabled 0}
+                                    :whitelist        options}}
+               (not-empty value)
+               (assoc :value (s/join "," value)))]]])
