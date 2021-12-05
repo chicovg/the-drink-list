@@ -1,17 +1,25 @@
 (ns the-beer-list.components.drink-form-modal
   (:require [reagent.core :as r]
             [the-beer-list.components.common :as common]
-            [the-beer-list.components.form :as form]))
+            [the-beer-list.components.form :as form]
+            [the-beer-list.types.drink :as drink-type]
+            [the-beer-list.types.beer-flavors :as beer-flavors]))
 
 (def drink-types
-  (->> ["Beer" "Cider" "Mead" "Other" "Wine"]
+  (->> drink-type/types
+       (sort)
        (map (fn [v]
               {:value v :label v}))))
 
 (defn modal
   "A component which renders a modal for creating and editing a drink"
   [props]
-  (r/with-let [form-values (r/atom props)]
+  (r/with-let [form-values   (r/atom props)
+               notes-options (-> beer-flavors/flavors
+                                 (concat []) ;; TODO get previous values
+                                 distinct
+                                 sort
+                                 vec)]
     (fn [props]
       [:div.modal.is-active.is-clipped
        [:div.modal-background]
@@ -84,8 +92,8 @@
             [form/select-tags-input {:id          :notes
                                      :label       "Tasting Notes"
                                      :on-change   #(swap! form-values assoc :notes %)
-                                     :options     [] ;TODO prepopulate from previous values
-                                     :placeholder "Enter some tasting notes"
+                                     :options     notes-options
+                                     :placeholder "Tasting notes"
                                      :style       {:min-width 286} ; TODO style tags like card view
                                      :value       (:notes @form-values)}]]
            [:div.column.is-half
@@ -93,5 +101,10 @@
                                   :label       "Comment"
                                   :placeholder "Enter come comments about the drink"
                                   :on-change   #(swap! form-values assoc :comment %)
-                                  :value       (:comment @form-values)}]]]]]]
+                                  :value       (:comment @form-values)}]]]
+          [:div.field.is-grouped
+           [:div.control
+            [:button.button.is-primary "Save"]]
+           [:div.control
+            [:button.button.is-light "Cancel"]]]]]]
        [:button.modal-close.is-large {:aria-label "close"}]])))

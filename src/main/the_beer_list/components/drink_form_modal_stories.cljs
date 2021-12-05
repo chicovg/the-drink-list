@@ -1,6 +1,7 @@
 (ns the-beer-list.components.drink-form-modal-stories
   (:require [reagent.core :as r]
-            [the-beer-list.components.drink-form-modal :as drink-form-modal]))
+            [the-beer-list.components.drink-form-modal :as drink-form-modal]
+            [the-beer-list.types.drink :as drink-type]))
 
 (def ^:export default
   #js {:title     "Drink Form Modal Component"
@@ -20,4 +21,4 @@
   (r/as-element [drink-form-modal/modal {:creating? true}]))
 
 (defn ^:export Editing []
-  (r/as-element [drink-form-modal/modal (assoc sample-drink :editing? true)]))
+  (r/as-element [drink-form-modal/modal (assoc (drink-type/gen-drink) :editing? true)]))

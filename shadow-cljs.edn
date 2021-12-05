@@ -7,7 +7,8 @@
  :dev-http {8080 "public"}
 
  :dependencies
- [[reagent "1.0.0"]]
+ [[reagent "1.0.0"]
+  [org.clojure/spec.alpha "0.3.214"]]
 
  :builds
  {:app {:target  :browser

@@ -1,8 +1,6 @@
 (ns the-beer-list.components.drink
   (:require
-   [reagent.core :as r]
-   [the-beer-list.components.common :as common]
-   [the-beer-list.components.form :as form]))
+   [the-beer-list.components.common :as common]))
 
 (defn- header
   [{:keys [name maker style type]}]
