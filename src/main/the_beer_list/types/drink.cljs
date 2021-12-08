@@ -60,6 +60,14 @@
 
 (defn gen-drink []
   (-> (gen/generate (s/gen ::drink))
+      (assoc :id (gen/generate (s/gen ::id)))
       (update :appearance round)
       (update :smell round)
-      (update :taste round)))
+      (update :taste round)
+      (update :notes distinct)))
+
+(defn gen-notes [count]
+  (take count (distinct (gen/sample (s/gen ::note)))))
+
+(defn gen-drinks [count]
+  (repeatedly count gen-drink))
