@@ -8,4 +8,7 @@
        :component (r/reactify-component drink-list/drink-list)})
 
 (defn ^:export Default []
-  (r/as-element [drink-list/drink-list {:drinks (drink-type/gen-drinks 20)}]))
+  (r/as-element [drink-list/drink-list {:drinks      (drink-type/gen-drinks 20)
+                                        :search-term ""
+                                        :sort-state  {:asc?  false
+                                                      :field :date}}]))
