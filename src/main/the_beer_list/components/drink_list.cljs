@@ -19,10 +19,13 @@
 (defn drink-list
   [{drinks               :drinks
     search-term          :search-term
-    {:keys [asc? field]} :sort-state}]
+    {:keys [asc? field]} :sort-state
+    show-drink-modal!    :show-drink-modal!}]
   [:div.drink-list
    (for [drnk (filter
                (partial is-search-match search-term)
                drinks)]
      ^{:key (:id drnk)}
-     [drink/card drnk])])
+     [drink/card
+      {:drink             drnk
+       :show-drink-modal! show-drink-modal!}])])

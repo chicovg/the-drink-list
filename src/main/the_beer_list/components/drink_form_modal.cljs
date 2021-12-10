@@ -13,21 +13,23 @@
 
 (defn modal
   "A component which renders a modal for creating and editing a drink"
-  [props]
-  (r/with-let [form-values   (r/atom props)
+  [{drink :drink}]
+  (r/with-let [form-values   (r/atom drink)
                notes-options (-> beer-flavors/flavors
                                  (concat []) ;; TODO get previous values
                                  distinct
                                  sort
                                  vec)]
-    (fn [props]
+    (fn [{drink             :drink
+          hide-drink-modal! :hide-drink-modal!
+          show-drink-modal! :show-drink-modal!}]
       [:div.modal.is-active.is-clipped
        [:div.modal-background]
        [:div.modal-content
         [:div.card
          [:div.card-header
           [:p.card-header-title
-           (if (:editing? props)
+           (if drink
              (str "Update " (:name @form-values))
              "Add a New Drink")]]
          [:form.form.p-4
@@ -106,5 +108,9 @@
            [:div.control
             [:button.button.is-primary "Save"]]
            [:div.control
-            [:button.button.is-light "Cancel"]]]]]]
-       [:button.modal-close.is-large {:aria-label "close"}]])))
+            [:button.button.is-light
+             {:on-click #(hide-drink-modal!)}
+             "Cancel"]]]]]]
+       [:button.modal-close.is-large
+        {:aria-label "close"
+         :on-click   #(hide-drink-modal!)}]])))

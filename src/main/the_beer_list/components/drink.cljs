@@ -3,36 +3,6 @@
    [reagent.core :as r]
    [the-beer-list.components.common :as common]))
 
-(defn- is-collapsed?
-  [p]
-  (when p
-    (or (< (.-offsetHeight p) (.-scrollHeight p))
-        (< (.-offsetWidth p) (.-scrollWidth p)))))
-
-(defn- comment-paragraph
-  [_]
-  (r/with-let [p-ref      (atom nil)
-               collapsed? (r/atom false)
-               expanded?  (r/atom false)]
-    (r/create-class
-     {:component-did-mount
-      (fn []
-        (reset! collapsed? (is-collapsed? @p-ref)))
-      :reagent-render
-      (fn [comment]
-        (when (not-empty comment)
-          [:div.p-1
-           [:div.mt-1.mb-1
-            [:p.is-size-7 {:class (when-not @expanded? "line-clamp-3")
-                           :ref   #(reset! p-ref %)}
-             comment]]
-           (when @collapsed?
-             [:button.button.is-small.is-ghost
-              {:on-click #(swap! expanded? not)}
-              (if @expanded?
-                "Read Less"
-                "Read More")])]))})))
-
 (defn- rating-class
   [value]
   (condp > value
@@ -41,32 +11,62 @@
     4 "rating__lt-4"
     "rating__lt-5"))
 
-(defn rating
+(defn- rating
   [value]
   [:span {:class (rating-class value)}
    (.toFixed value 1)])
 
 (defn card
-  [{:keys [id appearance comment maker name notes smell style taste] :as props}]
-  [:article.media.has-background-white
-   [:div.media-content
-    [:p [:strong name]]
-    [:div.tags.has-addons.mb-1.mt-1
-     [:span.tag.is-small maker]
-     [:span.tag.is-small.is-primary style]]
-    [:div.mt-1.mb-1
-     [:p.is-size-7
-      [:span.mr-1
-       [:strong [:em "Overall: "] [rating (common/calc-overall props)]]]
-      [:span.mr-1
-       [:em " Appearance: "] [rating appearance]]
-      [:span.mr-1
-       [:em " Smell: "] [rating smell]]
-      [:span
-       [:em " Taste: "] [rating taste]]]]
-    [comment-paragraph comment]
-    (when (not-empty notes)
-      [:div
-       (for [note notes]
-         ^{:key note}
-         [:span.tag.is-small.is-primary.is-light note])])]])
+  [_]
+  (r/with-let [show-details? (r/atom false)]
+    (fn [{{:keys [id
+                  appearance
+                  comment
+                  maker
+                  name
+                  notes
+                  smell
+                  style
+                  taste]
+           :as drink}       :drink
+          show-drink-modal! :show-drink-modal!}]
+      [:article.media
+       [:div.media-content.is-clipped
+        [:p.is-clipped [:strong name]]
+        [:div.tags.mb-1.mt-1
+         [:span.tag.is-small maker]
+         [:span.tag.is-small.is-primary style]]
+        [:div.mt-1.mb-1
+         [:p.is-size-7 [:strong "Overall: " [rating (common/calc-overall drink)]]]
+         [:p.is-size-7
+          [:span.mr-1 " Appearance: " [rating appearance]]
+          [:span.mr-1 " Smell: " [rating smell]]
+          [:span " Taste: " [rating taste]]]]
+
+        (when @show-details?
+          [:div.mt-2
+           (when (not-empty comment)
+             [:div.p-1 [:p.is-size-7 comment]])
+
+           (when (not-empty notes)
+             [:div
+              (for [note notes]
+                ^{:key note}
+                [:span.tag.is-small.is-primary.is-light note])])])
+
+        (when (or (not-empty comment) (not-empty notes))
+          [:div.mt-1
+           [:button.button.is-ghost.is-small.p-0.ml-1
+            {:on-click #(swap! show-details? not)}
+            (if @show-details?
+              "Less..."
+              "More...")]])
+
+        [:div.buttons.mt-2.is-pulled-right
+         [:button.button.is-outlined.is-circle.is-primary.is-small
+          {:on-click #(show-drink-modal! drink)}
+          [:span.icon
+           [:i.fas.fa-edit]]]
+         [:button.button.is-outlined.is-circle.is-danger.is-small
+          [:span.icon
+           [:i.fas.fa-trash]]]]]])))

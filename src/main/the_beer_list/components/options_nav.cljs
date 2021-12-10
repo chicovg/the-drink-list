@@ -7,8 +7,9 @@
      :field clicked-field}))
 
 (defn options-nav
-  [{set-search-term     :set-search-term
-    set-sort-state      :set-sort-state
+  [{set-search-term!    :set-search-term!
+    set-sort-state!     :set-sort-state!
+    show-drink-modal!   :show-drink-modal!
     {:keys [asc? field]
      :as   sort-state}  :sort-state}]
   [:nav.level
@@ -16,7 +17,7 @@
     [:div.level-item
      [:p.control.has-icons-left
       [:input.input.is-small
-       {:on-change   #(set-search-term (-> % .-target .-value))
+       {:on-change   #(set-search-term! (-> % .-target .-value))
         :placeholder "Search"}]
       [:span.icon.is-left
        [:i.fas.fa-search {:aria-hidden "true"}]]]]
@@ -27,18 +28,19 @@
         {:class    (when (= :date field) "is-active")
          :on-click #(-> sort-state
                         (new-sort-state :date)
-                        set-sort-state)}
+                        set-sort-state!)}
         "Sort by Date"]]
       [:p.control
        [:button.button.is-small
         {:class    (when (= :rating field) "is-active")
          :on-click #(-> sort-state
                         (new-sort-state :rating)
-                        set-sort-state)}
+                        set-sort-state!)}
         "Sort by Rating"]]]]
     [:div.level-item
      [:p.control
       [:button.button.is-primary.is-small
+       {:on-click #(show-drink-modal! {})}
        [:span.icon
         [:i.fas.fa-plus]]
        [:span
