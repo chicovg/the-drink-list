@@ -21,11 +21,22 @@
     search-term          :search-term
     {:keys [asc? field]} :sort-state
     show-drink-modal!    :show-drink-modal!}]
-  [:div.drink-list
-   (for [drnk (filter
-               (partial is-search-match search-term)
-               drinks)]
-     ^{:key (:id drnk)}
-     [drink/card
-      {:drink             drnk
-       :show-drink-modal! show-drink-modal!}])])
+  (let [filtered-drinks (filter
+                         (partial is-search-match search-term)
+                         drinks)]
+    [:div.drink-list
+     (cond
+       (empty? drinks)
+       [:div.notification.is-primary.is-light
+        "No drinks logged yet."]
+
+       (empty? filtered-drinks)
+       [:div.notification.is-primary.is-light
+        "No drinks match that search."]
+
+       :else
+       (for [drnk filtered-drinks]
+         ^{:key (:id drnk)}
+         [drink/card
+          {:drink             drnk
+           :show-drink-modal! show-drink-modal!}]))]))

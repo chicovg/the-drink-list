@@ -29,7 +29,7 @@
         [:div.card
          [:div.card-header
           [:p.card-header-title
-           (if drink
+           (if (not-empty drink)
              (str "Update " (:name @form-values))
              "Add a New Drink")]]
          [:form.form.p-4
