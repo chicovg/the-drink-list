@@ -128,7 +128,6 @@
                "Watery"
                "Warming"
                "Piquant"
-               "Alcholic"
 
                "Bubbly"
                "Flat"

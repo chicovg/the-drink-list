@@ -6,26 +6,40 @@
 
 (def dom-root (js/document.getElementById "app"))
 
+(defonce app-db (r/atom {:drinks nil
+                         :user   nil}))
+
+(defn- set-user
+  [user]
+  (swap! app-db assoc :user user))
+
+(defn- set-drinks
+  [drinks]
+  (swap! app-db assoc :drinks drinks))
+
+(defn- add-drink
+  [drink]
+  (swap! app-db update :drinks assoc (:id drink) drink))
+
 (defn- root
   []
-  (r/with-let [app-db   (r/atom {:drinks nil
-                                 :user   nil})
-               set-user #(swap! app-db assoc :user %)
-               _        (firebase/listen-to-auth set-user)
-               sign-in  #(firebase/sign-in set-user)
-               sign-out #(firebase/sign-out set-user)]
-    (fn []
-      (let [_ (when (and (:user @app-db) (nil? (:drinks @app-db)))
-                (firebase/get-drinks
-                 (.-uid (:user @app-db))
-                 #(swap! app-db assoc :drinks %)))]
-        (prn @app-db)
-        [main-page/main-page {:db       @app-db
-                              :sign-in  sign-in
-                              :sign-out sign-out}]))))
+  (let [uid (some-> @app-db :user :uid)
+        _   (when (and uid (nil? (:drinks @app-db)))
+              (firebase/get-drinks uid set-drinks))]
+    (prn @app-db)
+    [main-page/main-page {:drinks      (vals
+                                        (:drinks @app-db))
+                          :save-drink! (fn [drink on-success on-error]
+                                         (firebase/save-drink! uid drink add-drink on-success on-error))
+                          :sign-in     (fn []
+                                         (firebase/sign-in set-user))
+                          :sign-out    (fn []
+                                         (firebase/sign-out set-user set-drinks))
+                          :uid         uid}]))
 
 (defn ^:dev/after-load start []
   (js/console.log "start")
+  (firebase/listen-to-auth set-user)
   (dom/render [root] dom-root))
 
 (defn init []

@@ -1,4 +1,5 @@
-(ns the-beer-list.components.options-nav)
+(ns the-beer-list.components.options-nav
+  (:require [the-beer-list.types.drink :as drink-type]))
 
 (defn- new-sort-state [sort-state clicked-field]
   (if (= clicked-field (:field sort-state))
@@ -40,7 +41,7 @@
     [:div.level-item
      [:p.control
       [:button.button.is-primary.is-small
-       {:on-click #(show-drink-modal! {})}
+       {:on-click #(show-drink-modal! drink-type/default-values)}
        [:span.icon
         [:i.fas.fa-plus]]
        [:span

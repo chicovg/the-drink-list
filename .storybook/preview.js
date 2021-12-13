@@ -1,5 +1,4 @@
 import '../public/css/site.css';
-import '@yaireo/tagify/dist/tagify.css';
 import './overrides.css';
 
 export const parameters = {

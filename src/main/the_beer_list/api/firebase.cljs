@@ -4,9 +4,15 @@
                                      getAuth
                                      onAuthStateChanged
                                      signInWithPopup]]
-            ["firebase/firestore" :refer [collection
+            ["firebase/firestore" :refer [addDoc
+                                          collection
+                                          doc
                                           getDocs
-                                          getFirestore]]))
+                                          getFirestore
+                                          setDoc
+                                          Timestamp]]
+            [clojure.walk :as walk]
+            [the-beer-list.types.drink :as drink]))
 
 (defonce app (initializeApp
               (clj->js
@@ -21,30 +27,78 @@
 (defonce provider (GoogleAuthProvider.))
 (defonce db (getFirestore))
 
+(defn fb-user->user
+  [user]
+  {:uid (.-uid user)})
+
 (defn listen-to-auth
-  [on-auth-change]
-  (onAuthStateChanged
-   auth
-   on-auth-change))
+  [set-user]
+  (onAuthStateChanged auth #(set-user (fb-user->user %))))
 
 (defn sign-in
   [set-user]
   (-> (signInWithPopup auth provider)
-      (.then #((set-user (.-user %))
+      (.then #((set-user (fb-user->user (.-user %)))
                (js/console.log "Authenticated successfully")))
       (.catch #(js/console.log "Authentication failed " %))))
 
 (defn sign-out
-  [set-user]
+  [set-user set-drinks]
   (.signOut auth)
+  (set-drinks nil)
   (set-user nil))
+
+(defn- doc->clj-map
+  [doc]
+  (let [id (.-id doc)]
+    (some-> doc
+            .data
+            js->clj
+            walk/keywordize-keys
+            (assoc :id id))))
+
+(defn- date->timestamp
+  [date]
+  (some->> date
+           (.fromDate Timestamp)))
+
+(defn- timestamp->date
+  [^Timestamp ts]
+  (some-> ts
+          (.toDate)))
+
+(defn- doc->drink
+  [doc]
+  (-> doc
+      doc->clj-map
+      (update :created timestamp->date)
+      drink/set-overall))
 
 (defn get-drinks
   [uid set-drinks]
   (-> (getDocs (collection db "users" uid "drinks"))
       (.then (fn [qs]
-               (let [drinks (atom [])]
-                 (.forEach qs (fn [d]
-                                (js/console.log d)
-                                (swap! drinks conj d)))
+               (let [drinks (atom {})]
+                 (.forEach qs #(swap! drinks assoc (.-id %) (doc->drink %)))
                  (set-drinks @drinks))))))
+
+(defn save-drink!
+  [uid drink add-drink on-success on-error]
+  (if (:id drink)
+    (-> (setDoc (doc db "users" uid "drinks" (:id drink)) (-> drink
+                                                              (dissoc :id)
+                                                              (update :created date->timestamp)
+                                                              clj->js))
+        (.then #(add-drink drink))
+        (.then on-success)
+        (.catch on-error))
+    (let [timestamp (.now Timestamp)]
+      (-> (addDoc (collection db "users" uid "drinks") (-> drink
+                                                           (assoc :created timestamp)
+                                                           clj->js))
+          (.then #(add-drink (-> drink
+                                 (assoc :id (.-id %))
+                                 (assoc :created (.toDate timestamp))
+                                 drink/set-overall)))
+          (.then on-success)
+          (.catch on-error)))))

@@ -10,4 +10,7 @@
 
 (defn ^:export Default []
   (r/as-element [main-page/main-page {:drinks (drink-type/gen-drinks 20)
-                                      :user   {:email "t.testerton@gmail.com"}}]))
+                                      :uid    "abc"}]))
+
+(defn ^:export LoggedOut []
+  (r/as-element [main-page/main-page {}]))

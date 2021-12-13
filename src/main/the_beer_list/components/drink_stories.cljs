@@ -14,6 +14,7 @@
   (r/as-element [drink/card {:drink (assoc
                                      (drink-type/gen-drink)
                                      :comment example-comment
+                                     :created (js/Date. (- (js/Date.) 0))
                                      :notes   (drink-type/gen-notes 10))}]))
 
 (defn ^:export NoComment []

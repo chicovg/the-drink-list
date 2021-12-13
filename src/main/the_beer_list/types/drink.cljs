@@ -38,6 +38,7 @@
 
 (s/def ::notes (s/nilable (s/coll-of ::note)))
 (s/def ::comment (s/nilable string?))
+(s/def ::created inst?)
 
 (s/def ::drink
   (s/keys :req-un [::name
@@ -46,10 +47,17 @@
                    ::style
                    ::appearance
                    ::smell
-                   ::taste]
+                   ::taste
+                   ::created]
           :opt-un [::id
                    ::notes
                    ::comment]))
+
+(def default-values
+  {:type       "Beer"
+   :appearance 3
+   :smell      3
+   :taste      3})
 
 (defn round
   [n]
@@ -58,9 +66,23 @@
     (.round js/Math $)
     (/ $ 10)))
 
+(defn is-valid?
+  [drink]
+  (s/valid? ::drink drink))
+
+(defn calculate-overall
+  [{:keys [appearance smell taste]}]
+  (/ (+ appearance smell taste taste taste)
+     5))
+
+(defn set-overall
+  [drink]
+  (assoc drink :overall (round (calculate-overall drink))))
+
 (defn gen-drink []
   (-> (gen/generate (s/gen ::drink))
       (assoc :id (gen/generate (s/gen ::id)))
+      set-overall
       (update :appearance round)
       (update :smell round)
       (update :taste round)
