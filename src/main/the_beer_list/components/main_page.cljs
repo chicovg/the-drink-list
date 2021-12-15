@@ -26,19 +26,25 @@
           sign-out    :sign-out
           uid         :uid}]
       [:<>
-       [:header
-        [:div.container.is-max-desktop.is-flex.is-justify-content-space-between.is-align-items-center.has-background-primary-light.mt-2
-          ;; TODO can I put an icon here?
-          ;; TODO make this a fixed top nav???
-         [:p.card-header-title "The Drink List"]
+       [:header.container.is-max-desktop
+        ;; TODO can I put an icon here?
+        [:nav.navbar.is-primary
+         [:div.navbar-brand
+          [:div.navbar-item
+           [:p.is-size-4.has-text-weight-semi-bold.ml-2
+            "T" [:span.is-size-7 "he"]
+            "D" [:span.is-size-7 "rink"]
+            "L" [:span.is-size-7 "ist"]]]]
          (when uid
-           [:button.button.is-ghost.is-small
-            {:on-click #(sign-out)}
-            [:span.icon.mr-0
-             [:i.fas.fa-sign-out-alt]]
-            "Logout"])]]
+           [:div.navbar-end
+            [:div.navbar-item
+             [:button.button.is-light.is-small
+              {:on-click #(sign-out)}
+              [:span.icon.mr-0
+               [:i.fas.fa-sign-out-alt]]
+              "Logout"]]])]]
        [:section
-        [:div.container.is-max-desktop.has-background-white
+        [:div.container.is-max-desktop
          (if uid
            [:div.pt-2.pb-2
             (when @show-drink-modal?
@@ -46,14 +52,13 @@
                                        :hide-drink-modal!      hide-drink-modal!
                                        :save-drink!            save-drink!
                                        :set-drink-modal-drink! set-drink-modal-drink!}])
-            [:div.pl-4.pr-4.pb-2
-             [options-nav/options-nav {:set-search-term!  set-search-term!
-                                       :set-sort-state!   set-sort-state!
-                                       :show-drink-modal! show-drink-modal!
-                                       :sort-state        @sort-state}]
-             [drink-list/drink-list {:drinks            drinks
-                                     :search-term       @search-term
-                                     :show-drink-modal! show-drink-modal!
-                                     :sort-state        @sort-state}]]]
+            [options-nav/options-nav {:set-search-term!  set-search-term!
+                                      :set-sort-state!   set-sort-state!
+                                      :show-drink-modal! show-drink-modal!
+                                      :sort-state        @sort-state}]
+            [drink-list/drink-list {:drinks            drinks
+                                    :search-term       @search-term
+                                    :show-drink-modal! show-drink-modal!
+                                    :sort-state        @sort-state}]]
            [:div
             [login-panel/login-panel {:sign-in sign-in}]])]]])))

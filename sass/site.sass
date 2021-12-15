@@ -9,15 +9,8 @@
 @import './tagify.css'
 
 html
-  background: $grey-lightest
+  background: $white-ter
   height: 100%
-
-.beer-card
-  min-width: 280px
-  max-width: 500px
-
-  .card-header-title
-    display: inline-block
 
 .media-content
   overflow-x: hidden;
@@ -35,6 +28,18 @@ p.is-clipped
   overflow: scroll;
   display: -webkit-box;
   -webkit-line-clamp: 1;
+
+.overall
+  font-weight: bold
+
+  &.lt-2
+    color: $red
+  &.lt-3
+    color: $orange
+  &.lt-4
+    color: $green
+  &.lt-5
+    color: $turquoise
 
 .rating
   &__lt-2

@@ -4,7 +4,7 @@
   [millis divisor base]
   (let [quantity (int (/ millis divisor))
         message  (str base (when (> quantity 1) "s") " ago")]
-    (str "Logged " quantity " " message)))
+    (str quantity " " message)))
 
 (defn- duration-message
   [diff-in-millis]
@@ -25,10 +25,10 @@
     (quantity-and-message diff-in-millis (* 1000 60 60) "hour")
 
     (>= diff-in-millis (* 1000 60))
-    (quantity-and-message diff-in-millis (* 1000 60) "minute")
+    (quantity-and-message diff-in-millis (* 1000 60) "min")
 
     :else
-    "Logged <1 minute ago"))
+    "<1 min"))
 
 (defn logged-at
   [date]
