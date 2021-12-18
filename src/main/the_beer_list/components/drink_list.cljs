@@ -13,20 +13,25 @@
             (str/includes? (str/lower-case type) term)
             (str/includes? (str/lower-case style) term)))))
 
-
-;; TODO
-;; implement sorting
+(defn- sort-fn
+  [{:keys [asc? field]}]
+  (cond->> #(sort-by field %)
+    (not asc?)
+    (comp reverse)))
 
 (defn drink-list
-  [{drinks               :drinks
-    search-term          :search-term
-    {:keys [asc? field]} :sort-state
-    show-drink-modal!    :show-drink-modal!
-    show-delete-modal!   :show-delete-modal!}]
-  (let [filtered-drinks (->> drinks
+  [{drinks             :drinks
+    search-term        :search-term
+    sort-state         :sort-state
+    show-drink-modal!  :show-drink-modal!
+    show-delete-modal! :show-delete-modal!}]
+  (prn sort-state)
+  (let [sort-drinks     (sort-fn sort-state)
+        filtered-drinks (->> drinks
                              (filter drink-type/is-valid?)
-                             (filter (partial is-search-match search-term)))]
-    [:div.drink-list
+                             (filter (partial is-search-match search-term))
+                             sort-drinks)]
+    [:div
      (cond
        (empty? drinks)
        [:div.notification.is-primary.is-light

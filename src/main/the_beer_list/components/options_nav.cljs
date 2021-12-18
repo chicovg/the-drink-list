@@ -17,24 +17,28 @@
     {:asc?  false
      :field clicked-field}))
 
+(defn- sort-button
+  [label for-field {:keys [asc? field] :as sort-state} set-sort-state!]
+  (let [active? (= field for-field)]
+    [:p.control
+     [:button.button.is-small
+      {:class (when active? "is-active")
+       :on-click #(-> sort-state
+                      (new-sort-state for-field)
+                      set-sort-state!)}
+      [:span label]
+      (when active?
+        [:span.icon
+         (if asc?
+           [:i.fas.fa-sort-amount-up]
+           [:i.fas.fa-sort-amount-down])])]]))
+
 (defn- sort-buttons
-  [field sort-state set-sort-state!]
+  [sort-state set-sort-state!]
   [:div.level-item
    [:div.field.has-addons
-    [:p.control
-     [:button.button.is-small
-      {:class    (when (= :date field) "is-active")
-       :on-click #(-> sort-state
-                      (new-sort-state :date)
-                      set-sort-state!)}
-      "Sort by Date"]]
-    [:p.control
-     [:button.button.is-small
-      {:class    (when (= :rating field) "is-active")
-       :on-click #(-> sort-state
-                      (new-sort-state :rating)
-                      set-sort-state!)}
-      "Sort by Rating"]]]])
+    [sort-button "Date" :date sort-state set-sort-state!]
+    [sort-button "Rating" :overall sort-state set-sort-state!]]])
 
 (defn- new-drink-button
   [show-drink-modal!]
@@ -47,15 +51,13 @@
      [:span "New"]]]])
 
 (defn options-nav
-  [{set-search-term!    :set-search-term!
-    set-sort-state!     :set-sort-state!
-    show-drink-modal!   :show-drink-modal!
-    {:keys [asc? field]
-     :as   sort-state}  :sort-state}]
+  [{set-search-term!  :set-search-term!
+    set-sort-state!   :set-sort-state!
+    show-drink-modal! :show-drink-modal!
+    sort-state        :sort-state}]
   [:nav.level.mr-2.ml-2
    [:div.level-left
     [search-input set-search-term!]]
    [:div.level-right
-    ;; TODO note sure how I want to present this...
-    #_[sort-buttons field sort-state set-sort-state!]
+    [sort-buttons sort-state set-sort-state!]
     [new-drink-button show-drink-modal!]]])
