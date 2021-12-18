@@ -10,115 +10,85 @@
    {:class (common/rating-class overall)}
    overall])
 
+(defn- summary
+  [{:keys [created name maker style]}]
+  [:<>
+   [:p.is-clipped.mr-2 [:strong name]]
+   [:p.mr-2.is-size-7 maker]
+   [:p.is-size-7.is-italic style]
+   [:p.is-size-8.is-italic [logged-at/logged-at created]]])
+
 (defn- actions
-  [show-details?]
+  [{:keys [on-details-toggle
+           on-edit
+           on-delete
+           show-details?]}]
   [:nav.level.is-mobile
    [:div.level-left
-    [:a.level-item {:on-click #(swap! show-details? not)}
+    [:a.level-item {:on-click on-details-toggle}
      [:span.icon.is-small
       [:i.fas {:aria-hidden "true"
-               :class       (if @show-details?
+               :class       (if show-details?
                               "fa-chevron-up"
                               "fa-chevron-down")}]]]
-    [:a.level-item
+    [:a.level-item {:on-click on-edit}
      [:span.icon.is-small
       [:i.fas.fa-edit {:aria-hidden "true"}]]]
-    [:a.level-item
+    [:a.level-item {:on-click on-delete}
      [:span.icon.is-small
       [:i.fas.fa-trash {:aria-hidden "true"}]]]]])
+
+(defn- rating-row
+  [name rating bold?]
+  [:div.is-flex.is-size-7
+   {:class (when bold? "has-text-weight-bold")}
+   [:p name]
+   [:div.dots.is-flex-grow-2]
+   [:p rating]])
+
+(defn- details
+  [{:keys [appearance
+           comment
+           overall
+           notes
+           smell
+           taste]}]
+  [:<>
+   [:div.columns
+    [:div.column.is-half
+     [:h6 "Ratings"]
+     [rating-row "Overall" overall true]
+     [rating-row "Appearance" appearance false]
+     [rating-row "Smell" smell false]
+     [rating-row "Taste" taste false]]
+    [:div.column.is-half
+     [:h6 "Comments"]
+     [:p.is-size-7 comment]]]
+   (when (not-empty notes)
+     [:div.mb-4.is-flex
+      (for [note notes]
+        ^{:key note}
+        [:span.tag.is-small.is-primary.is-light.mr-2 note])])])
 
 (defn card
   [_]
   (r/with-let [show-details? (r/atom false)]
-    (fn [{{:keys [created
-                  name
-                  maker
-                  overall
-                  style]} :drink}]
+    (fn [{{:keys [id
+                  overall]
+           :as drink}        :drink
+          show-drink-modal!  :show-drink-modal!
+          show-delete-modal! :show-delete-modal!}]
       [:div.box
        [:article.media
         [:div.media-content
          [overall-rating-badge overall]
-         [:p.is-clipped.mr-2 [:strong name]]
-         [:p.mr-2.is-size-7 maker]
-         [:p.is-size-7.is-italic style]
-         [:p.is-size-8.is-italic [logged-at/logged-at created]]
+         [summary drink]
          [:div.mb-2]
 
-         ;; TODO collapsable details
-         ;; other ratings
-         ;; tags
-         ;; comment
-         ;; [:div.tags.mb-1.mt-1
-         ;;  [:span.tag.is-small maker]
-         ;;  [:span.tag.is-small.is-primary style]]
+         (when @show-details?
+           [details drink])
 
-         [actions show-details?]]]])))
-
-(defn- rating
-  [value]
-  [:span {:class (common/rating-class value)}
-   (if value
-     (.toFixed value 1)
-     "-")])
-
-#_(defn card
-    [_]
-    (r/with-let [show-details? (r/atom false)]
-      (fn [{{:keys [id
-                    overall
-                    appearance
-                    comment
-                    created
-                    maker
-                    name
-                    notes
-                    smell
-                    style
-                    taste]
-             :as drink}       :drink
-            show-drink-modal! :show-drink-modal!}]
-        [:article.media
-         [:div.media-content.is-clipped
-          [:p.is-clipped [:strong name]]
-
-          [:div.tags.mb-1.mt-1
-           [:span.tag.is-small maker]
-           [:span.tag.is-small.is-primary style]]
-
-          [:div.mt-1.mb-1
-           [:p.is-size-7 [:strong "Overall: " [rating overall]]]
-           [:p.is-size-7
-            [:span.mr-1 " Appearance: " [rating appearance]]
-            [:span.mr-1 " Smell: " [rating smell]]
-            [:span " Taste: " [rating taste]]]]
-
-          [logged-at/logged-at created]
-
-          (when @show-details?
-            [:div.mt-2
-             (when (not-empty comment)
-               [:div.p-1 [:p.is-size-7 comment]])
-
-             (when (not-empty notes)
-               [:div
-                (for [note notes]
-                  ^{:key note}
-                  [:span.tag.is-small.is-primary.is-light note])])])
-
-          (when (or (not-empty comment) (not-empty notes))
-            [:div.mt-1
-             [:button.button.is-ghost.is-small.p-0.ml-1
-              {:on-click #(swap! show-details? not)}
-              (if @show-details?
-                "Less..."
-                "More...")]])
-
-          [:div.buttons.mt-2
-           [:button.button.is-outlined.is-circle.is-primary.is-small
-            {:on-click #(show-drink-modal! drink)}
-            [:span.icon
-             [:i.fas.fa-edit]]]
-           [:button.button.is-outlined.is-circle.is-danger.is-small
-            [:span.icon
-             [:i.fas.fa-trash]]]]]])))
+         [actions {:on-details-toggle #(swap! show-details? not)
+                   :on-delete         #(show-delete-modal! id)
+                   :on-edit           #(show-drink-modal! drink)
+                   :show-details?     @show-details?}]]]])))

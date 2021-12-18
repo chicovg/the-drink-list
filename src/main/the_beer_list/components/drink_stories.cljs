@@ -13,24 +13,24 @@
 (defn ^:export Default []
   (r/as-element [drink/card {:drink (assoc
                                      (drink-type/gen-drink)
-                                     :comment example-comment
-                                     :created (js/Date. (- (js/Date.) 0))
-                                     :notes   (drink-type/gen-notes 10))}]))
+                                     :comment       example-comment
+                                     :created       (js/Date. (- (js/Date.) 0))
+                                     :notes         (drink-type/gen-notes 10))}]))
 
 (defn ^:export NoComment []
   (r/as-element [drink/card {:drink (assoc
                                      (drink-type/gen-drink)
-                                     :comment nil
-                                     :notes   (drink-type/gen-notes 10))}]))
+                                     :comment       nil
+                                     :notes         (drink-type/gen-notes 10))}]))
 
 (defn ^:export ShortComment []
   (r/as-element [drink/card {:drink (assoc
                                      (drink-type/gen-drink)
-                                     :comment "Not much to say"
-                                     :notes   (drink-type/gen-notes 10))}]))
+                                     :comment       "Not much to say"
+                                     :notes         (drink-type/gen-notes 10))}]))
 
 (defn ^:export NoNotes []
   (r/as-element [drink/card {:drink (assoc
                                      (drink-type/gen-drink)
-                                     :comment example-comment
-                                     :notes   nil)}]))
+                                     :comment       example-comment
+                                     :notes         nil)}]))

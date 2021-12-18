@@ -5,7 +5,7 @@
   [set-search-term!]
   [:div.level-item
    [:p.control.has-icons-left
-    [:input.input.is-small
+    [:input.input.is-small.search-input
      {:on-change   #(set-search-term! (-> % .-target .-value))
       :placeholder "Search"}]
     [:span.icon.is-left

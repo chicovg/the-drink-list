@@ -21,21 +21,26 @@
   [drink]
   (swap! app-db update :drinks assoc (:id drink) drink))
 
+(defn- remove-drink
+  [id]
+  (swap! app-db update :drinks dissoc id))
+
 (defn- root
   []
   (let [uid (some-> @app-db :user :uid)
         _   (when (and uid (nil? (:drinks @app-db)))
               (firebase/get-drinks uid set-drinks))]
-    (prn @app-db)
-    [main-page/main-page {:drinks      (vals
-                                        (:drinks @app-db))
-                          :save-drink! (fn [drink on-success on-error]
-                                         (firebase/save-drink! uid drink add-drink on-success on-error))
-                          :sign-in     (fn []
-                                         (firebase/sign-in set-user))
-                          :sign-out    (fn []
-                                         (firebase/sign-out set-user set-drinks))
-                          :uid         uid}]))
+    [main-page/main-page {:delete-drink! (fn [id on-success on-error]
+                                           (firebase/delete-drink! uid id remove-drink on-success on-error))
+                          :drinks        (vals
+                                          (:drinks @app-db))
+                          :save-drink!   (fn [drink on-success on-error]
+                                           (firebase/save-drink! uid drink add-drink on-success on-error))
+                          :sign-in       (fn []
+                                           (firebase/sign-in set-user))
+                          :sign-out      (fn []
+                                           (firebase/sign-out set-user set-drinks))
+                          :uid           uid}]))
 
 (defn ^:dev/after-load start []
   (js/console.log "start")

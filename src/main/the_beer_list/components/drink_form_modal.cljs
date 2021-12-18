@@ -2,8 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [the-beer-list.components.form :as form]
             [the-beer-list.types.beer-flavors :as beer-flavors]
-            [the-beer-list.types.drink :as drink-type]
-            [the-beer-list.components.common :as common]))
+            [the-beer-list.types.drink :as drink-type]))
 
 (s/def ::drink-form
   (s/keys :req-un [::drink-type/name
@@ -121,7 +120,7 @@
          {:disabled (not (s/valid? ::drink-form drink))
           :on-click (fn []
                       (save-drink!
-                       drink
+                       (dissoc drink :overall)
                        #(hide-drink-modal!)
                            ;; TODO show an error here
                        #(prn %)))

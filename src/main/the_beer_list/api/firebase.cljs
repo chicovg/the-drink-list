@@ -6,6 +6,7 @@
                                      signInWithPopup]]
             ["firebase/firestore" :refer [addDoc
                                           collection
+                                          deleteDoc
                                           doc
                                           getDocs
                                           getFirestore
@@ -89,7 +90,7 @@
                                                               (dissoc :id)
                                                               (update :created date->timestamp)
                                                               clj->js))
-        (.then #(add-drink drink))
+        (.then #(add-drink (drink/set-overall drink)))
         (.then on-success)
         (.catch on-error))
     (let [timestamp (.now Timestamp)]
@@ -102,3 +103,10 @@
                                  drink/set-overall)))
           (.then on-success)
           (.catch on-error)))))
+
+(defn delete-drink!
+  [uid drink-id delete-drink on-success on-error]
+  (-> (deleteDoc (doc db "users" uid "drinks" drink-id))
+      (.then #(delete-drink drink-id))
+      (.then on-success)
+      (.catch on-error)))

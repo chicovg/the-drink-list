@@ -34,6 +34,7 @@
     "karma-chrome-launcher": "^3.0.0",
     "karma-cljs-test": "^0.1.0",
     "node-sass": "^6.0.1",
+    "npm-run-all": "^4.1.5",
     "postcss-cli": "^9.0.2"
   },
   "scripts": {
@@ -44,6 +45,7 @@
     "css:build": "npm run css:compile && css:prefix && css:minify",
     "dev": "shadow-cljs watch app",
     "dev-stories": "shadow-cljs watch stories",
+    "start": "run-p -l dev dev-stories css:watch",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

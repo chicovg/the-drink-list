@@ -2,8 +2,8 @@
 
 (defn login-panel
   [{:keys [sign-in]}]
-  [:<>
-   [:p.pb-4
+  [:div.box.mt-2
+   [:p.mb-4
     "Log in with Google to start tracking your drinks!"]
    [:button.button.is-link
     {:on-click #(sign-in)}

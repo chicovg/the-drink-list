@@ -15,14 +15,14 @@
 
 
 ;; TODO
-;; I need date on the drink data
-;; I need to populate the overall rating - should I do this earlier? i.e. when getting the data
+;; implement sorting
 
 (defn drink-list
   [{drinks               :drinks
     search-term          :search-term
     {:keys [asc? field]} :sort-state
-    show-drink-modal!    :show-drink-modal!}]
+    show-drink-modal!    :show-drink-modal!
+    show-delete-modal!   :show-delete-modal!}]
   (let [filtered-drinks (->> drinks
                              (filter drink-type/is-valid?)
                              (filter (partial is-search-match search-term)))]
@@ -40,5 +40,6 @@
        (for [drnk filtered-drinks]
          ^{:key (:id drnk)}
          [drink/card
-          {:drink             drnk
-           :show-drink-modal! show-drink-modal!}]))]))
+          {:drink              drnk
+           :show-drink-modal!  show-drink-modal!
+           :show-delete-modal! show-delete-modal!}]))]))

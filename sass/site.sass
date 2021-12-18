@@ -1,5 +1,15 @@
 @charset 'utf-8';
 
+$indigo-dye: #004777;
+$rufous: #A30000;
+$safety-orange: #FF7700;
+$buff: #EFD28D;
+$verdigris: #00AFB5;
+
+$primary: $indigo-dye;
+$link: $verdigris;
+$danger: $rufous;
+
 @import '../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss'
 @import '../node_modules/@fortawesome/fontawesome-free/scss/brands.scss'
 @import '../node_modules/@fortawesome/fontawesome-free/scss/regular.scss'
@@ -12,11 +22,21 @@ html
   background: $white-ter
   height: 100%
 
+.box:not(:last-child)
+  margin-bottom: 1em;
+
+.dots
+  border-bottom: dotted 2px $grey-lighter
+  margin: 0 8px 4px 8px;
+
 .media-content
   overflow-x: hidden;
 
 p.is-clipped
   text-overflow: ellipsis;
+
+.is-size-8
+  font-size: 0.5rem
 
 .line-clamp-3
   overflow: hidden;
@@ -51,5 +71,5 @@ p.is-clipped
   &__lt-5
     color: $turquoise
 
-.is-size-8
-  font-size: 0.5rem
+.search-input
+  width: 280px;
