@@ -19,16 +19,18 @@
                sort-state             (r/atom {:field :date
                                                :asc?  false})
 
-               hide-delete-modal!        #(reset! show-delete-modal? false)
-               hide-drink-modal!         #(reset! show-drink-modal? false)
-               set-delete-modal-drink-id #(reset! delete-modal-drink-id %)
-               set-drink-modal-drink!    #(reset! drink-modal-drink %)
-               set-search-term!          #(reset! search-term %)
-               set-sort-state!           #(reset! sort-state %)
-               show-delete-modal!        #((set-delete-modal-drink-id %)
-                                           (reset! show-delete-modal? true))
-               show-drink-modal!         #((set-drink-modal-drink! %1)
-                                           (reset! show-drink-modal? true))]
+               hide-delete-modal!         #(reset! show-delete-modal? false)
+               hide-drink-modal!          #(reset! show-drink-modal? false)
+               set-delete-modal-drink-id! #(reset! delete-modal-drink-id %)
+               set-drink-modal-drink!     #(reset! drink-modal-drink %)
+               set-search-term!           #(reset! search-term %)
+               set-sort-state!            #(reset! sort-state %)
+               show-delete-modal!         (fn [id]
+                                            (set-delete-modal-drink-id! id)
+                                            (reset! show-delete-modal? true))
+               show-drink-modal!          (fn [drink]
+                                            (set-drink-modal-drink! drink)
+                                            (reset! show-drink-modal? true))]
     (fn [{delete-drink! :delete-drink!
           drinks        :drinks
           save-drink!   :save-drink!
