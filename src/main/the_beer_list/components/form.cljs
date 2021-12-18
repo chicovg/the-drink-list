@@ -90,12 +90,12 @@
                    (get o "value")))))
 
 (defn select-tags-input
-  [{:keys [id label options placeholder value]}]
+  [{:keys [id label on-change options placeholder value]}]
   [:div.field
    [:label.label {:for id} label]
    [:div.control
     [:> Tags (cond-> {:id          id
-                      :on-change   #(prn (event->tag-values %))
+                      :on-change   #(on-change (event->tag-values %))
                       :placeholder placeholder
                       :settings    {:add-tags-on-blur true
                                     :dropdown         {:enabled 0}

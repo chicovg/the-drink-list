@@ -16,7 +16,7 @@
    [:p.is-clipped.mr-2 [:strong name]]
    [:p.mr-2.is-size-7 maker]
    [:p.is-size-7.is-italic style]
-   [:p.is-size-8.is-italic [logged-at/logged-at created]]])
+   [logged-at/logged-at created]])
 
 (defn- actions
   [{:keys [on-details-toggle

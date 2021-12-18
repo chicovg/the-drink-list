@@ -33,4 +33,4 @@
 (defn logged-at
   [date]
   (let [diff-in-millis (- (js/Date.) date)]
-    [:p.is-size-8 [:em (duration-message diff-in-millis)]]))
+    [:p.is-size-8.is-italic (duration-message diff-in-millis)]))

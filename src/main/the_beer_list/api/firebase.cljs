@@ -13,7 +13,8 @@
                                           setDoc
                                           Timestamp]]
             [clojure.walk :as walk]
-            [the-beer-list.types.drink :as drink]))
+            [the-beer-list.types.drink :as drink]
+            [clojure.string :as str]))
 
 (defonce app (initializeApp
               (clj->js

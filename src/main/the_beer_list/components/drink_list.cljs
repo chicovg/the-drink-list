@@ -25,7 +25,6 @@
     sort-state         :sort-state
     show-drink-modal!  :show-drink-modal!
     show-delete-modal! :show-delete-modal!}]
-  (prn sort-state)
   (let [sort-drinks     (sort-fn sort-state)
         filtered-drinks (->> drinks
                              (filter drink-type/is-valid?)
