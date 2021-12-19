@@ -1,7 +1,7 @@
 (ns runners.doo
   (:require [doo.runner :refer-macros [doo-tests]]
-            [the-beer-list.core-test]
-            [the-beer-list.views-test]))
+            [the-drink-list.core-test]
+            [the-drink-list.views-test]))
 
-(doo-tests 'the-beer-list.core-test
-           'the-beer-list.views-test)
+(doo-tests 'the-drink-list.core-test
+           'the-drink-list.views-test)

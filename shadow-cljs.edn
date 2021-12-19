@@ -12,7 +12,7 @@
 
  :builds
  {:app {:target  :browser
-        :modules {:main {:init-fn the-beer-list.core/init}}}
+        :modules {:main {:init-fn the-drink-list.core/init}}}
   :stories {:target :npm-module
             :ns-regexp ".*stories$"
             :output-dir "public/js/stories"}}}

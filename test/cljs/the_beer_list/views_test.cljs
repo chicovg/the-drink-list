@@ -1,13 +1,13 @@
-(ns the-beer-list.views-test
+(ns the-drink-list.views-test
   (:require [cljs.core :refer-macros [with-redefs]]
             [cljs.test :refer-macros [is testing]]
             [devcards.core :refer-macros [deftest]]
             [re-frame.core :as rf]
             [reagent.core :refer [atom]]
-            [the-beer-list.events :as events]
-            [the-beer-list.views :as views]
-            [the-beer-list.paths :as paths]
-            [the-beer-list.subs :as subs]))
+            [the-drink-list.events :as events]
+            [the-drink-list.views :as views]
+            [the-drink-list.paths :as paths]
+            [the-drink-list.subs :as subs]))
 
 ;; form fields
 

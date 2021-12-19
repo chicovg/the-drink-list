@@ -1,10 +1,10 @@
-(ns the-beer-list.core-test
+(ns the-drink-list.core-test
   (:require [cljs.test :refer-macros [is testing]]
             [devcards.core :refer-macros [deftest]]
             [re-frame.core :as rf]
             [day8.re-frame.test :as rf-test]
-            [the-beer-list.events :as events]
-            [the-beer-list.subs :as subs]))
+            [the-drink-list.events :as events]
+            [the-drink-list.subs :as subs]))
 
 ;; user
 

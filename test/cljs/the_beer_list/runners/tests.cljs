@@ -1,3 +1,3 @@
 (ns runners.tests
-  (:require [the-beer-list.core-test]
-            [the-beer-list.views-test]))
+  (:require [the-drink-list.core-test]
+            [the-drink-list.views-test]))

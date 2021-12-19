@@ -7,6 +7,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "@storybook/client-api": "^6.4.9",
+    "@storybook/client-logger": "^6.4.9",
     "@yaireo/tagify": "^4.9.2",
     "bulma": "^0.9.3",
     "bulma-slider": "^2.0.4",
@@ -29,9 +31,6 @@
     "babel-loader": "^8.2.3",
     "clean-css-cli": "^5.4.2",
     "fs-extra": "^10.0.0",
-    "karma": "^4.2.0",
-    "karma-chrome-launcher": "^3.0.0",
-    "karma-cljs-test": "^0.1.0",
     "node-sass": "^6.0.1",
     "npm-run-all": "^4.1.5",
     "postcss": "8.4.5",
@@ -45,19 +44,19 @@
     "css:build": "npm run css:compile && npm run css:minify",
     "dev": "shadow-cljs watch app",
     "dev-stories": "shadow-cljs watch stories",
-    "start": "run-p -l dev dev-stories css:watch",
+    "start": "run-p -l dev css:watch",
     "storybook": "start-storybook -p 6006",
+    "start-storybook": "run-p -l dev-stories css:watch storybook",
     "release": "npm run css:build && shadow-cljs release app"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chicovg/the-beer-list.git"
+    "url": "git+https://github.com/chicovg/the-drink-list.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/chicovg/the-beer-list/issues"
+    "url": "https://github.com/chicovg/the-drink-list/issues"
   },
-  "homepage": "https://github.com/chicovg/the-beer-list#readme",
-  "type": "module"
+  "homepage": "https://github.com/chicovg/the-drink-list#readme"
 }
