@@ -14,7 +14,8 @@ jobs:
           paths:
             - ./node_modules
       - run: npm run release
-          
+      - run: npm run firebase deploy --token=$FIREBASE_TOKEN
+
 workflows:
   deploy:
     jobs:
