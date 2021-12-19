@@ -40,7 +40,7 @@
   []
   (r/track vals (:drinks @app-db)))
 
-(defn set-drinks
+(defn set-drinks!
   [drinks]
   (swap! app-db assoc :drinks drinks))
 
@@ -54,10 +54,7 @@
 
 (defn load-drinks!
   [uid]
-  (when (and uid (not (:drinks-loaded? @app-db)))
-    (prn "loading")
-    (firebase/get-drinks uid set-drinks)
-    (swap! app-db assoc :drinks-loaded? true)))
+  (firebase/get-drinks uid set-drinks!))
 
 (declare uid)
 
@@ -138,14 +135,17 @@
   []
   (r/track get-in @app-db [:user :uid]))
 
-(defn set-user
+(defn set-user!
   [user]
-  (swap! app-db assoc :user user))
+  (swap! app-db assoc :user user)
+  (if (:uid user)
+    (load-drinks! (:uid user))
+    (set-drinks! nil)))
 
 (defn sign-in
   []
-  (firebase/sign-in set-user))
+  (firebase/sign-in set-user!))
 
 (defn sign-out
   []
-  (firebase/sign-out set-user set-drinks))
+  (firebase/sign-out set-user!))

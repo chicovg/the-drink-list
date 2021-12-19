@@ -46,9 +46,8 @@
       (.catch #(js/console.log "Authentication failed " %))))
 
 (defn sign-out
-  [set-user set-drinks]
+  [set-user]
   (.signOut auth)
-  (set-drinks nil)
   (set-user nil))
 
 (defn- doc->clj-map

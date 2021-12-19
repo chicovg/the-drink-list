@@ -18,8 +18,7 @@
         show-delete-modal?    @(db/show-delete-modal?)
         show-drink-modal?     @(db/show-drink-modal?)
         sort-state            @(db/sort-state)
-        uid                   @(db/uid)
-        _                     (db/load-drinks! uid)]
+        uid                   @(db/uid)]
     [:<>
      [:header.container.is-max-desktop
         ;; TODO can I put an icon here?

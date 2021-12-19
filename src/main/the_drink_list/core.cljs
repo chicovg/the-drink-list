@@ -9,7 +9,7 @@
 
 (defn ^:dev/after-load start []
   (js/console.log "start")
-  (firebase/listen-to-auth db/set-user)
+  (firebase/listen-to-auth db/set-user!)
   (dom/render [main-page/main-page] dom-root))
 
 (defn init []
