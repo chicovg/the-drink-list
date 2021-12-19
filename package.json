@@ -50,7 +50,8 @@
     "start": "run-p -l dev css:watch",
     "storybook": "start-storybook -p 6006",
     "start-storybook": "run-p -l dev-stories css:watch storybook",
-    "release": "npm run css:build && shadow-cljs release app"
+    "release": "npm run css:build && shadow-cljs release app",
+    "deploy": "firebase deploy"
   },
   "repository": {
     "type": "git",
