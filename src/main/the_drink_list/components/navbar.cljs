@@ -1,7 +1,9 @@
-(ns the-drink-list.components.navbar)
+(ns the-drink-list.components.navbar
+  (:require
+    [the-drink-list.db :as db]))
 
 (defn navbar
-  [{:keys [sign-out uid]}]
+  [{uid :uid}]
   [:nav.navbar.is-primary
    [:div.navbar-brand
     [:div.navbar-item
@@ -11,7 +13,7 @@
      [:div.navbar-end
       [:div.navbar-item
        [:button.button.is-light.is-small
-        {:on-click #(sign-out)}
+        {:on-click #(db/sign-out)}
         [:span.icon.mr-0
          [:i.fas.fa-sign-out-alt]]
         "Logout"]]])])

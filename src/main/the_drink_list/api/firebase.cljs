@@ -31,7 +31,8 @@
 
 (defn fb-user->user
   [user]
-  {:uid (.-uid user)})
+  (when user
+    {:uid (.-uid user)}))
 
 (defn listen-to-auth
   [set-user]
