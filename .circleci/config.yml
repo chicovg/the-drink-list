@@ -1,25 +1,15 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@4.7 
-  openjdk-install: cloudesire/openjdk-install@1.2.3
-
 jobs:
-  # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  install-deps:
+  package-and-deploy:
     docker:
-      - image: 'cimg/base:stable'
+      - image: 'cimg/openjdk:11.0-node'
     steps:
       - checkout
-      - node/install
-      - node/install-packages:
-          # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: npm
-      - run: sudo apt install openjdk-11-jdk
+      - run: npm install
+      - run: npm release
           
 workflows:
   deploy:
     jobs:
-      - install-deps
-      # For running simple node tests, you could optionally use the node/test job from the orb to replicate and replace the job above in fewer lines.
-      # - node/test
+      - package-and-deploy
