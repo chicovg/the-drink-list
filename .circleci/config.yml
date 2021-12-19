@@ -6,7 +6,13 @@ jobs:
       - image: 'cimg/openjdk:11.0-node'
     steps:
       - checkout
+      - restore_cache:
+          key: 'v1-yarn-{{ checksum "package-lock.json" }}'
       - run: npm install
+      - save_cache:
+          key: 'v1-yarn-{{ checksum "package-lock.json" }}'
+          paths:
+            - ./node_modules
       - run: npm run release
           
 workflows:
