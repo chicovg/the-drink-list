@@ -11,13 +11,14 @@ jobs:
       - image: 'cimg/base:stable'
     steps:
       - checkout
+      - node/install
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
       - openjdk-install/openjdk:
           version: 11
           cache_version: 1
-
+          
 workflows:
   deploy:
     jobs:
