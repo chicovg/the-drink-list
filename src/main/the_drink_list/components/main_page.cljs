@@ -16,7 +16,7 @@
                search-term            (r/atom "")
                show-delete-modal?     (r/atom false)
                show-drink-modal?      (r/atom false)
-               sort-state             (r/atom {:field :date
+               sort-state             (r/atom {:field :created
                                                :asc?  false})
 
                hide-delete-modal!         #(reset! show-delete-modal? false)

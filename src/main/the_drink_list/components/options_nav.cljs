@@ -37,7 +37,7 @@
   [sort-state set-sort-state!]
   [:div.level-item
    [:div.field.has-addons
-    [sort-button "Date" :date sort-state set-sort-state!]
+    [sort-button "Date" :created sort-state set-sort-state!]
     [sort-button "Rating" :overall sort-state set-sort-state!]]])
 
 (defn- new-drink-button
