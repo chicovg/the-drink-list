@@ -1,9 +1,9 @@
-(ns the-drink-list.components.delete-modal)
+(ns the-drink-list.components.delete-modal
+  (:require [the-drink-list.db :as db]))
 
 (defn delete-modal
   [{:keys [delete-drink!
-           drink-id
-           hide-delete-modal!]}]
+           drink-id]}]
   [:div.modal.is-active
    [:div.modal-background]
    [:div.modal-content
@@ -17,10 +17,10 @@
        {:on-click (fn [_]
                     (delete-drink!
                      drink-id
-                     hide-delete-modal!
+                     db/hide-delete-modal!
                      ;; TODO show an error here
                      #(prn %)))}
        "Yes"]
       [:button.button.is-white
-       {:on-click #(hide-delete-modal!)}
+       {:on-click #(db/hide-delete-modal!)}
        "Cancel"]]]]])

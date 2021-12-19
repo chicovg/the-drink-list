@@ -1,5 +1,6 @@
 (ns the-drink-list.components.drink-form-modal
   (:require [clojure.spec.alpha :as s]
+            [the-drink-list.db :as db]
             [the-drink-list.components.form :as form]
             [the-drink-list.types.beer-flavors :as beer-flavors]
             [the-drink-list.types.drink :as drink-type]))
@@ -29,10 +30,8 @@
 
 (defn modal
   "A component which renders a modal for creating and editing a drink"
-  [{drink                  :drink
-    hide-drink-modal!      :hide-drink-modal!
-    save-drink!            :save-drink!
-    set-drink-modal-drink! :set-drink-modal-drink!}]
+  [{drink             :drink
+    save-drink!       :save-drink!}]
   [:div.modal.is-active.is-clipped
    [:div.modal-background]
    [:div.modal-content
@@ -46,18 +45,18 @@
       [form/text-input {:id          :name
                         :label       "Name"
                         :placeholder "Enter a drink name"
-                        :on-change   #(set-drink-modal-drink! (assoc drink :name %))
+                        :on-change   #(db/set-drink-modal-drink! (assoc drink :name %))
                         :required    true
                         :value       (:name drink)}]
       [form/text-input {:id          :name
                         :label       "Maker"
                         :placeholder "Enter a maker name"
-                        :on-change   #(set-drink-modal-drink! (assoc drink :maker %))
+                        :on-change   #(db/set-drink-modal-drink! (assoc drink :maker %))
                         :required    true
                         :value       (:maker drink)}]
       [form/select-input {:id        :type
                           :label     "Type"
-                          :on-change #(set-drink-modal-drink! (assoc drink :maker %))
+                          :on-change #(db/set-drink-modal-drink! (assoc drink :maker %))
                           :options   drink-types
                           :required  true
                           :style     {:min-width 286}
@@ -66,7 +65,7 @@
       [form/text-input {:id          :style
                         :label       "Style"
                         :placeholder "Enter the drink style"
-                        :on-change   #(set-drink-modal-drink! (assoc drink :style %))
+                        :on-change   #(db/set-drink-modal-drink! (assoc drink :style %))
                         :required    true
                         :value       (:style drink)}]
       [:div.columns
@@ -75,7 +74,7 @@
                             :label     "Appearance"
                             :min       "1"
                             :max       "5"
-                            :on-change #(set-drink-modal-drink! (assoc drink :appearance %))
+                            :on-change #(db/set-drink-modal-drink! (assoc drink :appearance %))
                             :step      "0.1"
                             :value     (:appearance drink)}]]
        [:div.column.is-half
@@ -83,7 +82,7 @@
                             :label     "Smell"
                             :min       "1"
                             :max       "5"
-                            :on-change #(set-drink-modal-drink! (assoc drink :smell %))
+                            :on-change #(db/set-drink-modal-drink! (assoc drink :smell %))
                             :step      "0.1"
                             :value     (:smell drink)}]]]
       [:div.columns
@@ -92,7 +91,7 @@
                             :label     "Taste"
                             :min       "1"
                             :max       "5"
-                            :on-change #(set-drink-modal-drink! (assoc drink :taste %))
+                            :on-change #(db/set-drink-modal-drink! (assoc drink :taste %))
                             :step      "0.1"
                             :value     (:taste drink)}]]
        [:div.column.is-half
@@ -103,7 +102,7 @@
        [:div.column.is-half
         [form/select-tags-input {:id          :notes
                                  :label       "Tasting Notes"
-                                 :on-change   #(set-drink-modal-drink! (assoc drink :notes %))
+                                 :on-change   #(db/set-drink-modal-drink! (assoc drink :notes %))
                                  :options     notes-options
                                  :placeholder "Tasting notes"
                                  :style       {:min-width 286} ; TODO style tags like card view
@@ -112,7 +111,7 @@
         [form/textarea-input {:id          :comment
                               :label       "Comment"
                               :placeholder "Enter come comments about the drink"
-                              :on-change   #(set-drink-modal-drink! (assoc drink :comment %))
+                              :on-change   #(db/set-drink-modal-drink! (assoc drink :comment %))
                               :value       (:comment drink)}]]]
       [:div.field.is-grouped
        [:div.control
@@ -121,15 +120,15 @@
           :on-click (fn []
                       (save-drink!
                        (dissoc drink :overall)
-                       #(hide-drink-modal!)
+                       #(db/hide-drink-modal!)
                            ;; TODO show an error here
                        #(prn %)))
           :type     :button}
          "Save"]]
        [:div.control
         [:button.button.is-light
-         {:on-click #(hide-drink-modal!)}
+         {:on-click #(db/hide-drink-modal!)}
          "Cancel"]]]]]]
    [:button.modal-close.is-large
     {:aria-label "close"
-     :on-click   #(hide-drink-modal!)}]])
+     :on-click   #(db/hide-drink-modal!)}]])

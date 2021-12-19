@@ -1,5 +1,6 @@
 (ns the-drink-list.components.options-nav
-  (:require [the-drink-list.types.drink :as drink-type]))
+  (:require [the-drink-list.db :as db]
+            [the-drink-list.types.drink :as drink-type]))
 
 (defn- search-input
   [set-search-term!]
@@ -51,13 +52,10 @@
      [:span "New"]]]])
 
 (defn options-nav
-  [{set-search-term!  :set-search-term!
-    set-sort-state!   :set-sort-state!
-    show-drink-modal! :show-drink-modal!
-    sort-state        :sort-state}]
+  [{sort-state :sort-state}]
   [:nav.level.mr-2.ml-2
    [:div.level-left
-    [search-input set-search-term!]]
+    [search-input db/set-search-term!]]
    [:div.level-right
-    [sort-buttons sort-state set-sort-state!]
-    [new-drink-button show-drink-modal!]]])
+    [sort-buttons sort-state db/set-sort-state!]
+    [new-drink-button db/show-drink-modal!]]])
