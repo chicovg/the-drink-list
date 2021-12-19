@@ -15,9 +15,7 @@ jobs:
       - node/install-packages:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
-      - openjdk-install/openjdk:
-          version: 11
-          cache_version: 1
+      - run: sudo apt install openjdk-11-jdk
           
 workflows:
   deploy:
