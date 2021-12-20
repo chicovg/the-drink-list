@@ -7,10 +7,10 @@
 (defonce app-db (r/atom {:delete-modal   {:drink-id nil
                                           :shown?   false}
                          :drinks         nil
-                         :drinks-loaded? false
                          :drink-modal    {:drink  nil
                                           :shown? false}
                          :error          nil
+                         :loading?       false
                          :search-term    nil
                          :sort-state     {:field :created
                                           :asc?  false}
@@ -52,9 +52,13 @@
   [id]
   (swap! app-db update :drinks dissoc id))
 
+(declare set-loading!)
+
 (defn load-drinks!
   [uid]
-  (firebase/get-drinks uid set-drinks!))
+  (firebase/get-drinks uid (fn [drinks]
+                             (set-drinks! drinks)
+                             (set-loading! false))))
 
 (declare uid)
 
@@ -112,6 +116,15 @@
   [drink]
   (swap! app-db assoc :drink-modal {:drink  drink
                                     :shown? true}))
+
+;; loading?
+(defn loading?
+  []
+  (r/track :loading? @app-db))
+
+(defn set-loading!
+  [loading?]
+  (swap! app-db assoc :loading? loading?))
 
 ;; search-term
 (defn search-term
