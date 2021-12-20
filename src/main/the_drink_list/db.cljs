@@ -1,8 +1,8 @@
 (ns the-drink-list.db
   (:require
-    [reagent.core :as r]
-    [the-drink-list.api.firebase :as firebase]
-    [the-drink-list.types.beer-flavors :as beer-flavors]))
+   [reagent.core :as r]
+   [the-drink-list.api.firebase :as firebase]
+   [the-drink-list.types.beer-flavors :as beer-flavors]))
 
 (defonce app-db (r/atom {:delete-modal   {:drink-id nil
                                           :shown?   false}
@@ -71,9 +71,9 @@
   []
   (let [drinks          @(drinks)]
     (-> beer-flavors/flavors
-         seq
-         (concat (mapcat :notes drinks))
-         distinct)))
+        seq
+        (concat (mapcat :notes drinks))
+        distinct)))
 
 (defn drink-notes-options
   []
@@ -137,15 +137,19 @@
 
 (defn set-user!
   [user]
-  (swap! app-db assoc :user user)
+  (swap! app-db assoc :user user))
+
+(defn set-user-and-load-drinks!
+  [user]
+  (set-user! user)
   (if (:uid user)
     (load-drinks! (:uid user))
     (set-drinks! nil)))
 
 (defn sign-in
   []
-  (firebase/sign-in set-user!))
+  (firebase/sign-in set-user-and-load-drinks!))
 
 (defn sign-out
   []
-  (firebase/sign-out set-user!))
+  (firebase/sign-out set-user-and-load-drinks!))
