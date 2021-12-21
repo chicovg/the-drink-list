@@ -6,7 +6,7 @@
   [set-search-term!]
   [:div.level-item
    [:p.control.has-icons-left
-    [:input.input.is-small.search-input
+    [:input.input.search-input
      {:on-change   #(set-search-term! (-> % .-target .-value))
       :placeholder "Search"}]
     [:span.icon.is-left
@@ -22,7 +22,7 @@
   [label for-field {:keys [asc? field] :as sort-state} set-sort-state!]
   (let [active? (= field for-field)]
     [:p.control
-     [:button.button.is-small
+     [:button.button
       {:class (when active? "is-active")
        :on-click #(-> sort-state
                       (new-sort-state for-field)
@@ -45,7 +45,7 @@
   [show-drink-modal!]
   [:div.level-item
    [:p.control
-    [:button.button.is-primary.is-small
+    [:button.button.is-primary
      {:on-click #(show-drink-modal! drink-type/default-values)}
      [:span.icon
       [:i.fas.fa-plus]]

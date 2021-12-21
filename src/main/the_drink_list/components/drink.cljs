@@ -6,7 +6,7 @@
 
 (defn- overall-rating-badge
   [overall]
-  [:span.is-small.is-pulled-right.is-rounded.overall
+  [:span.is-pulled-right.is-rounded.overall
    {:class (common/rating-class overall)}
    overall])
 
@@ -26,16 +26,17 @@
   [:nav.level.is-mobile
    [:div.level-left
     [:a.level-item {:on-click on-details-toggle}
-     [:span.icon.is-small
+     [:span.icon.is-small.has-text-info
       [:i.fas {:aria-hidden "true"
                :class       (if show-details?
                               "fa-chevron-up"
-                              "fa-chevron-down")}]]]
+                              "fa-chevron-down")}]]]]
+   [:div.level-right
     [:a.level-item {:on-click on-edit}
-     [:span.icon.is-small
+     [:span.icon.is-small.has-text-link
       [:i.fas.fa-edit {:aria-hidden "true"}]]]
     [:a.level-item {:on-click on-delete}
-     [:span.icon.is-small
+     [:span.icon.is-small.has-text-danger
       [:i.fas.fa-trash {:aria-hidden "true"}]]]]])
 
 (defn- rating-row
