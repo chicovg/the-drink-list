@@ -35,7 +35,8 @@
             [drink-form-modal/modal {:drink drink-modal-drink}])
           (when show-delete-modal?
             [delete-modal/delete-modal {:drink-id      delete-modal-drink-id}])
-          [options-nav/options-nav {:sort-state sort-state}]
+          [options-nav/options-nav {:search-term search-term
+                                    :sort-state  sort-state}]
           [drink-list/drink-list {:drinks      drinks
                                   :search-term search-term
                                   :sort-state  sort-state}]]

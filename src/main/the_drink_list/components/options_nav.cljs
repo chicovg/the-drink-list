@@ -3,14 +3,22 @@
             [the-drink-list.types.drink :as drink-type]))
 
 (defn- search-input
-  [set-search-term!]
+  [search-term set-search-term!]
   [:div.level-item
-   [:p.control.has-icons-left
-    [:input.input.search-input
-     {:on-change   #(set-search-term! (-> % .-target .-value))
-      :placeholder "Search"}]
-    [:span.icon.is-left
-     [:i.fas.fa-search {:aria-hidden "true"}]]]])
+   [:div.field.has-addons
+    [:p.control.has-icons-left
+     [:input.input.search-input
+      {:on-change   #(set-search-term! (-> % .-target .-value))
+       :placeholder "Search"
+       :value       search-term}]
+     [:span.icon.is-left
+      [:i.fas.fa-search {:aria-hidden "true"}]]]
+    [:p.control
+     [:button.button
+      {:disabled (empty? search-term)
+       :on-click #(set-search-term! nil)}
+      [:span.icon
+       [:i.fas.fa-times]]]]]])
 
 (defn- new-sort-state [sort-state clicked-field]
   (if (= clicked-field (:field sort-state))
@@ -52,10 +60,11 @@
      [:span "New"]]]])
 
 (defn options-nav
-  [{sort-state :sort-state}]
+  [{search-term :search-term
+    sort-state  :sort-state}]
   [:nav.level.mr-2.ml-2
    [:div.level-left
-    [search-input db/set-search-term!]]
+    [search-input search-term db/set-search-term!]]
    [:div.level-right
     [sort-buttons sort-state db/set-sort-state!]
     [new-drink-button db/show-drink-modal!]]])
