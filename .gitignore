@@ -9,3 +9,6 @@ node_modules/
 /resources/public/js
 .lein-repl-history
 .firebase/
+/public/css
+/public/js
+.shadow-cljs/

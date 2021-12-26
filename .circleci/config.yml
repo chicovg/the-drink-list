@@ -1,0 +1,22 @@
+version: 2.1
+
+jobs:
+  package-and-deploy:
+    docker:
+      - image: 'cimg/openjdk:11.0-node'
+    steps:
+      - checkout
+      - restore_cache:
+          key: 'v1-npm-{{ checksum "package-lock.json" }}'
+      - run: npm install
+      - save_cache:
+          key: 'v1-npm-{{ checksum "package-lock.json" }}'
+          paths:
+            - ./node_modules
+      - run: npm run release
+      - run: npm run deploy -- --token=$FIREBASE_TOKEN
+
+workflows:
+  deploy:
+    jobs:
+      - package-and-deploy

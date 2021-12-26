@@ -1,4 +1,4 @@
-(defproject the-beer-list "0.1.0-SNAPSHOT"
+(defproject the-drink-list "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.520"]
                  [reagent "0.8.1"]
@@ -50,8 +50,8 @@
   {:builds
    [{:id           "dev"
      :source-paths ["src/cljs"]
-     :figwheel     {:on-jsload "the-beer-list.core/mount-root"}
-     :compiler     {:main                 the-beer-list.core
+     :figwheel     {:on-jsload "the-drink-list.core/mount-root"}
+     :compiler     {:main                 the-drink-list.core
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
                     :asset-path           "js/compiled/out"
@@ -64,7 +64,7 @@
 
     {:id           "min"
      :source-paths ["src/cljs"]
-     :compiler     {:main            the-beer-list.core
+     :compiler     {:main            the-drink-list.core
                     :output-to       "resources/public/js/compiled/app.js"
                     :optimizations   :advanced
                     :closure-defines {goog.DEBUG false}

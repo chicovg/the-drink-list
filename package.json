@@ -1,29 +1,66 @@
 {
-  "name": "the-beer-list",
-  "version": "1.0.0",
-  "description": "A [re-frame](https://github.com/Day8/re-frame) application designed to track and rate beers!",
+  "name": "the-drink-list",
+  "version": "2.0.0",
+  "description": "A [reagent](https://reagent-project.github.io/) application designed to track and rate drinks!",
   "directories": {
     "test": "test"
   },
   "dependencies": {
-    "bulma": "^0.7.5"
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "@storybook/client-api": "^6.4.9",
+    "@storybook/client-logger": "^6.4.9",
+    "@yaireo/tagify": "^4.9.2",
+    "bulma": "^0.9.3",
+    "bulma-slider": "^2.0.4",
+    "firebase": "^9.6.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-tag-autocomplete": "^6.3.0",
+    "sass-prefix-mixins": "^1.0.2",
+    "shadow-cljs": "^2.16.6"
   },
   "devDependencies": {
-    "karma-cljs-test": "^0.1.0",
-    "karma-chrome-launcher": "^3.0.0",
-    "karma": "^4.2.0"
+    "@babel/core": "^7.16.0",
+    "@storybook/addon-actions": "^6.4.7",
+    "@storybook/addon-essentials": "^6.4.7",
+    "@storybook/addon-links": "^6.4.7",
+    "@storybook/builder-webpack5": "^6.4.7",
+    "@storybook/manager-webpack5": "^6.4.7",
+    "@storybook/react": "^6.4.7",
+    "autoprefixer": "^10.4.0",
+    "babel-loader": "^8.2.3",
+    "clean-css-cli": "^5.4.2",
+    "cpy-cli": "^3.1.1",
+    "firebase-tools": "^9.23.3",
+    "fs-extra": "^10.0.0",
+    "node-sass": "^6.0.1",
+    "npm-run-all": "^4.1.5",
+    "postcss": "8.4.5",
+    "postcss-cli": "^9.1.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-storybook": "build-storybook",
+    "css:cpy-tagify": "cpy node_modules/@yaireo/tagify/dist/tagify.css public/css",
+    "css:compile": "node-sass --output-style=expanded --source-map=true sass/site.sass public/css/site.css",
+    "css:minify": "cleancss --output public/css/site.css public/css/site.css",
+    "css:watch": "npm run css:cpy-tagify && npm run css:compile -- --watch",
+    "css:build": "npm run css:cpy-tagify && npm run css:compile && npm run css:minify",
+    "dev": "shadow-cljs watch app",
+    "dev-stories": "shadow-cljs watch stories",
+    "start": "run-p -l dev css:watch",
+    "storybook": "start-storybook -p 6006",
+    "start-storybook": "run-p -l dev-stories css:watch storybook",
+    "release": "npm run css:build && shadow-cljs release app",
+    "deploy": "firebase deploy"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chicovg/the-beer-list.git"
+    "url": "git+https://github.com/chicovg/the-drink-list.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/chicovg/the-beer-list/issues"
+    "url": "https://github.com/chicovg/the-drink-list/issues"
   },
-  "homepage": "https://github.com/chicovg/the-beer-list#readme"
+  "homepage": "https://github.com/chicovg/the-drink-list#readme"
 }

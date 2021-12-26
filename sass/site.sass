@@ -1,68 +1,80 @@
-@charset "utf-8";
-@import "../node_modules/bulma/bulma.sass"
+@charset 'utf-8';
 
-$section-padding: 1.5rem
+$indigo-dye: #004777;
+$rufous: #A30000;
+$safety-orange: #FF7700;
+$buff: #EFD28D;
+$verdigris: #00AFB5;
 
-.button
-  margin: 0 .4em 0 0
+$primary: $indigo-dye;
+$link: $verdigris;
+$danger: $rufous;
+$warning: $safety-orange;
 
-.container
-  margin: .5em
+@import '../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss'
+@import '../node_modules/@fortawesome/fontawesome-free/scss/brands.scss'
+@import '../node_modules/@fortawesome/fontawesome-free/scss/regular.scss'
+@import '../node_modules/@fortawesome/fontawesome-free/scss/solid.scss'
+@import '../node_modules/bulma/bulma'
+@import '../node_modules/bulma-slider/src/sass/index.sass'
+@import "../node_modules/sass-prefix-mixins/scss/prefixes";
+@import './tagify.css'
 
-.field
-  max-width: 98%
+html
+  background: $white-ter
+  height: 100%
 
-.list
-  margin: .5em 0
+.box:not(:last-child)
+  margin-bottom: 1em;
 
-.list-item:hover, .list-item:focus
-  background-color: $white-ter
+.dots
+  border-bottom: dotted 2px $grey-lighter
+  margin: 0 8px 4px 8px;
 
-.main
-  display: flex
-  align-items: center
-  justify-content: center
+.media-content
+  overflow-x: hidden;
 
-.main > div
-  flex-grow: 1
-  max-width: 1000px
+p.is-clipped
+  text-overflow: ellipsis;
+
+.is-size-8
+  font-size: 0.5rem
+
+.line-clamp-3
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+
+.navbar-item:last-child
+  margin-right: 0.75rem;
+
+.one-line-overflow-scroll
+  overflow: scroll;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+
+.overall
+  font-weight: bold
+
+  &.lt-2
+    color: $red
+  &.lt-3
+    color: $orange
+  &.lt-4
+    color: $green
+  &.lt-5
+    color: $turquoise
 
 .rating
-  color: $white
-  border-radius: 2em
-  font-weight: bold
-  margin: 0 12px 0 0
-  padding: .3em .7em
+  &__lt-2
+    color: $red
+  &__lt-3
+    color: $orange
+  &__lt-4
+    color: $green
+  &__lt-5
+    color: $turquoise
 
-.rating-1
-  background-color: $red
-  padding: .3em .8em
-
-.rating-2
-  background-color: $yellow
-
-.rating-3
-  background-color: $cyan
-
-.rating-4
-  background-color: $turquoise
-
-.rating-5
-  background-color: $green
-
-.sort-modal-body
-  display: flex
-
-.sort-modal-body > div
-  flex-grow: 1
-
-.toolbar
-  display: flex
-
-.toolbar > div.search
-  flex-grow: 4
-  max-width: 600px
-
-.toolbar > *:not(:last-child)
-  margin-right: 6px
-
+.search-input
+  width: 280px;
