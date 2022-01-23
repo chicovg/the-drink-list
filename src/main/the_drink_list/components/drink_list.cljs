@@ -26,7 +26,6 @@
     sort-state  :sort-state}]
   (let [sort-drinks     (sort-fn sort-state)
         filtered-drinks (->> drinks
-                             (filter drink-type/is-valid?)
                              (filter (partial is-search-match search-term))
                              sort-drinks)]
     [:div

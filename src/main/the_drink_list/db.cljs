@@ -1,6 +1,7 @@
 (ns the-drink-list.db
   (:require
    [reagent.core :as r]
+   [the-drink-list.types.drink :as drink]
    [the-drink-list.api.firebase :as firebase]
    [the-drink-list.types.beer-flavors :as beer-flavors]))
 
@@ -38,7 +39,11 @@
 ;; drinks
 (defn drinks
   []
-  (r/track vals (:drinks @app-db)))
+  (r/track #(->> @app-db
+                 :drinks
+                 vals
+                 (filter drink/is-valid?)
+                 (map drink/set-overall))))
 
 (defn set-drinks!
   [drinks]

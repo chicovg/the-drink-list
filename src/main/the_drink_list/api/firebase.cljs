@@ -91,7 +91,7 @@
                                                               (dissoc :id)
                                                               (update :created date->timestamp)
                                                               clj->js))
-        (.then #(add-drink (drink/set-overall drink)))
+        (.then #(add-drink drink))
         (.then on-success)
         (.catch on-error))
     (let [timestamp (.now Timestamp)]
@@ -100,8 +100,7 @@
                                                            clj->js))
           (.then #(add-drink (-> drink
                                  (assoc :id (.-id %))
-                                 (assoc :created (.toDate timestamp))
-                                 drink/set-overall)))
+                                 (assoc :created (.toDate timestamp)))))
           (.then on-success)
           (.catch on-error)))))
 
