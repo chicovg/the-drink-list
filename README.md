@@ -19,7 +19,7 @@ npm start
 ### Start Storybook (watch cljs stories, watch css, run storybook)
 
 ``` sh
-npm start-storybook
+npm run start-storybook
 ```
 
 ## Production Build

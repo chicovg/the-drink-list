@@ -1,6 +1,7 @@
 (ns the-drink-list.components.drink-form-modal
   (:require [clojure.spec.alpha :as s]
             [the-drink-list.db :as db]
+            [the-drink-list.components.autocomplete :as autocomplete]
             [the-drink-list.components.form :as form]
             [the-drink-list.types.beer-flavors :as beer-flavors]
             [the-drink-list.types.drink :as drink-type]))
@@ -47,12 +48,6 @@
                         :on-change   #(db/set-drink-modal-drink-value! :name %)
                         :required    true
                         :value       (:name drink)}]
-      [form/text-input {:id          :name
-                        :label       "Maker"
-                        :placeholder "Enter a maker name"
-                        :on-change   #(db/set-drink-modal-drink-value! :maker %)
-                        :required    true
-                        :value       (:maker drink)}]
       [form/select-input {:id        :type
                           :label     "Type"
                           :on-change #(db/set-drink-modal-drink-value! :type %)
@@ -60,13 +55,22 @@
                           :required  true
                           :style     {:min-width 286}
                           :value     (:type drink)}]
-          ;; TODO autocomplete from existing values
-      [form/text-input {:id          :style
-                        :label       "Style"
-                        :placeholder "Enter the drink style"
-                        :on-change   #(db/set-drink-modal-drink-value! :style %)
-                        :required    true
-                        :value       (:style drink)}]
+      [:div.columns
+       [:div.column.is-half
+        [autocomplete/autocomplete {:id          :maker
+                                    :label       "Maker"
+                                    :placeholder "Enter a maker name"
+                                    :on-change   #(db/set-drink-modal-drink-value! :maker %)
+                                    :suggestions @(db/makers)
+                                    :value       (:maker drink)}]]
+
+       [:div.column.is-half
+        [autocomplete/autocomplete {:id          :style
+                                    :label       "Style"
+                                    :placeholder "Enter the drink style"
+                                    :on-change   #(db/set-drink-modal-drink-value! :style %)
+                                    :suggestions @(db/styles)
+                                    :value       (:style drink)}]]]
       [:div.columns
        [:div.column.is-half
         [form/slider-input {:id        :appearance

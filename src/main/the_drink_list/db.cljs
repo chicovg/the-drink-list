@@ -45,6 +45,19 @@
                  (filter drink/is-valid?)
                  (map drink/set-overall))))
 
+(defn- distinct-values
+  [key coll]
+  (distinct
+   (map key coll)))
+
+(defn makers
+  []
+  (r/track distinct-values :maker @(drinks)))
+
+(defn styles
+  []
+  (r/track distinct-values :style @(drinks)))
+
 (defn set-drinks!
   [drinks]
   (swap! app-db assoc :drinks drinks))
