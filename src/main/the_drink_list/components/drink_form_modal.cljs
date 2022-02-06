@@ -48,22 +48,22 @@
                         :on-change   #(db/set-drink-modal-drink-value! :name %)
                         :required    true
                         :value       (:name drink)}]
-      [form/select-input {:id        :type
-                          :label     "Type"
-                          :on-change #(db/set-drink-modal-drink-value! :type %)
-                          :options   drink-types
-                          :required  true
-                          :style     {:min-width 286}
-                          :value     (:type drink)}]
       [:div.columns
+       [:div.column.is-half
+        [autocomplete/autocomplete {:id          :type
+                                    :label       "Type"
+                                    :placeholder "Enter a drink type"
+                                    :on-change   #(db/set-drink-modal-drink-value! :type %)
+                                    :suggestions @(db/types)
+                                    :value       (:type drink)}]]
        [:div.column.is-half
         [autocomplete/autocomplete {:id          :maker
                                     :label       "Maker"
                                     :placeholder "Enter a maker name"
                                     :on-change   #(db/set-drink-modal-drink-value! :maker %)
                                     :suggestions @(db/makers)
-                                    :value       (:maker drink)}]]
-
+                                    :value       (:maker drink)}]]]
+      [:div.columns
        [:div.column.is-half
         [autocomplete/autocomplete {:id          :style
                                     :label       "Style"

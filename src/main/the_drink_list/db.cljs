@@ -58,6 +58,10 @@
   []
   (r/track distinct-values :style @(drinks)))
 
+(defn types
+  []
+  (r/track distinct-values :type @(drinks)))
+
 (defn set-drinks!
   [drinks]
   (swap! app-db assoc :drinks drinks))
