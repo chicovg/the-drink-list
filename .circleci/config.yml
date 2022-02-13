@@ -15,7 +15,7 @@ jobs:
             - ./node_modules
       - when:
           condition:
-            equal: [master]
+            equal: [master, << pipeline.git.branch >>]
           steps:
             - run: npm run release
             - run: npm run deploy -- --token=$FIREBASE_TOKEN
