@@ -4,7 +4,7 @@
             [reagent.core :as r]))
 
 (def ^:export default
-  #js {:title     "Autocomplete"
+  #js {:title     "Components/Autocomplete"
        :component (r/reactify-component autocomplete/autocomplete)})
 
 (defn controlled-autocomplete

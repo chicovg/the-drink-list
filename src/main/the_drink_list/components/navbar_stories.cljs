@@ -4,7 +4,7 @@
     [the-drink-list.components.navbar :as navbar]))
 
 (def ^:export default
-  #js {:title "Navbar Component"
+  #js {:title "Components/Navbar"
        :component (r/reactify-component navbar/navbar)})
 
 (defn ^:export Default []

@@ -3,7 +3,7 @@
             [reagent.core :as r]))
 
 (def ^:export default
-  #js {:title     "Textarea Input"
+  #js {:title     "Components/Textarea Input"
        :component (r/reactify-component form/textarea-input)})
 
 (defn- textarea-input-with-value

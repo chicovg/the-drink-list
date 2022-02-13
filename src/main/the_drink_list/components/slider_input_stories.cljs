@@ -3,7 +3,7 @@
             [reagent.core :as r]))
 
 (def ^:export default
-  #js {:title     "Slider Input"
+  #js {:title     "Components/Slider Input"
        :component (r/reactify-component form/slider-input)})
 
 (defn- slider-input-with-value

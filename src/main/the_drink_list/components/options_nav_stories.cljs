@@ -5,7 +5,7 @@
    [the-drink-list.db :as db]))
 
 (def ^:export default
-  #js {:title     "Options Nav Component"
+  #js {:title     "Components/Options Nav"
        :component (r/reactify-component options-nav/options-nav)})
 
 (defn options-nav-story

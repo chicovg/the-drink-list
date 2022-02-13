@@ -4,7 +4,7 @@
    [the-drink-list.components.login-panel :as login-panel]))
 
 (def ^:export default
-  #js {:title     "Login Panel Component"
+  #js {:title     "Pages/Login Page"
        :component (r/reactify-component login-panel/login-panel)})
 
 (defn ^:export Default []

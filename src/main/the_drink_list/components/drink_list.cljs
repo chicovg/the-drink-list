@@ -1,9 +1,8 @@
 (ns the-drink-list.components.drink-list
   (:require
-   [the-drink-list.db :as db]
+   [clojure.string :as str]
    [the-drink-list.components.drink :as drink]
-   [the-drink-list.types.drink :as drink-type]
-   [clojure.string :as str]))
+   [the-drink-list.db :as db]))
 
 (defn- is-search-match
   [search-term {:keys [name maker type style]}]

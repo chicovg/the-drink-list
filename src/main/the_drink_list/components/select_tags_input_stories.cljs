@@ -3,7 +3,7 @@
             [reagent.core :as r]))
 
 (def ^:export default
-  #js {:title     "Select Tags Input"
+  #js {:title     "Components/Select Tags Input"
        :component (r/reactify-component form/select-tags-input)})
 
 (defn- select-tags-input-with-value

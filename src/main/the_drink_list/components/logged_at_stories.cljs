@@ -3,7 +3,7 @@
             [reagent.core :as r]))
 
 (def ^:export default
-  #js {:title     "Logged At Component"
+  #js {:title     "Components/Logged At"
        :component (r/reactify-component logged-at/logged-at)})
 
 (defn- date-minus-millis

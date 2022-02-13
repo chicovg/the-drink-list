@@ -1,21 +1,32 @@
 (ns the-drink-list.db
   (:require
    [reagent.core :as r]
-   [the-drink-list.types.drink :as drink]
    [the-drink-list.api.firebase :as firebase]
-   [the-drink-list.types.beer-flavors :as beer-flavors]))
+   [the-drink-list.types.beer-flavors :as beer-flavors]
+   [the-drink-list.types.drink :as drink]))
 
-(defonce app-db (r/atom {:delete-modal   {:drink-id nil
-                                          :shown?   false}
-                         :drinks         nil
-                         :drink-modal    {:drink  nil
-                                          :shown? false}
-                         :error          nil
-                         :loading?       false
-                         :search-term    nil
-                         :sort-state     {:field :created
-                                          :asc?  false}
-                         :user           nil}))
+(def default-state
+  {:delete-modal         {:drink-id nil
+                          :shown?   false}
+   :drinks               nil
+   :drink-modal          {:drink  nil
+                          :shown? false}
+   :error                nil
+   :favorites-panel      :style
+   :favorites-sort-state {:field :average
+                          :asc?  false}
+   :loading?             false
+   :page                 :login
+   :search-term          nil
+   :sort-state           {:field :created
+                          :asc?  false}
+   :user                 nil})
+
+(defonce app-db (r/atom default-state))
+
+(defn reset-app-db!
+  ([] (reset-app-db! default-state))
+  ([state] (reset! app-db state)))
 
 ;; delete-modal
 (defn delete-modal-drink-id
@@ -139,6 +150,68 @@
   (swap! app-db assoc :drink-modal {:drink  drink
                                     :shown? true}))
 
+;; favorites
+(defn- merge-drink-ratings
+  [drinks]
+  (reduce (fn [{:keys [count total]} {:keys [overall]}]
+            {:count (inc count)
+             :total (+ total overall)})
+          {:count 0
+           :total 0}
+          drinks))
+
+(defn- maybe-reverse
+  [reverse? coll]
+  (if reverse?
+    (reverse coll)
+    coll))
+
+(defn- grouped-drink-totals
+  [drinks group-by-fn {:keys [field asc?]}]
+  (->> drinks
+       (group-by group-by-fn)
+       (mapv (fn [[maker drinks]]
+               [maker (merge-drink-ratings drinks)]))
+       (mapv (fn [[maker {:keys [count total] :as totals}]]
+               (if (zero? count)
+                 [maker (assoc totals :average 0)]
+                 [maker (assoc totals :average (drink/round (/ total count)))])))
+       (sort-by (fn [[_ totals]]
+                  (get totals field)))
+       (maybe-reverse (not asc?))
+       (mapv (fn [[maker {:keys [count average]}]]
+               [maker count average]))
+       (take 10)))
+
+(defn favorites-panel
+  []
+  (r/track :favorites-panel @app-db))
+
+(defn set-favorites-panel!
+  [panel]
+  (swap! app-db (fn [db]
+                  (-> db
+                      (assoc :favorites-panel panel)
+                      (assoc :favorites-sort-state {:field :average
+                                                    :asc?  false})))))
+
+(defn favorites-sort-state
+  []
+  (r/track :favorites-sort-state @app-db))
+
+(defn favorites-data
+  []
+  (r/track grouped-drink-totals @(drinks) @(favorites-panel) @(favorites-sort-state)))
+
+(defn set-favorites-sort-field!
+  [field]
+  (swap! app-db (fn [db]
+                  (let [current-field (get-in db [:favorites-sort-state :field])
+                        db'           (assoc-in db [:favorites-sort-state :field] field)]
+                    (if (= current-field field)
+                      (update-in db' [:favorites-sort-state :asc?] not)
+                      db')))))
+
 ;; loading?
 (defn loading?
   []
@@ -147,6 +220,15 @@
 (defn set-loading!
   [loading?]
   (swap! app-db assoc :loading? loading?))
+
+;; page
+(defn page
+  []
+  (r/track :page @app-db))
+
+(defn set-page!
+  [page]
+  (swap! app-db assoc :page page))
 
 ;; search-term
 (defn search-term
@@ -178,8 +260,12 @@
   [user]
   (set-user! user)
   (if (:uid user)
-    (load-drinks! (:uid user))
-    (set-drinks! nil)))
+    (do
+      (load-drinks! (:uid user))
+      (set-page! :main))
+    (do
+      (set-drinks! nil)
+      (set-page! :login))))
 
 (defn sign-in
   []

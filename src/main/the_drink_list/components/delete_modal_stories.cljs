@@ -4,7 +4,7 @@
    [the-drink-list.components.delete-modal :as delete-modal]))
 
 (def ^:export default
-  #js {:title "Delete Modal"
+  #js {:title "Components/Delete Modal"
        :component (r/reactify-component delete-modal/delete-modal)})
 
 (defn ^:export Default []

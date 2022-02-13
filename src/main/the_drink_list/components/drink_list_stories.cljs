@@ -4,7 +4,7 @@
             [the-drink-list.types.drink :as drink-type]))
 
 (def ^:export default
-  #js {:title     "Drink List Component"
+  #js {:title     "Components/Drink List"
        :component (r/reactify-component drink-list/drink-list)})
 
 (defn ^:export Default []

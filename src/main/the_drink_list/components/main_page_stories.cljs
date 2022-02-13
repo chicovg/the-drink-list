@@ -2,34 +2,24 @@
   (:require
    [reagent.core :as r]
    [the-drink-list.components.main-page :as main-page]
-   [the-drink-list.types.drink :as drink-type]
-   [the-drink-list.db :as db]))
+   [the-drink-list.components.story-helpers :refer [with-app-state]]
+   [the-drink-list.types.drink :as drink-type]))
 
 (def ^:export default
-  #js {:title     "Main Page"
+  #js {:title     "Pages/Main Page"
        :component (r/reactify-component main-page/main-page)})
 
-(defn main-page-story
-  [{drinks :drinks
-    uid    :uid}]
-  (r/create-class
-   {:component-did-mount
-    (fn []
-      (db/set-drinks! drinks)
-      (db/set-user!   {:uid uid}))
-    :component-will-unmount
-    (fn []
-      (db/set-drinks! nil)
-      (db/set-user! nil))
-    :reagent-render
-    (fn [_]
-      [main-page/main-page])}))
+
+(def drinks (reduce #(assoc %1 (:id %2) %2)
+                    {}
+                    (drink-type/gen-drinks 20)))
 
 (defn ^:export Default []
-  (r/as-element [main-page-story {:drinks (reduce #(assoc %1 (:id %2) %2)
-                                                  {}
-                                                  (drink-type/gen-drinks 20))
-                                  :uid    "abc"}]))
+  (r/as-element [with-app-state
+                 {:drinks drinks}
+                 main-page/main-page]))
 
-(defn ^:export LoggedOut []
-  (r/as-element [main-page-story {}]))
+(defn ^:export Loading []
+  (r/as-element [with-app-state
+                 {:loading? true}
+                 main-page/main-page]))

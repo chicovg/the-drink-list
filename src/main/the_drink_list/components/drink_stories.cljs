@@ -4,7 +4,7 @@
             [reagent.core :as r]))
 
 (def ^:export default
-  #js {:title     "Drink Card Component"
+  #js {:title     "Components/Drink Card"
        :component (r/reactify-component drink/card)})
 
 (def example-comment

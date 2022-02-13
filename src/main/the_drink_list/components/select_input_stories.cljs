@@ -3,7 +3,7 @@
             [reagent.core :as r]))
 
 (def ^:export default
-  #js {:title     "Select Input"
+  #js {:title     "Components/Select Input"
        :component (r/reactify-component form/select-input)})
 
 (defn- select-input-with-value
