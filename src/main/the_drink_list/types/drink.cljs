@@ -2,7 +2,8 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
             [clojure.test.check.generators]
-            [the-drink-list.types.beer-flavors :as beer-flavors]))
+            [the-drink-list.types.beer-flavors :as beer-flavors]
+            [clojure.string :as str]))
 
 (def types #{"Beer" "Cider" "Mead" "Other" "Wine"})
 
@@ -78,6 +79,19 @@
 (defn set-overall
   [drink]
   (assoc drink :overall (round (calculate-overall drink))))
+
+(defn- trim-non-nil
+  [s]
+  (and s (str/trim s)))
+
+(defn trim-fields
+  [drink]
+  (-> drink
+      (update :name trim-non-nil)
+      (update :maker trim-non-nil)
+      (update :type trim-non-nil)
+      (update :style trim-non-nil)
+      (update :comment trim-non-nil)))
 
 (defn gen-drink []
   (-> (gen/generate (s/gen ::drink))

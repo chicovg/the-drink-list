@@ -19,9 +19,9 @@
       [:tr
        [:th first-header]
        [:th.is-clickable
-        {:on-click #(db/set-favorites-sort-field! :logged)}
+        {:on-click #(db/set-favorites-sort-field! :count)}
         "Logged"
-        (when (= field :logged)
+        (when (= field :count)
           [sort-icon asc?])]
        [:th.is-clickable
         {:on-click #(db/set-favorites-sort-field! :average)}

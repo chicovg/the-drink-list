@@ -54,7 +54,8 @@
                  :drinks
                  vals
                  (filter drink/is-valid?)
-                 (map drink/set-overall))))
+                 (map drink/set-overall)
+                 (map drink/trim-fields))))
 
 (defn- distinct-values
   [key coll]
