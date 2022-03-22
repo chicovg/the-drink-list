@@ -1,10 +1,11 @@
 version: 2.1
 
-docker:
-  - image: 'cimg/openjdk:11.0-node'
+
 
 jobs:
   build:
+    docker:
+      - image: 'cimg/openjdk:11.0-node'
     steps:
       - checkout
       - restore_cache:
@@ -15,6 +16,8 @@ jobs:
           paths:
             - ./node_modules
   deploy:
+    docker:
+      - image: 'cimg/openjdk:11.0-node'
     steps:
       - run: npm run release
       - run: npm run deploy -- --token=$FIREBASE_TOKEN
@@ -28,4 +31,5 @@ workflows:
             - build
           filters:
             branches:
-              master
+              only:
+                - master
