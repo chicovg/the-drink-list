@@ -17,3 +17,11 @@
         :login [login-panel/login-panel]
         :main [main-page/main-page]
         :favorites [favorites-page/favorites-page])]]))
+
+;; TODO
+;; - create state context here...
+;;   OR stand it up next to db?
+;; - bottom up component migration??
+;;   - easier to wrap uix in reagent
+;; - set up uix component alongside the regular one
+;;   - lets have a components.uix folder, once done, move this to components...

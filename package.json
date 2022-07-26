@@ -13,8 +13,8 @@
     "bulma": "^0.9.3",
     "bulma-slider": "^2.0.4",
     "firebase": "^9.6.1",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "react-tag-autocomplete": "^6.3.0",
     "sass-prefix-mixins": "^1.0.2",
     "shadow-cljs": "^2.16.6"
