@@ -9,7 +9,6 @@
   #js {:title     "Pages/Main Page"
        :component (r/reactify-component main-page/main-page)})
 
-
 (def drinks (reduce #(assoc %1 (:id %2) %2)
                     {}
                     (drink-type/gen-drinks 20)))

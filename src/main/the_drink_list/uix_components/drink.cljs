@@ -1,8 +1,9 @@
 (ns the-drink-list.uix-components.drink
   (:require
    [the-drink-list.components.common :as common]
+   [the-drink-list.uix-components.context :as context]
    [the-drink-list.uix-components.logged-at :as logged-at]
-   [uix.core :refer [$ defui use-state]]))
+   [uix.core :refer [$ defui use-context use-state]]))
 
 (defui overall-rating-badge
   [{:keys [overall]}]
@@ -77,10 +78,10 @@
                note))))))
 
 (defui card
-  [{{:keys [id] :as drink} :drink
-    show-drink-modal!      :show-drink-modal!
-    show-delete-modal!     :show-delete-modal!}]
-  (let [[show-details? set-show-details!] (use-state false)]
+  [{:keys [drink]}]
+  (let [{:keys [show-drink-modal!
+                show-delete-modal!]}      (use-context context/main-page)
+        [show-details? set-show-details!] (use-state false)]
     ($ :div.box
        ($ :article.media
           ($ :div.media-content
@@ -92,6 +93,6 @@
                ($ details drink))
 
              ($ actions {:on-details-toggle #(set-show-details! (not show-details?))
-                         :on-delete         #(show-delete-modal! id)
+                         :on-delete         #(show-delete-modal! (:id drink))
                          :on-edit           #(show-drink-modal! drink)
                          :show-details?     show-details?}))))))
