@@ -80,7 +80,7 @@
 (defui card
   [{:keys [drink]}]
   (let [{:keys [show-drink-modal!
-                show-delete-modal!]}      (use-context context/main-page)
+                show-delete-modal!]}      (use-context context/app)
         [show-details? set-show-details!] (use-state false)]
     ($ :div.box
        ($ :article.media

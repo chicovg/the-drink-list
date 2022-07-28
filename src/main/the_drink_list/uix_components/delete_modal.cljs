@@ -6,7 +6,7 @@
 (defui delete-modal
   []
   (let [{:keys [delete-modal-drink-id
-                hide-delete-modal!]} (use-context context/main-page)]
+                hide-delete-modal!]} (use-context context/app)]
     ($ :div.modal.is-active
        ($ :div.modal-background)
        ($ :div.modal-content

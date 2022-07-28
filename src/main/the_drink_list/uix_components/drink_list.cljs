@@ -21,9 +21,10 @@
     (comp reverse)))
 
 (defui drink-list
-  [{:keys [drinks]}]
-  (let [{:keys [search-term
-                sort-state]}   (use-context context/main-page)
+  []
+  (let [{:keys [drinks
+                search-term
+                sort-state]}   (use-context context/app)
         sort-drinks            (sort-fn sort-state)
         filtered-sorted-drinks (->> drinks
                                     (filter (partial is-search-match search-term))
