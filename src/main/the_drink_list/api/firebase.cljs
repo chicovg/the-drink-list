@@ -93,23 +93,24 @@
       (.catch on-error)))
 
 (defn save-drink!
-  [uid drink add-drink on-success on-error]
+  [{:keys [user drink set-loading! on-success on-error]}]
+  (set-loading! true)
   (if (:id drink)
-    (-> (setDoc (doc db "users" uid "drinks" (:id drink)) (-> drink
-                                                              (dissoc :id)
-                                                              (update :created date->timestamp)
-                                                              clj->js))
-        (.then #(add-drink drink))
-        (.then on-success)
+    (-> (setDoc (doc db "users" (:uid user) "drinks" (:id drink)) (-> drink
+                                                                      (dissoc :id)
+                                                                      (update :created date->timestamp)
+                                                                      clj->js))
+        (.then #(on-success drink))
+        (.then #(set-loading! false))
         (.catch on-error))
     (let [timestamp (.now Timestamp)]
-      (-> (addDoc (collection db "users" uid "drinks") (-> drink
-                                                           (assoc :created timestamp)
-                                                           clj->js))
-          (.then #(add-drink (-> drink
-                                 (assoc :id (.-id %))
-                                 (assoc :created (.toDate timestamp)))))
-          (.then on-success)
+      (-> (addDoc (collection db "users" (:uid user) "drinks") (-> drink
+                                                                   (assoc :created timestamp)
+                                                                   clj->js))
+          (.then #(on-success (-> drink
+                                  (assoc :id (.-id %))
+                                  (assoc :created (.toDate timestamp)))))
+          (.then #(set-loading! false))
           (.catch on-error)))))
 
 (defn delete-drink!

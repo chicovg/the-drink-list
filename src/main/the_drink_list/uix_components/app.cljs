@@ -32,7 +32,7 @@
          (set-drinks-map! nil)))
      [user])
 
-    ($ (.-Provider context/app) {:value app-state}
+    ($ (.-Provider context/app) {:value (assoc app-state :user user)}
        ($ :<>
           ($ :header.container.is-max-desktop
              ($ navbar/navbar {:user user}))

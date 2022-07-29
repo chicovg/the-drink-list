@@ -6,7 +6,8 @@
    [the-drink-list.types.drink :as drink-type]
    [the-drink-list.uix-components.context :as context]
    [uix.core :refer [$ defui use-context]]
-   [reagent.core :as r]))
+   [reagent.core :as r]
+   [the-drink-list.api.firebase :as firebase]))
 
 (s/def ::drink-form
   (s/keys :req-un [::drink-type/name
@@ -20,13 +21,16 @@
 (defui drink-modal
   "A component which renders a modal for creating and editing a drink"
   []
-  (let [{:keys [drink-modal-drink
-                notes-options
+  (let [{:keys [add-drink!
+                drink-modal-drink
                 hide-drink-modal!
                 makers
+                notes-options
+                set-drink-modal-drink-value!
+                set-loading!
                 styles
                 types
-                set-drink-modal-drink-value!]} (use-context context/app)]
+                user]}                       (use-context context/app)]
     ($ :div.modal.is-active.is-clipped
        ($ :div.modal-background)
        ($ :div.modal-content
@@ -100,6 +104,15 @@
                                 (drink-type/calculate-overall drink-modal-drink))))))
                 ($ :div.columns
                    ($ :div.column.is-half
+                      ;; TODO
+                      ;; tagify.js:941 Uncaught TypeError: Cannot read properties of null (reading 'value')
+                      ;; at Tagify.getMappedValue (tagify.js:941:135)
+                      ;; at eval (tagify.js:955:35)
+                      ;; at Array.map (<anonymous>)
+                      ;; at Tagify.createListHTML (tagify.js:951:37)
+                      ;; at Tagify.fill (tagify.js:529:82)
+                      ;; at Tagify.show (tagify.js:429:21)
+                      ;; at Tagify.onFocusBlur (tagify.js:1278:27)
                       (r/as-element [form/select-tags-input {:id          :notes
                                                              :label       "Tasting Notes"
                                                              :on-change   #(set-drink-modal-drink-value! :notes %)
@@ -117,9 +130,15 @@
                 ($ :div.field.is-grouped
                    ($ :div.control
                       ($ :button.button.is-primary
+                         ;; TODO adding a Tag makes this turn invalid...
                          {:disabled (not (s/valid? ::drink-form drink-modal-drink))
-                          ;; TODO hook this up to firebase
-                          :on-click #(js/console.log (dissoc drink-modal-drink :overall))
+                          :on-click #(firebase/save-drink! {:user         user
+                                                            :drink        (dissoc drink-modal-drink :overall)
+                                                            :on-error     js/console.error
+                                                            :on-success   (fn [drink]
+                                                                            (add-drink! drink)
+                                                                            (hide-drink-modal!))
+                                                            :set-loading! set-loading!})
                           :type     :button}
                          "Save"))
                    ($ :div.control

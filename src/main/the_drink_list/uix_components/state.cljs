@@ -100,7 +100,6 @@
                                          (concat notes)
                                          sort
                                          vec)]
-    (prn drinks-map)
     {:drinks          drinks
      :makers          makers
      :styles          styles

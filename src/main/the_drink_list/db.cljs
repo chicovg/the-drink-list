@@ -122,12 +122,16 @@
 
 (defn save-drink!
   [drink]
-  (when-let [uid (get-in @app-db [:user :uid])]
+  (when-let [user (get @app-db :user)]
     (let [on-success (fn []
                        (add-drink drink)
                        (hide-drink-modal!))
           on-error   (fn [err] (prn err))]
-      (firebase/save-drink! uid drink add-drink on-success on-error))))
+      (firebase/save-drink! {:user         user
+                             :drink        drink
+                             :set-loading! set-loading!
+                             :on-success   on-success
+                             :on-error     on-error}))))
 
 ;; drink-modal
 (defn drink-modal-drink
