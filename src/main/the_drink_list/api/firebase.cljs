@@ -39,16 +39,15 @@
   (onAuthStateChanged auth #(set-user (fb-user->user %))))
 
 (defn sign-in
-  [set-user]
+  [on-success]
   (-> (signInWithPopup auth provider)
-      (.then #((set-user (fb-user->user (.-user %)))
-               (js/console.log "Authenticated successfully")))
+      (.then on-success)
+      (.then #(js/console.log "Authenticated successfully"))
       (.catch #(js/console.log "Authentication failed " %))))
 
 (defn sign-out
-  [set-user]
-  (.signOut auth)
-  (set-user nil))
+  []
+  (.signOut auth))
 
 (defn- doc->clj-map
   [doc]
@@ -76,13 +75,22 @@
       (update :created timestamp->date)
       drink/set-overall))
 
+;; TODO
+;; each should take
+;; set-loading!
+;; on-success
+;; on-error
+
 (defn get-drinks
-  [uid set-drinks]
-  (-> (getDocs (collection db "users" uid "drinks"))
+  [{:keys [user set-loading! on-success on-error]}]
+  (set-loading! true)
+  (-> (getDocs (collection db "users" (:uid user) "drinks"))
       (.then (fn [qs]
                (let [drinks (atom {})]
                  (.forEach qs #(swap! drinks assoc (.-id %) (doc->drink %)))
-                 (set-drinks @drinks))))))
+                 (on-success @drinks)
+                 (set-loading! false))))
+      (.catch on-error)))
 
 (defn save-drink!
   [uid drink add-drink on-success on-error]

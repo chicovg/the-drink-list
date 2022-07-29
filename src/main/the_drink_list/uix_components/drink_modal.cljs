@@ -3,7 +3,6 @@
    [clojure.spec.alpha :as s]
    [the-drink-list.components.autocomplete :as autocomplete]
    [the-drink-list.components.form :as form]
-   [the-drink-list.types.beer-flavors :as beer-flavors]
    [the-drink-list.types.drink :as drink-type]
    [the-drink-list.uix-components.context :as context]
    [uix.core :refer [$ defui use-context]]

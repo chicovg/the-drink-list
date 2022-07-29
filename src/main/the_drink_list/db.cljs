@@ -89,10 +89,11 @@
 (declare set-loading!)
 
 (defn load-drinks!
-  [uid]
-  (firebase/get-drinks uid (fn [drinks]
-                             (set-drinks! drinks)
-                             (set-loading! false))))
+  [user]
+  (firebase/get-drinks {:user         user
+                        :set-loading! set-loading!
+                        :on-success   set-drinks!
+                        :on-error     #(js/console.error %)}))
 
 (declare uid)
 
@@ -262,7 +263,7 @@
   (set-user! user)
   (if (:uid user)
     (do
-      (load-drinks! (:uid user))
+      (load-drinks! user)
       (set-page! :main))
     (do
       (set-drinks! nil)
@@ -274,4 +275,4 @@
 
 (defn sign-out
   []
-  (firebase/sign-out set-user-and-load-drinks!))
+  (firebase/sign-out))

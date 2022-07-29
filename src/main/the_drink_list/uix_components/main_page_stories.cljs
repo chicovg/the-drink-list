@@ -1,9 +1,10 @@
 (ns the-drink-list.uix-components.main-page-stories
   (:require
-   [the-drink-list.uix-components.main-page :as main-page]
+   [the-drink-list.uix-components.state :as state]
    [the-drink-list.types.drink :as drink-type]
-   [uix.core :refer [$]]
-   [the-drink-list.uix-components.context :as context]))
+   [the-drink-list.uix-components.context :as context]
+   [the-drink-list.uix-components.main-page :as main-page]
+   [uix.core :refer [$]]))
 
 (def ^:export default
   #js {:title     "UIX Pages/Main Page"
@@ -13,12 +14,12 @@
 
 (defn ^:export Default []
   ($ (.-Provider context/app)
-     {:value (context/use-app-state {:drinks   drinks
+     {:value (state/use-app-state {:drinks   drinks
                                      :loading? false})}
      ($ main-page/main-page {:drinks drinks})))
 
 (defn ^:export Loading []
   ($ (.-Provider context/app)
-     {:value (context/use-app-state {:drinks   drinks
+     {:value (state/use-app-state {:drinks   drinks
                                      :loading? true})}
      ($ main-page/main-page {:drinks drinks})))
