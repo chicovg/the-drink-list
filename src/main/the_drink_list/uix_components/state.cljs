@@ -7,28 +7,11 @@
 (defn- use-main-app-state
   []
   (let [[loading? set-loading!] (use-state true)
-        [page set-page!]        (use-state :main)
-
-        ;; TODO might not need these!
-        [user set-user!]        (use-state nil)
-        handle-sign-in!         (fn [user]
-                                  (set-user! user)
-                                  (set-page! :main))
-        handle-sign-out!         (fn []
-                                  (set-user! nil)
-                                  (set-page! :login))
-        handle-auth-change!     (fn [user]
-                                  (js/console.log "AUTH CHANGE")
-                                  (if (:uid user)
-                                    (handle-sign-in! user)
-                                    (handle-sign-out!)))]
+        [page set-page!]        (use-state :main)]
     {:loading?            loading?
      :set-loading!        set-loading!
      :page                page
-     :set-page!           set-page!
-     :user                user
-     :handle-auth-change! handle-auth-change!
-     :handle-sign-in!     handle-sign-in!}))
+     :set-page!           set-page!}))
 
 (defn- use-main-page-state
   []

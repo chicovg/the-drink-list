@@ -1,21 +1,17 @@
 (ns the-drink-list.uix-components.autocomplete-stories
-  (:require [the-drink-list.components.autocomplete :as autocomplete]
-            [the-drink-list.types.drink :as drink]
-            [reagent.core :as r]))
+  (:require
+   [the-drink-list.uix-components.autocomplete :as autocomplete]
+   [the-drink-list.types.drink :as drink]
+   [uix.core :refer [$ use-state]]))
 
 (def ^:export default
-  #js {:title     "Components/Autocomplete"
-       :component (r/reactify-component autocomplete/autocomplete)})
-
-(defn controlled-autocomplete
-  []
-  (r/with-let [value (r/atom nil)]
-    (fn []
-      [autocomplete/autocomplete {:id          :makers
-                                  :label       "Brewery"
-                                  :on-change   #(reset! value %)
-                                  :suggestions (vec drink/fake-brewers)
-                                  :value       @value}])))
+  #js {:title     "UIX Components/Autocomplete"
+       :component autocomplete/autocomplete})
 
 (defn ^:export Default []
-  (r/as-element [controlled-autocomplete]))
+  (let [[value set-value!] (use-state nil)]
+    ($ autocomplete/autocomplete {:id          :makers
+                                  :label       "Brewery"
+                                  :on-change   set-value!
+                                  :suggestions (vec drink/fake-brewers)
+                                  :value       value})))

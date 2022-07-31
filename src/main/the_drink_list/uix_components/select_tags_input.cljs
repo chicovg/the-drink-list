@@ -26,7 +26,6 @@
 
 (defui select-tags-input
   [{:keys [id label on-change options placeholder value]}]
-  (prn options)
   (let [tags-input-ref     (use-ref)
         bulma-tags-input   (atom nil)
         tags-input-options (clj->js (cond-> tags-input-base-options

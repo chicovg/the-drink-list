@@ -3,9 +3,9 @@
    [clojure.spec.alpha :as s]
    [reagent.core :as r]
    [the-drink-list.api.firebase :as firebase]
-   [the-drink-list.components.autocomplete :as autocomplete]
    [the-drink-list.components.form :as form]
    [the-drink-list.types.drink :as drink-type]
+   [the-drink-list.uix-components.autocomplete :as autocomplete]
    [the-drink-list.uix-components.context :as context]
    [the-drink-list.uix-components.select-tags-input :as select-tags-input]
    [uix.core :refer [$ defui use-context]]))
@@ -50,27 +50,27 @@
                                                 :value       (:name drink-modal-drink)}])
                 ($ :div.columns
                    ($ :div.column.is-half
-                      (r/as-element [autocomplete/autocomplete {:id          :type
-                                                                :label       "Type"
-                                                                :placeholder "Enter a drink type"
-                                                                :on-change   #(set-drink-modal-drink-value! :type %)
-                                                                :suggestions types
-                                                                :value       (:type drink-modal-drink)}]))
+                      ($ autocomplete/autocomplete {:id          :type
+                                                    :label       "Type"
+                                                    :placeholder "Enter a drink type"
+                                                    :on-change   #(set-drink-modal-drink-value! :type %)
+                                                    :suggestions types
+                                                    :value       (:type drink-modal-drink)}))
                    ($ :div.column.is-half
-                      (r/as-element [autocomplete/autocomplete {:id          :maker
-                                                                :label       "Maker"
-                                                                :placeholder "Enter a maker name"
-                                                                :on-change   #(set-drink-modal-drink-value! :maker %)
-                                                                :suggestions makers
-                                                                :value       (:maker drink-modal-drink)}])))
+                      ($ autocomplete/autocomplete {:id          :maker
+                                                    :label       "Maker"
+                                                    :placeholder "Enter a maker name"
+                                                    :on-change   #(set-drink-modal-drink-value! :maker %)
+                                                    :suggestions makers
+                                                    :value       (:maker drink-modal-drink)})))
                 ($ :div.columns
                    ($ :div.column.is-half
-                      (r/as-element [autocomplete/autocomplete {:id          :style
-                                                                :label       "Style"
-                                                                :placeholder "Enter the drink style"
-                                                                :on-change   #(set-drink-modal-drink-value! :style %)
-                                                                :suggestions styles
-                                                                :value       (:style drink-modal-drink)}])))
+                      ($ autocomplete/autocomplete {:id          :style
+                                                    :label       "Style"
+                                                    :placeholder "Enter the drink style"
+                                                    :on-change   #(set-drink-modal-drink-value! :style %)
+                                                    :suggestions styles
+                                                    :value       (:style drink-modal-drink)})))
                 ($ :div.columns
                    ($ :div.column.is-half
                       (r/as-element [form/slider-input {:id        :appearance
@@ -105,23 +105,14 @@
                                 (drink-type/calculate-overall drink-modal-drink))))))
                 ($ :div.columns
                    ($ :div.column.is-half
-                      ;; TODO
-                      ;; tagify.js:941 Uncaught TypeError: Cannot read properties of null (reading 'value')
-                      ;; at Tagify.getMappedValue (tagify.js:941:135)
-                      ;; at eval (tagify.js:955:35)
-                      ;; at Array.map (<anonymous>)
-                      ;; at Tagify.createListHTML (tagify.js:951:37)
-                      ;; at Tagify.fill (tagify.js:529:82)
-                      ;; at Tagify.show (tagify.js:429:21)
-                      ;; at Tagify.onFocusBlur (tagify.js:1278:27)
                       ($ select-tags-input/select-tags-input {:id          :notes
-                                                             :label       "Tasting Notes"
-                                                             :on-change   #(set-drink-modal-drink-value! :notes %)
-                                                             :options     notes-options
-                                                             :placeholder "Tasting notes"
+                                                              :label       "Tasting Notes"
+                                                              :on-change   #(set-drink-modal-drink-value! :notes %)
+                                                              :options     notes-options
+                                                              :placeholder "Tasting notes"
                                                              ; TODO style tags like card view
-                                                             :style       {:min-width 286}
-                                                             :value       (:notes drink-modal-drink)}))
+                                                              :style       {:min-width 286}
+                                                              :value       (:notes drink-modal-drink)}))
 
                    ($ :div.column.is-half
                       (r/as-element [form/textarea-input {:id          :comment

@@ -7,14 +7,20 @@
    [uix.core :refer [$]]))
 
 (def ^:export default
-  #js {:title     "UIX Components/Drink Form Modal"
+  #js {:title     "UIX Components/Drink Modal"
        :component drink-modal/drink-modal})
 
 (defn ^:export Creating []
-  ($ (.-Provider context/app) {:value (state/use-app-state)}
+  ($ (.-Provider context/app) {:value (state/use-app-state
+                                       {:makers (vec drink-type/fake-brewers)
+                                        :styles (vec drink-type/example-styles)
+                                        :types  (vec drink-type/types)})}
      ($ drink-modal/drink-modal)))
 
 (defn ^:export Editing []
   ($ (.-Provider context/app) {:value (state/use-app-state
-                                       {:drink-modal-drink (drink-type/gen-drink)})}
+                                       {:drink-modal-drink (drink-type/gen-drink)
+                                        :makers (vec drink-type/fake-brewers)
+                                        :styles (vec drink-type/example-styles)
+                                        :types  (vec drink-type/types)})}
      ($ drink-modal/drink-modal)))
