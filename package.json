@@ -6,6 +6,7 @@
     "test": "test"
   },
   "dependencies": {
+    "@creativebulma/bulma-tagsinput": "^1.0.3",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@storybook/client-api": "^6.4.9",
     "@storybook/client-logger": "^6.4.9",
@@ -39,6 +40,7 @@
     "postcss-cli": "^9.1.0"
   },
   "scripts": {
+    "build": "shadow-cljs compile app",
     "build-storybook": "build-storybook",
     "css:cpy-tagify": "cpy node_modules/@yaireo/tagify/dist/tagify.css public/css",
     "css:compile": "node-sass --output-style=expanded --source-map=true sass/site.sass public/css/site.css",

@@ -1,13 +1,14 @@
 (ns the-drink-list.uix-components.drink-modal
   (:require
    [clojure.spec.alpha :as s]
+   [reagent.core :as r]
+   [the-drink-list.api.firebase :as firebase]
    [the-drink-list.components.autocomplete :as autocomplete]
    [the-drink-list.components.form :as form]
    [the-drink-list.types.drink :as drink-type]
    [the-drink-list.uix-components.context :as context]
-   [uix.core :refer [$ defui use-context]]
-   [reagent.core :as r]
-   [the-drink-list.api.firebase :as firebase]))
+   [the-drink-list.uix-components.select-tags-input :as select-tags-input]
+   [uix.core :refer [$ defui use-context]]))
 
 (s/def ::drink-form
   (s/keys :req-un [::drink-type/name
@@ -113,13 +114,14 @@
                       ;; at Tagify.fill (tagify.js:529:82)
                       ;; at Tagify.show (tagify.js:429:21)
                       ;; at Tagify.onFocusBlur (tagify.js:1278:27)
-                      (r/as-element [form/select-tags-input {:id          :notes
+                      ($ select-tags-input/select-tags-input {:id          :notes
                                                              :label       "Tasting Notes"
                                                              :on-change   #(set-drink-modal-drink-value! :notes %)
                                                              :options     notes-options
                                                              :placeholder "Tasting notes"
-                                                             :style       {:min-width 286} ; TODO style tags like card view
-                                                             :value       (:notes drink-modal-drink)}]))
+                                                             ; TODO style tags like card view
+                                                             :style       {:min-width 286}
+                                                             :value       (:notes drink-modal-drink)}))
 
                    ($ :div.column.is-half
                       (r/as-element [form/textarea-input {:id          :comment

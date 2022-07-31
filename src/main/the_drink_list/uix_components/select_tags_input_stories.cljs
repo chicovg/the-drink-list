@@ -1,21 +1,18 @@
 (ns the-drink-list.uix-components.select-tags-input-stories
-  (:require [the-drink-list.components.form :as form]
-            [reagent.core :as r]))
+  (:require
+   [the-drink-list.uix-components.select-tags-input :as select-tags-input]
+   [uix.core :refer [$ use-state]]))
 
 (def ^:export default
-  #js {:title     "Components/Select Tags Input"
-       :component (r/reactify-component form/select-tags-input)})
-
-(defn- select-tags-input-with-value
-  []
-  (r/with-let [value (r/atom nil)]
-    [form/select-tags-input {:id          :type
-                             :label       "Type"
-                             :on-change   #((prn %)
-                                            (reset! value %))
-                             :options     ["hoppy" "citrusy" "smoky" "toasty"]
-                             :style       {:width 200}
-                             :value       @value}]))
+  #js {:title     "UIX Components/Select Tags Input"
+       :component select-tags-input/select-tags-input})
 
 (defn ^:export Default []
-  (r/as-element [select-tags-input-with-value]))
+  (let [[value set-value!] (use-state nil)]
+    ($ select-tags-input/select-tags-input {:id          :tags
+                                            :label       "Tags"
+                                            :on-change   set-value!
+                                            :options     ["hoppy" "citrusy" "smoky" "toasty"]
+                                            :placeholder "Add Tags"
+                                            :style       {:width 200}
+                                            :value       value})))

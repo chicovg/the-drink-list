@@ -1,8 +1,6 @@
 (ns the-drink-list.uix-components.form
   (:require
-   [clojure.string :as s]
-   [reagent.core :as r]
-   ["@yaireo/tagify/dist/react.tagify" :default Tags]))
+   [reagent.core :as r]))
 
 (defn- event->value
   [e]
@@ -73,32 +71,3 @@
        (when (and @dirty? @error)
          [:p.help.is-danger @error])])))
 
-(defn- blank->nil
-  [s]
-  (when (not-empty s)
-    s))
-
-(defn- event->tag-values
-  [e]
-  (some->> e
-           .-detail
-           .-value
-           blank->nil
-           js/JSON.parse
-           js->clj
-           (mapv (fn [o]
-                   (get o "value")))))
-
-(defn select-tags-input
-  [{:keys [id label on-change options placeholder value]}]
-  [:div.field
-   [:label.label {:for id} label]
-   [:div.control
-    [:> Tags (cond-> {:id          id
-                      :on-change   #(on-change (event->tag-values %))
-                      :placeholder placeholder
-                      :settings    {:add-tags-on-blur true
-                                    :dropdown         {:enabled 0}
-                                    :whitelist        options}}
-               (not-empty value)
-               (assoc :value (s/join "," value)))]]])

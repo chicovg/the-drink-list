@@ -95,6 +95,7 @@
         notes                        (->> drinks
                                           (map :notes)
                                           flatten
+                                          (filter identity)
                                           distinct)
         notes-options                (-> beer-flavors/flavors
                                          (concat notes)
