@@ -49,7 +49,8 @@
                       {:disabled (not value)
                        :on-click #(do
                                     (on-change nil)
-                                    (.focus @input-ref))}
+                                    (when @input-ref
+                                      (.focus @input-ref)))}
                       ($ :span.icon
                          ($ :i.fas.fa-times)))))
              ($ :div.dropdown-menu

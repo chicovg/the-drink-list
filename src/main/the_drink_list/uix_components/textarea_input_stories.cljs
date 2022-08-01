@@ -1,19 +1,16 @@
 (ns the-drink-list.uix-components.textarea-input-stories
-  (:require [the-drink-list.components.form :as form]
-            [reagent.core :as r]))
+  (:require
+   [the-drink-list.uix-components.textarea-input :as textarea-input]
+   [uix.core :refer [$ use-state]]))
 
 (def ^:export default
-  #js {:title     "Components/Textarea Input"
-       :component (r/reactify-component form/textarea-input)})
-
-(defn- textarea-input-with-value
-  []
-  (r/with-let [value (r/atom nil)]
-    [form/textarea-input {:id          :name
-                          :label       "Comment"
-                          :placeholder "Enter a comment"
-                          :on-change   #(reset! value %)
-                          :value       @value}]))
+  #js {:title     "UIX Components/Textarea Input"
+       :component textarea-input/textarea-input})
 
 (defn ^:export Default []
-  (r/as-element [textarea-input-with-value]))
+  (let [[value set-value!] (use-state nil)]
+    ($ textarea-input/textarea-input {:id          :comment
+                                      :label       "Comment"
+                                      :placeholder "Enter a comment"
+                                      :on-change   set-value!
+                                      :value       value})))

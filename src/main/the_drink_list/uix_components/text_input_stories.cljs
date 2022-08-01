@@ -1,20 +1,17 @@
 (ns the-drink-list.uix-components.text-input-stories
-  (:require [the-drink-list.components.form :as form]
-            [reagent.core :as r]))
+  (:require
+   [the-drink-list.uix-components.text-input :as text-input]
+   [uix.core :refer [$ use-state]]))
 
 (def ^:export default
-  #js {:title     "Components/Text Input"
-       :component (r/reactify-component form/text-input)})
-
-(defn- text-input-with-value
-  []
-  (r/with-let [value (r/atom nil)]
-    [form/text-input {:id          :name
-                      :label       "Name"
-                      :placeholder "Enter a Name"
-                      :on-change   #(reset! value %)
-                      :required    true
-                      :value       @value}]))
+  #js {:title     "UIX Components/Text Input"
+       :component text-input/text-input})
 
 (defn ^:export Default []
-  (r/as-element [text-input-with-value]))
+  (let [[value set-value!] (use-state nil)]
+    ($ text-input/text-input {:id          :name
+                              :label       "Name"
+                              :placeholder "Enter a Name"
+                              :on-change   set-value!
+                              :required    true
+                              :value       value})))
