@@ -27,7 +27,7 @@
 (defui select-tags-input
   [{:keys [id label on-change options placeholder value]}]
   (let [tags-input-ref     (use-ref)
-        input-value        (atom [])
+        input-value        (atom (vec value))
         bulma-tags-input   (atom nil)
         tags-input-options (clj->js (cond-> tags-input-base-options
                                       placeholder
@@ -37,11 +37,16 @@
     (use-effect
      (fn []
        (let [tags-input-instance (new BulmaTagsInput @tags-input-ref tags-input-options)]
+         (when (not-empty @input-value)
+           (.add tags-input-instance (clj->js value)))
          (.on tags-input-instance "after.add" #(on-change (swap! input-value conj (.-item %))))
          (.on tags-input-instance "after.remove" #(on-change (swap! input-value (fn [iv]
                                                                                   (vec (remove #{%} iv))))))
          (reset! bulma-tags-input tags-input-instance)))
      [])
+
+    ;; TODO this doesn't seem like it's working...
+    (prn "hello" value)
 
     ($ :div.field
        ($ :label.label {:for id} label)
@@ -49,7 +54,4 @@
           ($ :input {:ref         tags-input-ref
                      :id          id
                      :placeholder placeholder
-                     ;; The component overrides this...
-                     :on-change   on-change
-                     :type        "text"
-                     :value       value})))))
+                     :type        "text"})))))

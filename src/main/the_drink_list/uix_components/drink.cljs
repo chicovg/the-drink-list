@@ -1,6 +1,6 @@
 (ns the-drink-list.uix-components.drink
   (:require
-   [the-drink-list.components.common :as common]
+   [the-drink-list.uix-components.common :as common]
    [the-drink-list.uix-components.context :as context]
    [the-drink-list.uix-components.logged-at :as logged-at]
    [uix.core :refer [$ defui use-context use-state]]))

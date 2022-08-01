@@ -2,7 +2,7 @@
   (:require
    [the-drink-list.db :as db]
    [the-drink-list.types.drink :as drink-type]
-   [the-drink-list.components.common :as common]))
+   [the-drink-list.uix-components.common :as common]))
 
 (defn- sort-icon
   [asc?]

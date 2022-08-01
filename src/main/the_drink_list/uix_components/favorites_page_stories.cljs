@@ -1,9 +1,9 @@
 (ns the-drink-list.uix-components.favorites-page-stories
   (:require
    [reagent.core :as r]
-   [the-drink-list.components.favorites-page :as favorites-page]
+   [the-drink-list.uix-components.favorites-page :as favorites-page]
    [the-drink-list.types.drink :as drink-type]
-   [the-drink-list.components.story-helpers :refer [with-app-state]]))
+   #_[the-drink-list.components.story-helpers :refer [with-app-state]]))
 
 (def ^:export default
   #js {:title "Pages/Favorites Page"
@@ -13,7 +13,7 @@
                     {}
                     (drink-type/gen-drinks 100)))
 
-(defn ^:export Default []
-  (r/as-element [with-app-state
-                 {:drinks drinks}
-                 favorites-page/favorites-page]))
+;; (defn ^:export Default []
+;;   (r/as-element [with-app-state
+;;                  {:drinks drinks}
+;;                  favorites-page/favorites-page]))
