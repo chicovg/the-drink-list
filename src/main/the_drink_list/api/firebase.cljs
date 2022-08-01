@@ -1,20 +1,12 @@
 (ns the-drink-list.api.firebase
-  (:require ["firebase/app" :refer [initializeApp]]
-            ["firebase/auth" :refer [GoogleAuthProvider
-                                     getAuth
-                                     onAuthStateChanged
-                                     signInWithPopup]]
-            ["firebase/firestore" :refer [addDoc
-                                          collection
-                                          deleteDoc
-                                          doc
-                                          getDocs
-                                          getFirestore
-                                          setDoc
-                                          Timestamp]]
-            [clojure.walk :as walk]
-            [the-drink-list.types.drink :as drink]
-            [clojure.string :as str]))
+  (:require
+   ["firebase/app" :refer [initializeApp]]
+   ["firebase/auth" :refer [getAuth GoogleAuthProvider onAuthStateChanged
+                          signInWithPopup]]
+   ["firebase/firestore" :refer [addDoc collection deleteDoc doc getDocs
+                               getFirestore setDoc Timestamp]]
+   [clojure.walk :as walk]
+   [the-drink-list.types.drink :as drink]))
 
 (defonce app (initializeApp
               (clj->js
