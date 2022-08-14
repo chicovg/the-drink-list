@@ -80,8 +80,8 @@
       (.then (fn [qs]
                (let [drinks (atom {})]
                  (.forEach qs #(swap! drinks assoc (.-id %) (doc->drink %)))
-                 (on-success @drinks)
-                 (set-loading! false))))
+                 (on-success @drinks))))
+      (.then #(set-loading! false))
       (.catch on-error)))
 
 (defn save-drink!
@@ -106,8 +106,9 @@
           (.catch on-error)))))
 
 (defn delete-drink!
-  [uid drink-id delete-drink on-success on-error]
-  (-> (deleteDoc (doc db "users" uid "drinks" drink-id))
-      (.then #(delete-drink drink-id))
-      (.then on-success)
+  [{:keys [user drink-id set-loading! on-success on-error]}]
+  (set-loading! true)
+  (-> (deleteDoc (doc db "users" (:uid user) "drinks" drink-id))
+      (.then #(on-success drink-id))
+      (.then #(set-loading! false))
       (.catch on-error)))

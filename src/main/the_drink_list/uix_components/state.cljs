@@ -17,7 +17,7 @@
   []
   (let [[search-term set-search-term!] (use-state nil)
         [sort-state set-sort-state!]   (use-state {:field :created
-                                                       :asc?  false})]
+                                                   :asc?  false})]
     {:search-term      search-term
      :set-search-term! set-search-term!
      :sort-state       sort-state
@@ -51,13 +51,14 @@
                                        (set-show-drink-modal! false)
                                        (set-drink-modal-drink! nil))
         set-drink-modal-drink-value! (fn [key value]
+                                       (prn "dmv" key value drink-modal-drink)
                                        (set-drink-modal-drink!
                                         (assoc drink-modal-drink key value)))]
-    {:drink-modal-drink            drink-modal-drink
-     :show-drink-modal?            show-drink-modal?
-     :show-drink-modal!            show-drink-modal!
-     :hide-drink-modal!            hide-drink-modal!
-     :set-drink-modal-drink-value! set-drink-modal-drink-value!}))
+    {:drink-modal-drink      drink-modal-drink
+     :show-drink-modal?      show-drink-modal?
+     :show-drink-modal!      show-drink-modal!
+     :hide-drink-modal!      hide-drink-modal!
+     :set-drink-modal-drink! set-drink-modal-drink!}))
 
 (defn- distinct-values
   [key coll]
@@ -96,56 +97,6 @@
                         (set-drinks-map! (dissoc drinks-map id)))
      :set-drinks-map! set-drinks-map!}))
 
-(defn- merge-drink-ratings
-  [drinks]
-  (reduce (fn [{:keys [count total]} {:keys [overall]}]
-            {:count (inc count)
-             :total (+ total overall)})
-          {:count 0
-           :total 0}
-          drinks))
-
-(defn- maybe-reverse
-  [reverse? coll]
-  (if reverse?
-    (reverse coll)
-    coll))
-
-(defn- grouped-drink-totals
-  [drinks group-by-fn {:keys [field asc?]}]
-  (->> drinks
-       (group-by group-by-fn)
-       (mapv (fn [[maker drinks]]
-               [maker (merge-drink-ratings drinks)]))
-       (mapv (fn [[maker {:keys [count total] :as totals}]]
-               (if (zero? count)
-                 [maker (assoc totals :average 0)]
-                 [maker (assoc totals :average (drink/round (/ total count)))])))
-       (sort-by (fn [[_ totals]]
-                  (get totals field)))
-       (maybe-reverse (not asc?))
-       (mapv (fn [[maker {:keys [count average]}]]
-               [maker count average]))
-       (take 10)))
-
-(defn- use-favorites-panel-state
-  [drinks]
-  (let [[favorites-panel set-favorites-panel!]           (use-state :style)
-        [favorites-sort-state set-favorites-sort-state!] (use-state {:field :average
-                                                                         :asc?  false})
-
-        favorites-data            (grouped-drink-totals drinks favorites-panel favorites-sort-state)
-        set-favorites-sort-field! (fn [field]
-                                    (let [current-field (:field favorites-sort-state)]
-                                      (set-favorites-sort-state!
-                                       (cond-> (assoc favorites-sort-state :field field)
-                                         (= current-field field)
-                                         (update :asc? not)))))]
-    {:favorites-panel           favorites-panel
-     :favorites-data            favorites-data
-     :set-favorites-panel!      set-favorites-panel!
-     :set-favorites-sort-field! set-favorites-sort-field!}))
-
 (defn use-app-state
   ([] (use-app-state {}))
   ([overrides]
@@ -154,6 +105,4 @@
                            (use-delete-modal-state)
                            (use-drink-modal-state)
                            (use-drinks-state))]
-     (merge base-state
-            (use-favorites-panel-state (:drink base-state))
-            overrides))))
+     (merge base-state overrides))))

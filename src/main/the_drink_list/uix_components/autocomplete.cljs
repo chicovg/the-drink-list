@@ -33,7 +33,8 @@
                                                       (condp = key
                                                         ;; Enter
                                                         13 (do
-                                                             (on-change (nth filtered-suggestions active-option))
+                                                             (when-not (empty? filtered-suggestions)
+                                                               (on-change (nth filtered-suggestions active-option)))
                                                              (set-active-option! 0))
                                                         ;; Up
                                                         38 (when (pos? active-option)
@@ -43,7 +44,7 @@
                                                              (set-active-option! (inc active-option)))
                                                         nil))
 
-                                    :value         value}))
+                                    :value         (or value "")}))
                 ($ :p.control
                    ($ :button.button
                       {:disabled (not value)

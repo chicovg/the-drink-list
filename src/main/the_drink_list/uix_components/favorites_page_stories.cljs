@@ -1,19 +1,17 @@
 (ns the-drink-list.uix-components.favorites-page-stories
   (:require
-   [reagent.core :as r]
-   [the-drink-list.uix-components.favorites-page :as favorites-page]
    [the-drink-list.types.drink :as drink-type]
-   #_[the-drink-list.components.story-helpers :refer [with-app-state]]))
+   [the-drink-list.uix-components.context :as context]
+   [the-drink-list.uix-components.favorites-page :as favorites-page]
+   [the-drink-list.uix-components.state :as state]
+   [uix.core :refer [$]]))
 
 (def ^:export default
-  #js {:title "Pages/Favorites Page"
-       :component (r/reactify-component favorites-page/favorites-page)})
+  #js {:title "UIX Pages/Favorites Page"
+       :component favorites-page/favorites-page})
 
-(def drinks (reduce #(assoc %1 (:id %2) %2)
-                    {}
-                    (drink-type/gen-drinks 100)))
-
-;; (defn ^:export Default []
-;;   (r/as-element [with-app-state
-;;                  {:drinks drinks}
-;;                  favorites-page/favorites-page]))
+(defn ^:export Default []
+  ($ (.-Provider context/app)
+     {:value (state/use-app-state {:drinks   (drink-type/gen-drinks 100)
+                                   :loading? false})}
+     ($ favorites-page/favorites-page)))

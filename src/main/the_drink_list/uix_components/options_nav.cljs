@@ -14,7 +14,7 @@
              ($ :input.input.search-input
                 {:on-change   #(set-search-term! (-> % .-target .-value))
                  :placeholder "Search"
-                 :value       search-term})
+                 :value       (or search-term "")})
              ($ :span.icon.is-left
                 ($ :i.fas.fa-search {:aria-hidden "true"})))
           ($ :p.control

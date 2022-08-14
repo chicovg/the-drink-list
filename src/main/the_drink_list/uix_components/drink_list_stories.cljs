@@ -1,6 +1,5 @@
 (ns the-drink-list.uix-components.drink-list-stories
-  (:require [reagent.core :as r]
-            [the-drink-list.uix-components.drink-list :as drink-list]
+  (:require [the-drink-list.uix-components.drink-list :as drink-list]
             [the-drink-list.types.drink :as drink-type]
             [uix.core :refer [$]]))
 

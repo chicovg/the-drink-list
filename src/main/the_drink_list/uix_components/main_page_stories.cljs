@@ -15,11 +15,11 @@
 (defn ^:export Default []
   ($ (.-Provider context/app)
      {:value (state/use-app-state {:drinks   drinks
-                                     :loading? false})}
+                                   :loading? false})}
      ($ main-page/main-page {:drinks drinks})))
 
 (defn ^:export Loading []
   ($ (.-Provider context/app)
      {:value (state/use-app-state {:drinks   drinks
-                                     :loading? true})}
+                                   :loading? true})}
      ($ main-page/main-page {:drinks drinks})))

@@ -7,8 +7,7 @@
  :dev-http {8080 "public"}
 
  :dependencies
- [[reagent "1.0.0"]
-  [com.pitch/uix.core "0.6.2"]
+ [[com.pitch/uix.core "0.6.2"]
   [com.pitch/uix.dom "0.6.2"]
   [org.clojure/spec.alpha "0.3.214"]]
 

@@ -45,9 +45,6 @@
          (reset! bulma-tags-input tags-input-instance)))
      [])
 
-    ;; TODO this doesn't seem like it's working...
-    (prn "hello" value)
-
     ($ :div.field
        ($ :label.label {:for id} label)
        ($ :div.control

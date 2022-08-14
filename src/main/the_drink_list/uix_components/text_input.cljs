@@ -8,7 +8,7 @@
     (str label " is required")))
 
 (defui text-input
-  [{:keys [id label on-change required] :as props}]
+  [{:keys [id label on-change required value] :as props}]
   (let [[dirty? set-dirty!] (use-state false)
         [error set-error!] (use-state nil)]
     ($ :div.field
@@ -19,6 +19,7 @@
                                  :on-change #(let [val (-> % .-target .-value)]
                                                (set-dirty! true)
                                                (set-error! (validate required label val))
-                                               (on-change val)))))
+                                               (on-change val))
+                                 :value     (or value ""))))
        (when (and dirty? error)
          ($ :p.help.is-danger error)))))
