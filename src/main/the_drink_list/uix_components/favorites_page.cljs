@@ -62,6 +62,7 @@
                            :fill "#00AFB5"
                            :name "Other"}))))
        ($ :div.mb-2)
+       ;; Todo select type to show
        ($ :div.field.is-horizontal
           ($ :div.field-label
              ($ :label.label "Rating Shown"))
@@ -97,7 +98,7 @@
 (defui favorites-page
   []
   (let [[favorites-panel set-favorites-panel!] (use-state :history)]
-    ($ :div.mt-4.has-background-white
+    ($ :div.mt-4.p-2.has-background-white
        ($ :div.tabs
           ($ :ul
              ($ :li {:class (when (= favorites-panel :history) "is-active")

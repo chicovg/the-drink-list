@@ -49,11 +49,7 @@
                                        (set-show-drink-modal! true))
         hide-drink-modal!            (fn []
                                        (set-show-drink-modal! false)
-                                       (set-drink-modal-drink! nil))
-        set-drink-modal-drink-value! (fn [key value]
-                                       (prn "dmv" key value drink-modal-drink)
-                                       (set-drink-modal-drink!
-                                        (assoc drink-modal-drink key value)))]
+                                       (set-drink-modal-drink! nil))]
     {:drink-modal-drink      drink-modal-drink
      :show-drink-modal?      show-drink-modal?
      :show-drink-modal!      show-drink-modal!
@@ -82,9 +78,10 @@
                                           (filter identity)
                                           distinct)
         notes-options                (-> beer-flavors/flavors
-                                         (concat notes)
-                                         sort
-                                         vec)]
+                                       (concat notes)
+                                       distinct
+                                       sort
+                                       vec)]
     {:drinks          drinks
      :makers          makers
      :styles          styles

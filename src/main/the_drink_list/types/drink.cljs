@@ -91,7 +91,8 @@
       (update :maker trim-non-nil)
       (update :type trim-non-nil)
       (update :style trim-non-nil)
-      (update :comment trim-non-nil)))
+      (update :comment trim-non-nil)
+      (update :notes #(when % (mapv trim-non-nil %)))))
 
 (defn gen-drink []
   (-> (gen/generate (s/gen ::drink))
