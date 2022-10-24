@@ -32,7 +32,6 @@
     "autoprefixer": "^10.4.0",
     "babel-loader": "^8.2.3",
     "clean-css-cli": "^5.4.2",
-    "cpy-cli": "^3.1.1",
     "firebase-tools": "^9.23.3",
     "fs-extra": "^10.0.0",
     "node-sass": "^7.0.0",
@@ -43,7 +42,6 @@
   "scripts": {
     "build": "shadow-cljs compile app",
     "build-storybook": "build-storybook",
-    "css:cpy-tagify": "cpy node_modules/@yaireo/tagify/dist/tagify.css public/css",
     "css:compile": "node-sass --output-style=expanded --source-map=true sass/site.sass public/css/site.css",
     "css:minify": "cleancss --output public/css/site.css public/css/site.css",
     "css:watch": "npm run css:compile -- --watch",
