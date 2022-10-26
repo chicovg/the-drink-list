@@ -10,7 +10,6 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@storybook/client-api": "^6.4.9",
     "@storybook/client-logger": "^6.4.9",
-    "@yaireo/tagify": "^4.9.8",
     "bulma": "^0.9.3",
     "bulma-slider": "^2.0.4",
     "firebase": "^9.6.1",
