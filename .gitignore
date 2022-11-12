@@ -13,3 +13,4 @@ node_modules/
 /public/js
 .shadow-cljs/
 /.clj-kondo/
+/storybook-static/
