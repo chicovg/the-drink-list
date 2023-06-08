@@ -5,8 +5,6 @@
             [the-drink-list.types.beer-flavors :as beer-flavors]
             [clojure.string :as str]))
 
-(def types #{"Beer" "Cider" "Mead" "Other" "Wine"})
-
 (s/def ::id string?)
 (s/def ::name string?)
 
@@ -17,7 +15,11 @@
                     "Great Booze Brewing"})
 (s/def ::maker
   (s/with-gen string? #(s/gen fake-brewers)))
-(s/def ::type types)
+
+(def types #{"Beer" "Cider" "Mead" "Other" "Seltzer" "Wine"})
+
+(s/def ::type
+  (s/with-gen string? #(s/gen types)))
 
 (def example-styles #{"Gose"
                       "Hefeweisen"
