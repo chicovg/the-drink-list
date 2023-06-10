@@ -33,4 +33,4 @@ workflows:
           filters:
             branches:
               only:
-                - try-uix-2
+                - master
