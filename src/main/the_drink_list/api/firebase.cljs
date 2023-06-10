@@ -34,7 +34,6 @@
   [on-success]
   (-> (signInWithPopup auth provider)
       (.then on-success)
-      (.then #(js/console.log "Authenticated successfully"))
       (.catch #(js/console.log "Authentication failed " %))))
 
 (defn sign-out

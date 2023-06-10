@@ -11,6 +11,16 @@
    [the-drink-list.uix-components.context :as context]
    [uix.core :refer [$ defui use-context use-state]]))
 
+(def type-colors
+  ["#A30000"
+   "#FF7700"
+   "#EFD28D"
+   "#228B22"
+   "#00AFB5"
+   "#87CEEB"
+   "#8A2BE2"
+   "#004777"])
+
 (defui rating-history
   "A scatter chart which shows history of ratings.
    A separate color per drink type, can select which rating to chose"
@@ -28,7 +38,8 @@
                                       (map #(update % :created inst-ms))
                                       (map #(set/rename-keys % {:style :drink-style})))
         drinks-by-type            (group-by :type drink-data)
-        types                     (map :type drink-data)]
+        types                     (sort (keys drinks-by-type))
+        types-colors (zipmap types type-colors)]
     ($ :div.p-2
        ($ ResponsiveContainer {:height 500 :width "100%"}
           ($ ScatterChart
@@ -41,26 +52,11 @@
                        :type          "number"})
              ($ YAxis {:dataKey data-key
                        :domain  (clj->js [0 5])})
-             (when (some #{"Beer"} types)
-               ($ Scatter {:data (clj->js (get drinks-by-type "Beer"))
-                           :fill "#004777"
-                           :name "Beer"}))
-             (when (some #{"Cider"} types)
-               ($ Scatter {:data (clj->js (get drinks-by-type "Cider"))
-                           :fill "#A30000"
-                           :name "Cider"}))
-             (when (some #{"Mead"} types)
-               ($ Scatter {:data (clj->js (get drinks-by-type "Mead"))
-                           :fill "#FF7700"
-                           :name "Mead"}))
-             (when (some #{"Wine"} types)
-               ($ Scatter {:data (clj->js (get drinks-by-type "Wine"))
-                           :fill "#EFD28D"
-                           :name "Wine"}))
-             (when (some #{"Other"} types)
-               ($ Scatter {:data (clj->js (get drinks-by-type "Other"))
-                           :fill "#00AFB5"
-                           :name "Other"}))))
+             (for [[type color] types-colors]
+               ($ Scatter {:key type
+                           :fill color
+                           :name type
+                           :data (clj->js (get drinks-by-type type))}))))
        ($ :div.mb-2)
        ;; Todo select type to show
        ($ :div.field.is-horizontal

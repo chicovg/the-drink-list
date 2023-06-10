@@ -7,5 +7,4 @@
 (def dom-root (js/document.getElementById "app"))
 
 (defn init []
-  (js/console.log "init")
   (dom/render ($ app/app) dom-root))
