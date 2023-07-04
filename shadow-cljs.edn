@@ -25,7 +25,4 @@
              :js-options {:resolve {"devcards-marked"
                                     {:target :npm :require "marked"}
                                     "devcards-syntax-highlighter"
-                                    {:target :npm :require "highlight.js"}}}}
-  :stories {:target :npm-module
-            :ns-regexp ".*stories$"
-            :output-dir "public/js/stories"}}}
+                                    {:target :npm :require "highlight.js"}}}}}}
