@@ -4,16 +4,25 @@
   "src/main"
   "src/test"]
 
- :dev-http {8080 "public"}
+ :dev-http {8080 "public"
+            8081 ["out/devcards" "public"]}
 
  :dependencies
  [[com.pitch/uix.core "0.6.2"]
   [com.pitch/uix.dom "0.6.2"]
+  [devcards/devcards "0.2.7"]
   [org.clojure/spec.alpha "0.3.214"]]
 
  :builds
  {:app {:target  :browser
         :modules {:main {:init-fn the-drink-list.core/init}}}
-  :stories {:target :npm-module
-            :ns-regexp ".*stories$"
-            :output-dir "public/js/stories"}}}
+  :devcards {:target :browser-test
+             :ns-regexp "-cards$"
+             :test-dir "out/devcards"
+             :runner-ns the-drink-list.devcards
+             :compiler-options {:devcards           true
+                                :output-feature-set :es8}
+             :js-options {:resolve {"devcards-marked"
+                                    {:target :npm :require "marked"}
+                                    "devcards-syntax-highlighter"
+                                    {:target :npm :require "highlight.js"}}}}}}
