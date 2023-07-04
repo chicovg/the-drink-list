@@ -11,26 +11,3 @@
 
 (defn ^:export init []
   (dc/start-devcard-ui!))
-
-;; - app-cards
-;;   DONE full app with state and everything
-;; - page-cards
-;;   - main
-;;   - login-panel
-;;   - favorites
-;; - content-cards
-;;   - DONE drink-list
-;;   - DONE navbar
-;;   - DONE options-nav
-;; - modal-cards
-;;   - DONE delete-modal
-;;   - DONE drink-modal
-;; - input-cards
-;;   - DONE autocomplete
-;;   - DONE select-tags
-;;   - DONE slider-input
-;;   - DONE text-input
-;;   - DONE textarea-input
-;;
-;;
-;;
