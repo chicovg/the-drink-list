@@ -8,4 +8,5 @@
 
 (dc/defcard
   app
+  "*Fully functional app preview, log in and manipulate real data!*"
   ($ app/app))

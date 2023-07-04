@@ -19,18 +19,18 @@
 ;;   - login-panel
 ;;   - favorites
 ;; - content-cards
-;;   - drink-list
-;;   - navbar
-;;   - options-nav
+;;   - DONE drink-list
+;;   - DONE navbar
+;;   - DONE options-nav
 ;; - modal-cards
 ;;   - DONE delete-modal
 ;;   - DONE drink-modal
 ;; - input-cards
-;;   - autocomplete
-;;   - select-tags
-;;   - slider-input
-;;   - text-input
-;;   - textarea-input
+;;   - DONE autocomplete
+;;   - DONE select-tags
+;;   - DONE slider-input
+;;   - DONE text-input
+;;   - DONE textarea-input
 ;;
 ;;
 ;;

@@ -1,14 +1,34 @@
 (ns the-drink-list.content-cards
   (:require
    [devcards.core :as dc]
+   [the-drink-list.types.drink :as drink]
+   [the-drink-list.uix-components.context :as context]
+   [the-drink-list.uix-components.drink-list :as drink-list]
    [the-drink-list.uix-components.logged-at :as logged-at]
+   [the-drink-list.uix-components.navbar :as navbar]
+   [the-drink-list.uix-components.options-nav :as options-nav]
+   [the-drink-list.uix-components.state :as state]
    [uix.core :refer [$ defui]]))
+
+(declare drink-list--empty)
+
+(dc/defcard
+  drink-list--empty
+  ($ drink-list/drink-list))
+
+(defui drink-list-preview
+  []
+  ($ (.-Provider context/app) {:value {:drinks (drink/gen-drinks 5)
+                                       :search-term ""
+                                       :sort-state  {:asc?  false
+                                                     :field :date}}}
+     ($ drink-list/drink-list)))
 
 (declare drink-list)
 
 (dc/defcard
   drink-list
-  "TODO")
+  ($ drink-list-preview))
 
 (defn- date-minus-millis
   [millis]
@@ -45,14 +65,24 @@
 (dc/defcard logged-at
   logged-at-preview)
 
+(declare navbar--logged-out)
+
+(dc/defcard
+  navbar--logged-out
+  ($ navbar/navbar))
+
 (declare navbar)
 
 (dc/defcard
   navbar
-  "TODO")
+  ($ navbar/navbar {:user {:uid "abc123"}}))
+
+(defui options-nav-preview []
+  ($ (.-Provider context/app) {:value (state/use-app-state)}
+     ($ options-nav/options-nav)))
 
 (declare options-nav)
 
 (dc/defcard
   options-nav
-  "TODO")
+  ($ options-nav-preview))
