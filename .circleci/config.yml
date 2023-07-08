@@ -18,6 +18,7 @@ jobs:
       - image: 'cimg/openjdk:15.0-node'
     steps:
       - checkout
+      - run: node -v
       - restore_cache:
           key: 'v5-npm-{{ checksum "package-lock.json" }}'
       - run: npm run release
