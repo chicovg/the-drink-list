@@ -1,17 +1,17 @@
 version: 2.1
 
 jobs:
-  check_npm_version-15:
+  check_npm_version_15:
     docker:
       - image: 'cimg/openjdk:15-node'
     steps:
       - run: node -v
-  check_npm_version-16:
+  check_npm_version_16:
     docker:
       - image: 'cimg/openjdk:16-node'
     steps:
       - run: node -v
-  check_npm_version-17:
+  check_npm_version_17:
     docker:
       - image: 'cimg/openjdk:17-node'
     steps:
