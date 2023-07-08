@@ -24,11 +24,6 @@ jobs:
       - run: npm run deploy -- --token=$FIREBASE_TOKEN
 
 workflows:
-  check_versions:
-    jobs:
-      - check_npm_version_15
-      - check_npm_version_16
-      - check_npm_version_17
   build_and_deploy:
     jobs:
       - build
