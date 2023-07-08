@@ -1,6 +1,22 @@
 version: 2.1
 
 jobs:
+  check_npm_version-15:
+    docker:
+      - image: 'cimg/openjdk:15-node'
+    steps:
+      - run: node -v
+  check_npm_version-16:
+    docker:
+      - image: 'cimg/openjdk:16-node'
+    steps:
+      - run: node -v
+  check_npm_version-17:
+    docker:
+      - image: 'cimg/openjdk:17-node'
+    steps:
+      - run: node -v
+
   build:
     docker:
       - image: 'cimg/openjdk:14.0-node'
@@ -24,13 +40,18 @@ jobs:
       - run: npm run deploy -- --token=$FIREBASE_TOKEN
 
 workflows:
-  build_and_deploy:
+  check_versions:
     jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          # filters:
-          #   branches:
-          #     only:
-          #       - master
+      - check_npm_version_15
+      - check_npm_version_16
+      - check_npm_version_17
+  # build_and_deploy:
+  #   jobs:
+  #     - build
+  #     - deploy:
+  #         requires:
+  #           - build
+  #         filters:
+  #           branches:
+  #             only:
+  #               - master
