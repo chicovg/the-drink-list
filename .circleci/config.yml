@@ -7,10 +7,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: 'v3-npm-{{ checksum "package-lock.json" }}'
+          key: 'v4-npm-{{ checksum "package-lock.json" }}'
       - run: npm ci --legacy-peer-deps
       - save_cache:
-          key: 'v3-npm-{{ checksum "package-lock.json" }}'
+          key: 'v4-npm-{{ checksum "package-lock.json" }}'
           paths:
             - ./node_modules
   deploy:
@@ -19,7 +19,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: 'v3-npm-{{ checksum "package-lock.json" }}'
+          key: 'v4-npm-{{ checksum "package-lock.json" }}'
       - run: npm run release
       - run: npm run deploy -- --token=$FIREBASE_TOKEN
 
